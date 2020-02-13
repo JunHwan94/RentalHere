@@ -1,7 +1,8 @@
-package com.dmon.rentalhere
+package com.dmon.rentalhere.view
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.dmon.rentalhere.R
 
 class MainActivity : AppCompatActivity() {
 

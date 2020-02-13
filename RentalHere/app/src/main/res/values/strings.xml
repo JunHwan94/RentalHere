@@ -2,6 +2,8 @@
     <string name="app_name">여기렌탈</string>
 
     <!--  LoginActivity  -->
+    <string name="client_login">일반 로그인</string>
+    <string name="owner_login">업주 로그인</string>
     <string name="id">아이디</string>
     <string name="password">비밀번호</string>
     <string name="login">로그인</string>

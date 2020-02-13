@@ -2,7 +2,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".LoginActivity"
+    tools:context=".view.LoginActivity"
     android:id="@+id/rootLayout"
     android:layout_height="match_parent"
     android:layout_width="match_parent">
@@ -27,8 +27,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.28"
-            tools:text="여기렌탈" />
+            app:layout_constraintVertical_bias="0.28" />
 
         <Button
             android:id="@+id/clientLoginButton"
@@ -47,7 +46,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/topTextView"
-            tools:text="일반 로그인" />
+            android:text="@string/client_login" />
 
         <Button
             android:id="@+id/ownerLoginButton"
@@ -65,7 +64,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/clientLoginButton"
-            tools:text="업주 로그인" />
+            android:text="@string/owner_login" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/loginLayout"

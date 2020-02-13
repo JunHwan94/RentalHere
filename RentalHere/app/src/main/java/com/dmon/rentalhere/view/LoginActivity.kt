@@ -1,56 +1,42 @@
-package com.dmon.rentalhere
+package com.dmon.rentalhere.view
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.dmon.rentalhere.constants.LoginConstants
+import com.dmon.rentalhere.presenter.LoginPresenter
+import com.dmon.rentalhere.R
 import kotlinx.android.synthetic.main.activity_login.*  /** Kotlin Extensions : 바인딩이 자동으로 되어 뭔가 할 필요가 없음 */
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.debug
 
-fun LoginActivity.a(){
-    topTextView.text = "TopTextView"
-    topTextView.visibility = View.INVISIBLE
-}
-class LoginActivity : AppCompatActivity(), View.OnClickListener, AnkoLogger {
-    override val loggerTag: String
-        get() = "LoginActivity"
+class LoginActivity : AppCompatActivity(), View.OnClickListener, AnkoLogger, LoginConstants.View {
+    override val loggerTag: String get() = "LoginActivity"
+    private lateinit var loginPresenter: LoginPresenter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-        startLoginDivideFadeInAnim()
-        setButtons()
-        GlobalScope.launch{
-            var i = 0
-            while(true){
-                delay(1000L)
-                debug("$i 초")
-                i++
-            }
-        }
+        debug("onCreate called")
+        loginPresenter = LoginPresenter(this)
     }
 
-    private fun setButtons() {
-        clientLoginButton.apply {
-            text = "일반 로그인"
-            setOnClickListener{ v -> onClick(v) }
-        }
-        ownerLoginButton.apply{
-            text = "업주 로그인"
-            setOnClickListener{ v -> onClick(v) }
-        }
+    override fun setButtons() {
+        clientLoginButton.setOnClickListener { v -> onClick(v) }
+        ownerLoginButton.setOnClickListener{ v -> onClick(v) }
     }
 
-    private val View.fadeIn: () -> Unit get() = { startAnimation(AnimationUtils.loadAnimation(baseContext, R.anim.fade_in)) }
+    override val View.fadeIn: () -> Unit get() = { startAnimation(AnimationUtils.loadAnimation(baseContext,
+        R.anim.fade_in
+    )) }
 
-    private val View.fadeOut: (Animation.AnimationListener?) -> Unit get() = {
-        val anim = AnimationUtils.loadAnimation(baseContext, R.anim.fade_out)
+    override val View.fadeOut: (Animation.AnimationListener?) -> Unit get() = {
+        val anim = AnimationUtils.loadAnimation(baseContext,
+            R.anim.fade_out
+        )
         if(it != null) anim.setAnimationListener(it)
         startAnimation(anim)
     }
@@ -79,7 +65,11 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener, AnkoLogger {
         }
     }
 
-    private fun showLoginDivide() {
+    /**
+     * 로그인 뷰 (입력 등) 없애고
+     * 일반, 업주 로그인 뷰 보이게
+     **/
+    override fun showLoginDivide() {
         loginLayout.visibility = View.INVISIBLE
         loginDivideLayout.apply{
             background = getDrawable(R.drawable.splash)
@@ -100,7 +90,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener, AnkoLogger {
     /**
      * 일반, 업주 로그인 뷰 fade in 애니메이션
      **/
-    private fun startLoginDivideFadeInAnim() {
+    override fun startLoginDivideFadeInAnim() {
         topTextView.fadeIn()
         clientLoginButton.fadeIn()
         ownerLoginButton.fadeIn()
@@ -109,14 +99,14 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener, AnkoLogger {
     /**
      * 일반, 업주 로그인 뷰 fade out 애니메이션
      **/
-    private fun startLoginDivideFadeOutAnim() {
+    override fun startLoginDivideFadeOutAnim() {
         loginDivideLayout.fadeOut(showLoginLayoutListener)
     }
 
     /**
      * 로그인 뷰 (입력 등) fade out 애니메이션
      **/
-    private fun startLoginLayoutFadeOutAnim() {
+    override fun startLoginLayoutFadeOutAnim() {
         topTextView.fadeOut(null)
         loginLayout.fadeOut(showLoginDivideListener)
     }
@@ -125,7 +115,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener, AnkoLogger {
      * 일반, 업주 로그인 뷰 없애고
      * 로그인 뷰 (입력 등) 보이게
      **/
-    private fun showLoginLayout(){
+    override fun showLoginLayout(){
         loginDivideLayout.background = null
         clientLoginButton.visibility = View.INVISIBLE
         ownerLoginButton.visibility = View.INVISIBLE
@@ -140,16 +130,14 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener, AnkoLogger {
     }
 
     override fun onClick(v: View) {
-        when(v.id){
-            R.id.clientLoginButton, R.id.ownerLoginButton -> startLoginDivideFadeOutAnim()
-        }
+        loginPresenter.onClick(v)
     }
 
     override fun onBackPressed() {
         if(loginLayout.visibility == View.INVISIBLE)
             super.onBackPressed()
         else {
-            startLoginLayoutFadeOutAnim()
+            loginPresenter.onBackPressed()
         }
     }
 }
