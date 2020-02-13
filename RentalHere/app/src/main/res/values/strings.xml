@@ -1,3 +1,11 @@
 <resources>
-    <string name="app_name">RentalHere</string>
+    <string name="app_name">여기렌탈</string>
+
+    <!--  LoginActivity  -->
+    <string name="id">아이디</string>
+    <string name="password">비밀번호</string>
+    <string name="login">로그인</string>
+    <string name="auto_login">자동로그인</string>
+    <string name="find_account">아이디/비밀번호 찾기</string>
+    <string name="sign_up">회원가입</string>
 </resources>
