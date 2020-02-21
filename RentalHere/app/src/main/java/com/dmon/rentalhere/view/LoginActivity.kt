@@ -9,29 +9,33 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.dmon.rentalhere.constants.LoginConstants
 import com.dmon.rentalhere.presenter.LoginPresenter
 import com.dmon.rentalhere.R
-import kotlinx.android.synthetic.main.activity_login.*  /** Kotlin Extensions : 바인딩이 자동으로 되어 뭔가 할 필요가 없음 */
+import kotlinx.android.synthetic.main.activity_login.*
+/** Kotlin Extensions : 바인딩이 자동으로 되어 뭔가 할 필요가 없음 */
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.debug
+import org.jetbrains.anko.toast
 
 class LoginActivity : AppCompatActivity(), View.OnClickListener, AnkoLogger, LoginConstants.View {
     override val loggerTag: String get() = "LoginActivity"
     private lateinit var loginPresenter: LoginPresenter
+    override val userId: () -> String = { idEditText.text.toString() }
+    override val userPw: () -> String = { pwEditText.text.toString() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
         debug("onCreate called")
-        loginPresenter = LoginPresenter(this)
+        loginPresenter = LoginPresenter(this, this)
     }
 
     override fun setButtons() {
-        clientLoginButton.setOnClickListener { v -> onClick(v) }
-        ownerLoginButton.setOnClickListener{ v -> onClick(v) }
+        clientLoginButton.setOnClickListener(this)
+        ownerLoginButton.setOnClickListener(this)
+        signUpButton.setOnClickListener(this)
+        loginButton.setOnClickListener(this)
     }
 
-    override val View.fadeIn: () -> Unit get() = { startAnimation(AnimationUtils.loadAnimation(baseContext,
-        R.anim.fade_in
-    )) }
+    override val View.fadeIn: () -> Unit get() = { startAnimation(AnimationUtils.loadAnimation(baseContext, R.anim.fade_in)) }
 
     override val View.fadeOut: (Animation.AnimationListener?) -> Unit get() = {
         val anim = AnimationUtils.loadAnimation(baseContext,
@@ -129,8 +133,17 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener, AnkoLogger, Log
         loginLayout.apply { fadeIn(); visibility = View.VISIBLE }
     }
 
-    override fun onClick(v: View) {
-        loginPresenter.onClick(v)
+    override fun checkBlank(): Boolean{
+        when{
+            idEditText.text.isEmpty() -> toast(getString(R.string.toast_type_id))
+            pwEditText.text.isEmpty() -> toast(getString(R.string.toast_type_pw))
+            else -> return true
+        }
+        return false
+    }
+
+    override fun onClick(v: View?) {
+        loginPresenter.onClick(v!!)
     }
 
     override fun onBackPressed() {

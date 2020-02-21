@@ -5,9 +5,46 @@
     <string name="client_login">일반 로그인</string>
     <string name="owner_login">업주 로그인</string>
     <string name="id">아이디</string>
+    <string name="id_id">아이디 (ID)</string>
     <string name="password">비밀번호</string>
     <string name="login">로그인</string>
     <string name="auto_login">자동로그인</string>
     <string name="find_account">아이디/비밀번호 찾기</string>
     <string name="sign_up">회원가입</string>
+
+    <!--  TermsActivity  -->
+    <string name="terms_and_policy">약관 및 정책</string>
+    <string name="terms">이용약관</string>
+    <string name="policy">개인정보보호정책</string>
+    <string name="agree_all">모든 약관에 동의합니다</string>
+    <string name="agree_terms">이용 약관에 동의합니다</string>
+    <string name="agree_policy">개인정보 보호정책에 동의합니다</string>
+    <string name="toast_agree">이용약관 및 개인정보보호정책에 동의해주세요</string>
+
+    <!--  SignUpAcitvity  -->
+    <string name="duplication_check">중복확인</string>
+    <string name="name_hint">실명을 입력하세요</string>
+    <string name="password_hint">비밀번호 확인</string>
+    <string name="name">이름</string>
+    <string name="phone_number">휴대전화</string>
+    <string name="phone_number_hint">\'-\' 구분없이 입력</string>
+    <string name="email">이메일</string>
+    <string name="complete">완료</string>
+    <string name="id_is_exist">이미 존재하는 아이디입니다</string>
+    <string name="confirm">확인</string>
+    <string name="toast_type_id">아이디를 입력해주세요</string>
+    <string name="u_typed">입력하신</string>
+    <string name="can_use_id">사용하실 수 있는 ID입니다.</string>
+    <string name="use_id">아이디 사용하기</string>
+    <string name="toast_type_pw">비밀번호를 입력해주세요</string>
+    <string name="toast_type_pw2">비밀번호를 확인해주세요</string>
+    <string name="toast_type_name">이름을 입력해주세요</string>
+    <string name="toast_type_cp">전화번호를 입력해주세요</string>
+    <string name="toast_type_email">이메일을 입력해주세요</string>
+    <string name="sign_up_complete">회원가입 완료</string>
+    <string name="toast_check_dup">아이디 중복 확인을 해주세요</string>
+    <string name="client_sign_up">일반 회원가입</string>
+    <string name="owner_sign_up">업주 회원가입</string>
+    <string name="cong_sign_up">회원가입을 축하드립니다\n로그인 후 이용해 주세요.</string>
+    <string name="toast_check_id_pw">로그인 실패\n아이디 / 비밀번호를 확인하세요</string>
 </resources>

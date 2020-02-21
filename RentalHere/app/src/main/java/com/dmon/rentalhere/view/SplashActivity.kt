@@ -17,7 +17,8 @@ class SplashActivity : AppCompatActivity() {
         textView.apply{ text = "여기렌탈 스플래시 액티비티!"}
         GlobalScope.launch{
             delay(2500)
-            startActivity(Intent(applicationContext, LoginActivity::class.java).apply { flags = Intent.FLAG_ACTIVITY_NO_ANIMATION })
+            startActivity(Intent(applicationContext, LoginActivity::class.java).apply { flags = Intent.FLAG_ACTIVITY_NO_ANIMATION or
+                    Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP})
             finish()
         }
     }

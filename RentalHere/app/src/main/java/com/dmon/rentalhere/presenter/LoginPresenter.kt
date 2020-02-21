@@ -1,41 +1,92 @@
 package com.dmon.rentalhere.presenter
 
+import android.content.Context
+import android.content.Intent
 import android.view.View
 import com.dmon.rentalhere.R
 import com.dmon.rentalhere.constants.LoginConstants
+import com.dmon.rentalhere.model.BaseResult
 import com.dmon.rentalhere.model.LoginModel
+import com.dmon.rentalhere.retrofit.FIELD_USER_ID
+import com.dmon.rentalhere.retrofit.FIELD_USER_PW
+import com.dmon.rentalhere.retrofit.RetrofitClient
+import com.dmon.rentalhere.retrofit.RetrofitService
+import com.dmon.rentalhere.view.SignUpActivity
+import com.dmon.rentalhere.view.TermsActivity
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import org.jetbrains.anko.AnkoLogger
-import org.jetbrains.anko.debug
+import org.jetbrains.anko.*
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
 
 /**
 
  * Created by jjun on 2020-02-13.
 
  */
-class LoginPresenter(private val loginView: LoginConstants.View): LoginConstants.Presenter, AnkoLogger {
+const val CLIENT_TYPE = 0
+const val OWNER_TYPE = 1
+const val TYPE_KEY = "typeKey"
+class LoginPresenter(private val loginView: LoginConstants.View, private val context: Context): LoginConstants.Presenter, AnkoLogger {
     override val loggerTag: String get() = "LoginPresenter"
     private val loginModel: LoginModel = LoginModel()
+    private var retrofitService: RetrofitService
 
     init {
         loginView.setButtons()
         loginView.startLoginDivideFadeInAnim()
-        GlobalScope.launch{
-            var i = 0
-            while(true){
-                delay(1000L)
-                debug("$i 초")
-                i++
-            }
-        }
+        retrofitService = RetrofitClient.getRetrofitInstance()!!.create(RetrofitService::class.java)
+//        GlobalScope.launch{
+//            var i = 0
+//            while(true){
+//                delay(1000L)
+//                info("$i 초")
+//                i++
+//            }
+//        }
     }
 
     override fun onClick(v: View) {
         when(v.id){
-            R.id.clientLoginButton, R.id.ownerLoginButton -> loginView.startLoginDivideFadeOutAnim()
+            R.id.clientLoginButton -> {
+                loginModel.userType = CLIENT_TYPE
+                loginView.startLoginDivideFadeOutAnim()
+            }
+            R.id.ownerLoginButton -> {
+                loginModel.userType = OWNER_TYPE
+                loginView.startLoginDivideFadeOutAnim()
+            }
+            R.id.signUpButton -> {
+                context.startActivity(Intent(context, TermsActivity::class.java).apply { putExtra(TYPE_KEY, loginModel.userType) })
+            }
+            R.id.loginButton -> {
+                if(loginView.checkBlank()) postLogin()
+            }
         }
+    }
+
+    /**
+     * 로그인 요청
+     */
+    override fun postLogin() {
+        val map = HashMap<String, Any>().apply{
+            this[FIELD_USER_ID] = loginView.userId()
+            this[FIELD_USER_PW] = loginView.userPw()
+        }
+        retrofitService.postLogin(map).enqueue(object : Callback<BaseResult> {
+            override fun onResponse(call: Call<BaseResult>, response: Response<BaseResult>) {
+                val result = response.body()!!.baseResultItem.result
+                if(result == "Y") context.toast("로그인 성공")
+                else context.toast(context.getString(R.string.toast_check_id_pw))
+            }
+
+            override fun onFailure(call: Call<BaseResult>, t: Throwable) {
+                error("실패")
+            }
+        })
     }
 
     override fun onBackPressed() {

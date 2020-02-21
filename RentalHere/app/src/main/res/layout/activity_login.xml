@@ -12,8 +12,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/splash"
-        android:paddingStart="50dp"
-        android:paddingEnd="50dp"
+        android:paddingStart="40dp"
+        android:paddingEnd="40dp"
         tools:background="@null">
 
         <TextView
@@ -40,36 +40,37 @@
             android:paddingEnd="50dp"
             android:paddingBottom="10dp"
             android:stateListAnimator="@null"
+            android:text="@string/client_login"
             android:textColor="@color/white"
             android:textSize="30sp"
             app:layout_constraintBottom_toTopOf="@+id/ownerLoginButton"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/topTextView"
-            android:text="@string/client_login" />
+            app:layout_constraintTop_toBottomOf="@+id/topTextView" />
 
         <Button
             android:id="@+id/ownerLoginButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:background="@color/white"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/no_border"
             android:paddingStart="50dp"
             android:paddingTop="10dp"
             android:paddingEnd="50dp"
             android:paddingBottom="10dp"
             android:stateListAnimator="@null"
+            android:text="@string/owner_login"
             android:textColor="@color/colorPrimary"
             android:textSize="30sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/clientLoginButton"
-            android:text="@string/owner_login" />
+            app:layout_constraintTop_toBottomOf="@+id/clientLoginButton" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/loginLayout"
             android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="60dp"
             android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -80,23 +81,23 @@
                 android:id="@+id/idEditText"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="80dp"
+                android:layout_marginTop="60dp"
                 android:drawableStart="@drawable/ic_person_outline_black_24dp"
                 android:drawablePadding="5dp"
                 android:ems="10"
                 android:hint="@string/id"
                 android:inputType="textPersonName"
                 android:singleLine="true"
-                app:layout_constraintBottom_toTopOf="@+id/passwordEditText"
+                app:layout_constraintBottom_toTopOf="@+id/pwEditText"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <EditText
-                android:id="@+id/passwordEditText"
+                android:id="@+id/pwEditText"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="35dp"
+                android:layout_marginTop="15dp"
                 android:drawableStart="@drawable/ic_lock_outline_black_24dp"
                 android:drawablePadding="5dp"
                 android:ems="10"
@@ -113,8 +114,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:text="@string/auto_login"
-                app:layout_constraintStart_toStartOf="@+id/passwordEditText"
-                app:layout_constraintTop_toBottomOf="@+id/passwordEditText" />
+                app:layout_constraintStart_toStartOf="@+id/pwEditText"
+                app:layout_constraintTop_toBottomOf="@+id/pwEditText" />
 
             <Button
                 android:id="@+id/loginButton"
@@ -134,12 +135,11 @@
                 android:id="@+id/findButton"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
                 android:layout_marginEnd="10dp"
-                android:layout_marginBottom="150dp"
                 android:background="@drawable/color_border"
                 android:stateListAnimator="@null"
                 android:text="@string/find_account"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/signUpButton"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/loginButton" />
@@ -148,11 +148,10 @@
                 android:id="@+id/signUpButton"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="150dp"
+                android:layout_marginTop="30dp"
                 android:background="@drawable/color_border"
                 android:stateListAnimator="@null"
                 android:text="@string/sign_up"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/findButton"
                 app:layout_constraintTop_toBottomOf="@+id/loginButton" />
