@@ -11,16 +11,13 @@ import com.dmon.rentalhere.retrofit.FIELD_USER_ID
 import com.dmon.rentalhere.retrofit.FIELD_USER_PW
 import com.dmon.rentalhere.retrofit.RetrofitClient
 import com.dmon.rentalhere.retrofit.RetrofitService
-import com.dmon.rentalhere.view.SignUpActivity
+import com.dmon.rentalhere.view.FindUserActivity
+import com.dmon.rentalhere.view.MainActivity
 import com.dmon.rentalhere.view.TermsActivity
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import org.jetbrains.anko.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.Retrofit
 
 /**
 
@@ -30,6 +27,8 @@ import retrofit2.Retrofit
 const val CLIENT_TYPE = 0
 const val OWNER_TYPE = 1
 const val TYPE_KEY = "typeKey"
+const val ID_TYPE = 0
+const val PW_TYPE = 1
 class LoginPresenter(private val loginView: LoginConstants.View, private val context: Context): LoginConstants.Presenter, AnkoLogger {
     override val loggerTag: String get() = "LoginPresenter"
     private val loginModel: LoginModel = LoginModel()
@@ -39,14 +38,6 @@ class LoginPresenter(private val loginView: LoginConstants.View, private val con
         loginView.setButtons()
         loginView.startLoginDivideFadeInAnim()
         retrofitService = RetrofitClient.getRetrofitInstance()!!.create(RetrofitService::class.java)
-//        GlobalScope.launch{
-//            var i = 0
-//            while(true){
-//                delay(1000L)
-//                info("$i 초")
-//                i++
-//            }
-//        }
     }
 
     override fun onClick(v: View) {
@@ -62,11 +53,16 @@ class LoginPresenter(private val loginView: LoginConstants.View, private val con
             R.id.signUpButton -> {
                 context.startActivity(Intent(context, TermsActivity::class.java).apply { putExtra(TYPE_KEY, loginModel.userType) })
             }
-            R.id.loginButton -> {
-                if(loginView.checkBlank()) postLogin()
-            }
+            R.id.findButton -> if(loginView.checkBlank()) postLogin()
+            R.id.findIdButton -> startFindActivity(ID_TYPE)
+            R.id.findPwButton -> startFindActivity(PW_TYPE)
         }
     }
+
+    /**
+     * 아이디, 비밀번호 찾기 액티비티 실행
+     */
+    private fun startFindActivity(type: Int) = context.startActivity(Intent(context, FindUserActivity::class.java).apply{ putExtra(TYPE_KEY, type) })
 
     /**
      * 로그인 요청
@@ -79,7 +75,7 @@ class LoginPresenter(private val loginView: LoginConstants.View, private val con
         retrofitService.postLogin(map).enqueue(object : Callback<BaseResult> {
             override fun onResponse(call: Call<BaseResult>, response: Response<BaseResult>) {
                 val result = response.body()!!.baseResultItem.result
-                if(result == "Y") context.toast("로그인 성공")
+                if(result == "Y") context.startActivity(Intent(context, MainActivity::class.java))
                 else context.toast(context.getString(R.string.toast_check_id_pw))
             }
 

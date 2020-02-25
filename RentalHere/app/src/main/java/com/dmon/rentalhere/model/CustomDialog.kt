@@ -10,17 +10,19 @@ import android.view.View
 import android.view.Window
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.dmon.rentalhere.R
-import kotlinx.android.synthetic.main.activity_dialog.*
+import kotlinx.android.synthetic.main.id_check_dialog.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.jetbrains.anko.runOnUiThread
 
 class CustomDialog(context: Context, private val messageOrId: String) {
-    val dialog: Dialog = Dialog(context)
-    fun show(){
+    private val dialog: Dialog = Dialog(context)
+
+    // 아이디 중복 체크 Dialog
+    fun showIdCheck(){
         dialog.apply {
             requestWindowFeature(Window.FEATURE_NO_TITLE)
-            setContentView(R.layout.activity_dialog)
+            setContentView(R.layout.id_check_dialog)
 
             // layout_width 적용안돼서 직접 제어
             val params = dialog.window!!.attributes

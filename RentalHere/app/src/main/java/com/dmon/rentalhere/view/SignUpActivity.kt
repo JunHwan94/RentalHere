@@ -43,7 +43,7 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener, AnkoLogger, Te
         dupCheckButton.setOnClickListener(this)
         completeButton.setOnClickListener(this)
         backButton.setOnClickListener(this)
-        loginButton.setOnClickListener(this)
+        findButton.setOnClickListener(this)
         idEditText.addTextChangedListener(this)
     }
 
@@ -59,7 +59,7 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener, AnkoLogger, Te
         when(v){
             dupCheckButton -> checkId()
             completeButton -> checkBlanks()
-            loginButton -> startLoginActivity()
+            findButton -> startLoginActivity()
             backButton -> finish()
         }
     }
@@ -99,11 +99,10 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener, AnkoLogger, Te
                 when(responseResult.baseResultItem.result){
                     "Y" -> {
                         isSignedUp = true
-                        congTextView.text = getString(R.string.sign_up_complete)
                         congTextView.visibility = View.VISIBLE
-                        loginButton.visibility = View.VISIBLE
+                        findButton.visibility = View.VISIBLE
                         scrollView.visibility = View.INVISIBLE
-                        backButton.setOnClickListener { v -> startLoginActivity() } }
+                        backButton.setOnClickListener { _ -> startLoginActivity() } }
                 }
             }
 
@@ -132,9 +131,9 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener, AnkoLogger, Te
                     val result = responseResult.baseResultItem.result
                     info(result)
                     when(result){
-                        "N" -> CustomDialog(this@SignUpActivity, getString(R.string.id_is_exist)).show()
+                        "N" -> CustomDialog(this@SignUpActivity, getString(R.string.id_is_exist)).showIdCheck()
                         else -> {
-                            CustomDialog(this@SignUpActivity, idEditText.text.toString()).show()
+                            CustomDialog(this@SignUpActivity, idEditText.text.toString()).showIdCheck()
                             isIdChecked = true
                         }
                     }

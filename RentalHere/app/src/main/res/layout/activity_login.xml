@@ -16,10 +16,12 @@
         android:paddingEnd="40dp"
         tools:background="@null">
 
-        <TextView
+        <ImageView
             android:id="@+id/topTextView"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="130dp"
+            android:paddingStart="40dp"
+            android:paddingEnd="40dp"
             android:text="@string/app_name"
             android:textColor="@color/white"
             android:textSize="45sp"
@@ -27,13 +29,14 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.28" />
+            app:layout_constraintVertical_bias="0.23000002"
+            app:srcCompat="@drawable/logo_white" />
 
         <Button
             android:id="@+id/clientLoginButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="200dp"
+            android:layout_marginTop="180dp"
             android:background="@drawable/fill_round_corner"
             android:paddingStart="50dp"
             android:paddingTop="10dp"
@@ -44,9 +47,11 @@
             android:textColor="@color/white"
             android:textSize="30sp"
             app:layout_constraintBottom_toTopOf="@+id/ownerLoginButton"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/topTextView" />
+            app:layout_constraintEnd_toEndOf="@id/loginDivideLayout"
+            app:layout_constraintHorizontal_bias="0.503"
+            app:layout_constraintStart_toStartOf="@id/loginDivideLayout"
+            app:layout_constraintTop_toBottomOf="@+id/topTextView"
+            app:layout_constraintVertical_bias="0.98" />
 
         <Button
             android:id="@+id/ownerLoginButton"
@@ -62,8 +67,9 @@
             android:text="@string/owner_login"
             android:textColor="@color/colorPrimary"
             android:textSize="30sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/loginDivideLayout"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="@id/loginDivideLayout"
             app:layout_constraintTop_toBottomOf="@+id/clientLoginButton" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -71,7 +77,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="60dp"
-            android:visibility="invisible"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -118,7 +124,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/pwEditText" />
 
             <Button
-                android:id="@+id/loginButton"
+                android:id="@+id/findButton"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="50dp"
@@ -132,29 +138,48 @@
                 app:layout_constraintTop_toBottomOf="@+id/checkBox" />
 
             <Button
-                android:id="@+id/findButton"
+                android:id="@+id/findIdButton"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
-                android:layout_marginEnd="10dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="5dp"
                 android:background="@drawable/color_border"
                 android:stateListAnimator="@null"
-                android:text="@string/find_account"
-                app:layout_constraintEnd_toStartOf="@+id/signUpButton"
+                android:text="@string/find_id"
+                android:textColor="@color/colorPrimary"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toStartOf="@+id/findPwButton"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/loginButton" />
+                app:layout_constraintTop_toBottomOf="@+id/signUpButton" />
+
+            <Button
+                android:id="@+id/findPwButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/color_border"
+                android:stateListAnimator="@null"
+                android:text="@string/find_pw"
+                android:textColor="@color/colorPrimary"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/findIdButton"
+                app:layout_constraintTop_toBottomOf="@+id/signUpButton" />
 
             <Button
                 android:id="@+id/signUpButton"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="10dp"
                 android:background="@drawable/color_border"
                 android:stateListAnimator="@null"
                 android:text="@string/sign_up"
+                android:textColor="@color/colorPrimary"
+                android:textSize="24sp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/findButton"
-                app:layout_constraintTop_toBottomOf="@+id/loginButton" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/findButton" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>
