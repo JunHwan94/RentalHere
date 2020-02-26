@@ -156,4 +156,8 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener, AnkoLogger, Log
         else
             loginPresenter.onBackPressed()
     }
+
+    override fun finish(){
+        super.finish()
+    }
 }

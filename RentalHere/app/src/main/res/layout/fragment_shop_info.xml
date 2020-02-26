@@ -25,10 +25,11 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
             android:drawableLeft="@drawable/ic_location_on"
-            android:drawablePadding="5dp"
-            android:text="TextView"
+            android:drawablePadding="10dp"
+            android:textSize="18sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/shopProfileImageView" />
+            app:layout_constraintTop_toBottomOf="@+id/shopProfileImageView"
+            tools:text="주소" />
 
         <TextView
             android:id="@+id/telNumTextView"
@@ -36,10 +37,11 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
             android:drawableLeft="@drawable/ic_call"
-            android:drawablePadding="5dp"
-            android:text="TextView"
+            android:drawablePadding="10dp"
+            android:textSize="18sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/addrTextView" />
+            app:layout_constraintTop_toBottomOf="@+id/addrTextView"
+            tools:text="전화번호" />
 
         <TextView
             android:id="@+id/descTextView"
@@ -47,9 +49,34 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
             android:drawableLeft="@drawable/ic_filter_none"
-            android:drawablePadding="5dp"
-            android:text="TextView"
+            android:drawablePadding="10dp"
+            android:textSize="18sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/telNumTextView" />
+            app:layout_constraintTop_toBottomOf="@+id/telNumTextView"
+            tools:text="정보 / 소개글" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            app:layout_constraintBottom_toTopOf="@+id/writeReviewButton"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:overScrollMode="never"
+            app:spanCount="2"/>
+
+        <Button
+            android:id="@+id/writeReviewButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/fill_round_corner"
+            android:stateListAnimator="@null"
+            android:text="@string/write_review"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

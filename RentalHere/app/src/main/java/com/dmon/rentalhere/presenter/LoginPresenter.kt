@@ -74,8 +74,11 @@ class LoginPresenter(private val loginView: LoginConstants.View, private val con
         }
         retrofitService.postLogin(map).enqueue(object : Callback<BaseResult> {
             override fun onResponse(call: Call<BaseResult>, response: Response<BaseResult>) {
-                val result = response.body()!!.baseResultItem.result
-                if(result == "Y") context.startActivity(Intent(context, MainActivity::class.java))
+                val result = response.body()!!.baseModel.result
+                if(result == "Y") {
+                    context.startActivity(Intent(context, MainActivity::class.java))
+                    loginView.finish()
+                }
                 else context.toast(context.getString(R.string.toast_check_id_pw))
             }
 

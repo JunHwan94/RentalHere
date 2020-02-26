@@ -2,10 +2,10 @@ package com.dmon.rentalhere.model
 
 import com.google.gson.annotations.SerializedName
 
-data class ShopResult(@SerializedName("resultItem") val shopResultItem: ShopResultItem) {
-    data class ShopResultItem(@SerializedName("method") val method: String,
+data class ShopResult(@SerializedName("resultItem") val shopModel: ShopModel) {
+    data class ShopModel(@SerializedName("method") val method: String,
                               @SerializedName("result") val result: String,
-                              @SerializedName("message") val message: String,
+                              @SerializedName("msg") val message: String,
                               @SerializedName("cs_idx") val shopIdx: String,
                               @SerializedName("mem_id") val managerIdx: String,
                               @SerializedName("cs_name") val shopName: String,

@@ -1,6 +1,7 @@
 package com.dmon.rentalhere.retrofit
 
 import com.dmon.rentalhere.model.BaseResult
+import com.dmon.rentalhere.model.ReviewResult
 import com.dmon.rentalhere.model.ShopResult
 import okhttp3.RequestBody
 import retrofit2.Call
@@ -13,6 +14,7 @@ const val SIGNUP_METHOD = "adduser"
 const val LOGIN_METHOD = "log_ck"
 const val GET_USER_METHOD = "get_user"
 const val GET_SHOP_METHOD = "get_shop"
+const val GET_REVIEW_METHOD = "get_review"
 
 //FIELDS
 const val FIELD_USER_ID = "mem_userid"
@@ -29,6 +31,7 @@ const val FIELD_SHOP_TEL_NUM = "cs_phone"
 const val FIELD_SHOP_ADDRESS = "cs_add"
 const val FIELD_SHOP_KEYWORD = "cs_keyword"
 const val FIELD_SHOP_INFO = "cs_info"
+const val FIELD_SHOP_MAIN_PICTURE = "cs_poto1"
 const val FIELD_SHOP_LAT = "cs_lat"
 const val FIELD_SHOP_LNG = "cs_lng"
 const val FIELD_SHOP_PHOTO1_URL = "poto1_url"
@@ -53,4 +56,9 @@ interface RetrofitService {
     @FormUrlEncoded
     @POST(SERVER_URL + GET_SHOP_METHOD)
     fun postGetShop(@FieldMap param: HashMap<String, Any>): Call<ShopResult>
+
+    // 리뷰 목록 요청
+    @FormUrlEncoded
+    @POST(SERVER_URL + GET_REVIEW_METHOD)
+    fun postGetReview(@FieldMap param: HashMap<String, Any>): Call<ReviewResult>
 }

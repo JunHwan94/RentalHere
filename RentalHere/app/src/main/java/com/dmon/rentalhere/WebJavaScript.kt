@@ -4,7 +4,6 @@ import android.content.Context
 import android.webkit.JavascriptInterface
 import com.dmon.rentalhere.model.ShopResult
 import com.dmon.rentalhere.retrofit.RetrofitService
-import org.jetbrains.anko.toast
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -21,7 +20,7 @@ class WebJavaScript(private var context: Context, private var retrofitService: R
         }
         retrofitService.postGetShop(map).enqueue(object : Callback<ShopResult>{
             override fun onResponse(call: Call<ShopResult>, response: Response<ShopResult>) {
-                val result = response.body()!!.shopResultItem
+                val result = response.body()!!.shopModel
                 if(result.result == "Y"){
 //                    context.toast("성공")
                     val shopInfoFragment = ShopInfoFragment.newInstance(result.shopIdx, result.shopAddress, result.shopTelNum, result.shopInfo, result.shopProfileImageUrl)

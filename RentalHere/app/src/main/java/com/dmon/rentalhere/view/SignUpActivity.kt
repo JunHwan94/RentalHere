@@ -96,7 +96,7 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener, AnkoLogger, Te
         retrofitService.postSignUp(map).enqueue(object : Callback<BaseResult>{
             override fun onResponse(call: Call<BaseResult>, response: Response<BaseResult>) {
                 val responseResult: BaseResult = response.body()!!
-                when(responseResult.baseResultItem.result){
+                when(responseResult.baseModel.result){
                     "Y" -> {
                         isSignedUp = true
                         congTextView.visibility = View.VISIBLE
@@ -128,7 +128,7 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener, AnkoLogger, Te
             retrofitService.postCheckIdDup(idBody).enqueue(object : Callback<BaseResult> {
                 override fun onResponse(call: Call<BaseResult>, response: Response<BaseResult>) {
                     val responseResult: BaseResult = response.body()!!
-                    val result = responseResult.baseResultItem.result
+                    val result = responseResult.baseModel.result
                     info(result)
                     when(result){
                         "N" -> CustomDialog(this@SignUpActivity, getString(R.string.id_is_exist)).showIdCheck()

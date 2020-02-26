@@ -19,6 +19,7 @@ interface LoginConstants {
         fun showLoginLayout()
         fun showLoginDivide()
         fun checkBlank(): Boolean
+        fun finish()
 
         val android.view.View.fadeIn: () -> Unit
         val android.view.View.fadeOut: (Animation.AnimationListener) -> Unit

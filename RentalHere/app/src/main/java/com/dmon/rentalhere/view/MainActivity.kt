@@ -23,11 +23,12 @@ import org.jetbrains.anko.info
 import org.jetbrains.anko.toast
 import java.util.*
 
-const val TAG = "MainActivity"
+const val MAIN_TAG = "MainActivity"
 class MainActivity : AppCompatActivity(), View.OnClickListener, AnkoLogger, NavigationView.OnNavigationItemSelectedListener, WebViewFragment.OnFragmentInteractionListener{
-    override val loggerTag: String get() = TAG
-    private lateinit var adapter: ListPagerAdapter
+    override val loggerTag: String get() = MAIN_TAG
+//    private lateinit var adapter: ListPagerAdapter
     private lateinit var shopInfoFragment: ShopInfoFragment
+    private lateinit var distOrderFragment: WebViewFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,25 +40,47 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, AnkoLogger, Navi
     }
 
     /**
-     *  뷰페이저 설정
+     *  뷰페이저 설정 (웹뷰 맵이동 할 때 불편해서 안쓰기로)
      */
-    private fun setViewPager() {
-        adapter = ListPagerAdapter(supportFragmentManager)
-        adapter.addItem(WebViewFragment.newInstance())
-        adapter.addItem(WebViewFragment.newInstance())
-        viewPager.offscreenPageLimit = 1
+//    private fun setViewPager() {
+//        adapter = ListPagerAdapter(supportFragmentManager)
+//        adapter.addItem(WebViewFragment.newInstance())
+//        adapter.addItem(WebViewFragment.newInstance())
+//        viewPager.offscreenPageLimit = 1
+//
+//        viewPager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabs))
+//        tabs.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener{
+//            override fun onTabReselected(tab: TabLayout.Tab?) {}
+//
+//            override fun onTabUnselected(tab: TabLayout.Tab?) {}
+//
+//            override fun onTabSelected(tab: TabLayout.Tab?) {
+//                viewPager.currentItem = tab!!.position
+//            }
+//        })
+//        viewPager.adapter = adapter
+//    }
 
-        viewPager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabs))
+    /**
+     *  탭레이아웃 설정
+     */
+    private fun setTabs() {
+        distOrderFragment = WebViewFragment.newInstance()
+        val recOrderFragment = WebViewFragment.newInstance()
+        supportFragmentManager.beginTransaction().replace(R.id.container, distOrderFragment).commit()
+
         tabs.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener{
             override fun onTabReselected(tab: TabLayout.Tab?) {}
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {}
 
             override fun onTabSelected(tab: TabLayout.Tab?) {
-                viewPager.currentItem = tab!!.position
+                when(tab!!.position){
+                    0 -> supportFragmentManager.beginTransaction().remove(recOrderFragment).commit()
+                    1 -> supportFragmentManager.beginTransaction().add(R.id.container, recOrderFragment).commit()
+                }
             }
         })
-        viewPager.adapter = adapter
     }
 
     /**
@@ -90,7 +113,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, AnkoLogger, Navi
             .setPermissionListener(object : PermissionListener{
                 override fun onPermissionGranted() {
                     info("위치 권한 허용")
-                    setViewPager()
+//                    setViewPager()
+                    setTabs()
                 }
 
                 override fun onPermissionDenied(deniedPermissions: ArrayList<String>) {
@@ -138,54 +162,57 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, AnkoLogger, Navi
     override fun onBackPressed() {
         when{
             drawer.isDrawerOpen(GravityCompat.END) -> drawer.closeDrawer(GravityCompat.END)
-            viewPager.visibility != View.VISIBLE -> showMain()
+            tabs.visibility != View.VISIBLE -> showMain()
+//            viewPager.visibility != View.VISIBLE -> showMain()
             else -> super.onBackPressed()
         }
     }
 
     private fun showMain(){
         shopTextView.visibility = View.INVISIBLE
+        backButton.visibility = View.INVISIBLE
         topImageView.visibility = View.VISIBLE
         searchButton.visibility = View.VISIBLE
         tabs.visibility = View.VISIBLE
-        viewPager.visibility = View.VISIBLE
-        supportFragmentManager.beginTransaction().setCustomAnimations(R.anim.fade_in, R.anim.fade_out).remove(shopInfoFragment).commit()
+//        viewPager.visibility = View.VISIBLE
+        supportFragmentManager.beginTransaction()/*.setCustomAnimations(R.anim.fade_in, R.anim.fade_out)*/.replace(R.id.container, distOrderFragment).commit()
     }
 
     /**
-     * frameLayout ShopInfoFragment로 변경
+     * frameLayout ShopInfoFragment 적용
      */
     override fun replaceFragment(fragment: Fragment, shopName: String) {
         this.shopInfoFragment = fragment as ShopInfoFragment
         shopTextView.apply{ visibility = View.VISIBLE; text = shopName}
+        backButton.visibility = View.VISIBLE
         topImageView.visibility = View.GONE
         searchButton.visibility = View.GONE
         tabs.visibility = View.GONE // 탭레이아웃 가리기
-        viewPager.visibility = View.GONE // 중첩된 프래그먼트에서 터치가 중복되어 뷰페이저 가리기
+//        viewPager.visibility = View.GONE // 중첩된 프래그먼트에서 터치가 중복되어 뷰페이저 가리기
         supportFragmentManager.beginTransaction().setCustomAnimations(R.anim.fade_in, R.anim.fade_out).replace(R.id.container, fragment).commit()
     }
 
-    class ListPagerAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(fm) {
-        private val fragmentList = ArrayList<Fragment>()
-        init {
-            fragmentList.clear()
-        }
-
-        fun addItem(item: Fragment) {
-            if(!fragmentList.contains(item))
-                fragmentList.add(item)
-            notifyDataSetChanged()
-        }
-
-        fun clear(){
-            fragmentList.clear()
-            notifyDataSetChanged()
-        }
-
-        override fun getItem(position: Int): Fragment {
-            return fragmentList[position]
-        }
-
-        override fun getCount(): Int = fragmentList.size
-    }
+//    class ListPagerAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(fm) {
+//        private val fragmentList = ArrayList<Fragment>()
+//        init {
+//            fragmentList.clear()
+//        }
+//
+//        fun addItem(item: Fragment) {
+//            if(!fragmentList.contains(item))
+//                fragmentList.add(item)
+//            notifyDataSetChanged()
+//        }
+//
+//        fun clear(){
+//            fragmentList.clear()
+//            notifyDataSetChanged()
+//        }
+//
+//        override fun getItem(position: Int): Fragment {
+//            return fragmentList[position]
+//        }
+//
+//        override fun getCount(): Int = fragmentList.size
+//    }
 }
