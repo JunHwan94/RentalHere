@@ -50,7 +50,7 @@
                 android:id="@+id/dupCheckButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/color_border"
+                android:background="@drawable/primary_color_border"
                 android:text="@string/duplication_check"
                 android:textColor="@color/colorPrimary"
                 android:textSize="18sp"

@@ -18,12 +18,10 @@ import com.dmon.rentalhere.ReviewRecyclerViewAdapter
 import com.dmon.rentalhere.databinding.FragmentShopInfoBinding
 import com.dmon.rentalhere.model.ReviewResult
 import com.dmon.rentalhere.retrofit.*
-import kotlinx.android.synthetic.main.fragment_shop_info.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.error
-import org.jetbrains.anko.info
 import org.jetbrains.anko.support.v4.runOnUiThread
 import retrofit2.Call
 import retrofit2.Callback
@@ -77,8 +75,10 @@ class ShopInfoFragment : Fragment(), AnkoLogger, View.OnClickListener {
         super.onDetach()
     }
 
-    fun init(){
-        reviewAdapter = ReviewRecyclerViewAdapter()
+    private fun init(){
+        reviewAdapter = ReviewRecyclerViewAdapter().apply{ setOnItemClickListener(object : ReviewRecyclerViewAdapter.OnItemClickListener{
+            override fun onItemClick(holder: ReviewRecyclerViewAdapter.ReviewViewHolder, view: View, position: Int) {}
+        }) }
         binding.recyclerView.run{ adapter = reviewAdapter; layoutManager = LinearLayoutManager(context) }
         retrofitService = RetrofitClient.getRetrofitInstance()!!.create(RetrofitService::class.java)
     }

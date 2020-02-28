@@ -1,6 +1,7 @@
 package com.dmon.rentalhere.view
 
 import android.Manifest
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -9,11 +10,8 @@ import android.view.MenuItem
 import android.view.View
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentStatePagerAdapter
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
 import com.dmon.rentalhere.R
+import com.dmon.rentalhere.model.ReviewResult
 import com.dmon.rentalhere.model.UserInfoResult
 import com.dmon.rentalhere.presenter.ID_KEY
 import com.dmon.rentalhere.presenter.PREF_KEY
@@ -30,14 +28,17 @@ import kotlinx.android.synthetic.main.nav_header_user_info.view.*
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.error
 import org.jetbrains.anko.info
-import org.jetbrains.anko.toast
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.util.*
 
-const val MAIN_TAG = "MainActivity"
-class MainActivity : AppCompatActivity(), View.OnClickListener, AnkoLogger, NavigationView.OnNavigationItemSelectedListener, WebViewFragment.OnFragmentInteractionListener{
+const val MAIN_TAG = "ClientMainActivity"
+const val USER_MODEL_KEY = "userModelKey"
+const val EDIT_USER_CODE = 101
+const val REVIEW_TYPE_KEY = "reviewTypeKey"
+const val MY_REVIEW_TYPE = 1
+class ClientMainActivity : AppCompatActivity(), View.OnClickListener, AnkoLogger, NavigationView.OnNavigationItemSelectedListener, WebViewFragment.OnFragmentInteractionListener{
     override val loggerTag: String get() = MAIN_TAG
 //    private lateinit var adapter: ListPagerAdapter
     private lateinit var retrofitService: RetrofitService
@@ -91,7 +92,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, AnkoLogger, Navi
      */
     private fun setNavigationView(id: String) {
         val header = navigationView.getHeaderView(0)
-        header.idTextView.text = id
+        header.idOrShopTextView.text = "${id}님 안녕하세요."
     }
 
     /**
@@ -162,13 +163,46 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, AnkoLogger, Navi
      */
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
-            R.id.nav_modify_info -> toast("정보 수정")
-            R.id.nav_review -> toast("리뷰")
+            R.id.nav_edit_info -> editUser()
+            R.id.nav_review -> showAllReview()
             R.id.nav_log_out -> logOut()
         }
         return true
     }
 
+    /**
+     * 내 리뷰 보기 (AllReviewActivity 실행)
+     */
+    private fun showAllReview() {
+        val map = HashMap<String, Any>().apply{ this[FIELD_USER_IDX] = userModel.userIdx }
+        retrofitService.postGetMyReview(map).enqueue(object : Callback<ReviewResult>{
+            override fun onResponse(call: Call<ReviewResult>, response: Response<ReviewResult>) {
+                val reviewResultItem = response.body()!!.reviewResultItem
+//                if(reviewResultItem.result == "Y") {
+                    startActivity(Intent(this@ClientMainActivity, AllReviewActivity::class.java).apply {
+                        putExtra(REVIEW_TYPE_KEY, MY_REVIEW_TYPE)
+                        putParcelableArrayListExtra(REVIEW_LIST_KEY, reviewResultItem.reviewModelList)
+                    })
+            }
+
+            override fun onFailure(call: Call<ReviewResult>, t: Throwable) {
+
+            }
+        })
+    }
+
+    /**
+     * 정보 수정 (SignUpActivity 실행)
+     */
+    private fun editUser() {
+        startActivityForResult(Intent(this, SignUpActivity::class.java).apply{
+            putExtra(USER_MODEL_KEY, userModel)
+        }, EDIT_USER_CODE)
+    }
+
+    /**
+     * 로그아웃
+     */
     private fun logOut() {
         val editor = getSharedPreferences(PREF_KEY, Context.MODE_PRIVATE).edit()
         with(editor){
@@ -229,7 +263,22 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, AnkoLogger, Navi
         container2.visibility = View.VISIBLE
     }
 
-//    class ListPagerAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(fm) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(requestCode == EDIT_USER_CODE && resultCode == Activity.RESULT_OK){
+            data?.let {
+                it.getParcelableExtra<UserInfoResult.UserModel>(USER_MODEL_KEY)?.let{ userModel ->
+                    this.userModel = userModel
+                    info("${userModel.userId}")
+                    info("${userModel.userName}")
+                    info("${userModel.userEmail}")
+                    info("${userModel.userCpNum}")
+                }
+            }
+        }
+    }
+
+    //    class ListPagerAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(fm) {
 //        private val fragmentList = ArrayList<Fragment>()
 //        init {
 //            fragmentList.clear()

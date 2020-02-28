@@ -11,11 +11,20 @@ data class ReviewResult(@SerializedName("resultItem") val reviewResultItem: Revi
                                    @SerializedName("result") val result: String)
     data class ReviewModel(@SerializedName("cr_text") val reviewText: String,
                            @SerializedName("cr_score") val reviewScore: String,
-                           @SerializedName("mem_userid") val reviewerId: String): Parcelable {
+                           @SerializedName("mem_userid") val reviewerId: String? = null,
+                           // 아래는 내 리뷰목록에 포함
+                           @SerializedName("cs_idx") var shopIdx: String? = null,
+                           @SerializedName("cs_name") var shopName: String? = null,
+                           @SerializedName("cs_add") var shopAddress: String? = null,
+                           @SerializedName("cr_date") var date: String? = null): Parcelable {
         constructor(parcel: Parcel) : this(
             parcel.readString()!!,
             parcel.readString()!!,
-            parcel.readString()!!
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readString()
         ) {
         }
 
@@ -23,6 +32,10 @@ data class ReviewResult(@SerializedName("resultItem") val reviewResultItem: Revi
             parcel.writeString(reviewText)
             parcel.writeString(reviewScore)
             parcel.writeString(reviewerId)
+            parcel.writeString(shopIdx)
+            parcel.writeString(shopName)
+            parcel.writeString(shopAddress)
+            parcel.writeString(date)
         }
 
         override fun describeContents(): Int {

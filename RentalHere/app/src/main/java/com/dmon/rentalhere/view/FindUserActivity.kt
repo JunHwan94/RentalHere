@@ -55,6 +55,9 @@ class FindUserActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
+    /**
+     * 아이디 찾기 요청
+     */
     private fun findID() {
         when{
             nameEditText.text.isEmpty() -> toast(getString(R.string.toast_type_id))
@@ -82,20 +85,29 @@ class FindUserActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
+    /**
+     * 키보드 가리기
+     */
     fun hideKeyBoard(){
         val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(cpEditText.windowToken, 0)
         imm.hideSoftInputFromWindow(nameEditText.windowToken, 0)
     }
 
+    /**
+     * 아이디 찾은 후 뷰 설정
+     */
     fun setViewAfterFind(userId: String){
         backButton.visibility = View.INVISIBLE
         topTextView.run{ text = "$text ${getString(R.string.result)}" }
-        idTextView.run{ text = getString(R.string.id) + " : " + userId}
+        idOrShopTextView.run{ text = getString(R.string.id) + " : " + userId}
         findLayout.visibility = View.GONE
         resultLayout.visibility = View.VISIBLE
     }
 
+    /**
+     * 로그인 액티비티로 돌아가기
+     */
     private fun startLoginActivity() =
         startActivity(Intent(this, LoginActivity::class.java).apply{
             flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP

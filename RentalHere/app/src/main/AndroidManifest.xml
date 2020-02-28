@@ -15,18 +15,30 @@
         android:supportsRtl="true"
         android:theme="@style/WhiteStatusBar"
         android:usesCleartextTraffic="true">
-        <activity android:name=".view.WriteReviewActivity"></activity>
-        <activity android:name=".view.AllReviewActivity" />
-        <activity android:name=".view.FindUserActivity" />
+        <activity android:name=".view.OwnerMainActivity"></activity>
+        <activity
+            android:name=".view.WriteReviewActivity"
+            android:configChanges="orientation|keyboardHidden" />
+        <activity
+            android:name=".view.AllReviewActivity"
+            android:configChanges="orientation|keyboardHidden" />
+        <activity
+            android:name=".view.FindUserActivity"
+            android:configChanges="orientation|keyboardHidden" />
         <activity
             android:name=".view.TermsActivity"
+            android:configChanges="orientation|keyboardHidden"
             android:theme="@style/NoStatusBar" />
         <activity
             android:name=".view.SignUpActivity"
+            android:configChanges="orientation|keyboardHidden"
             android:theme="@style/NoStatusBar" />
-        <activity android:name=".view.LoginActivity" />
+        <activity
+            android:name=".view.LoginActivity"
+            android:configChanges="orientation" />
         <activity
             android:name=".view.SplashActivity"
+            android:configChanges="orientation|keyboardHidden"
             android:theme="@style/NoStatusBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -35,7 +47,8 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".view.MainActivity"
+            android:name=".view.ClientMainActivity"
+            android:configChanges="orientation|keyboardHidden"
             android:theme="@style/WhiteStatusBar" />
     </application>
 

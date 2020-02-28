@@ -9,7 +9,7 @@ import com.dmon.rentalhere.model.ReviewResult
 
 class ReviewRecyclerViewAdapter: RecyclerView.Adapter<ReviewRecyclerViewAdapter.ReviewViewHolder>() {
     private val reviewModelList = ArrayList<ReviewResult.ReviewModel>()
-//        private lateinit var listener: OnItemClickListener
+    private lateinit var listener: OnItemClickListener
 
     interface OnItemClickListener{
         fun onItemClick(holder: ReviewViewHolder, view: View, position: Int)
@@ -23,7 +23,7 @@ class ReviewRecyclerViewAdapter: RecyclerView.Adapter<ReviewRecyclerViewAdapter.
     override fun onBindViewHolder(holder: ReviewViewHolder, position: Int) {
         val reviewModel = reviewModelList[position]
         holder.setItem(reviewModel)
-//            holder.setOnItemClickListener(listener)
+        holder.setOnItemClickListener(listener)
     }
 
     override fun getItemCount(): Int = reviewModelList.size
@@ -34,18 +34,18 @@ class ReviewRecyclerViewAdapter: RecyclerView.Adapter<ReviewRecyclerViewAdapter.
     }
     fun clear() = reviewModelList.clear()
     fun getItem(position: Int) = reviewModelList[position]
-//        fun setOnItemClickListener(listener: OnItemClickListener){
-//            this.listener = listener
-//        }
+    fun setOnItemClickListener(listener: OnItemClickListener){
+        this.listener = listener
+    }
 
     class ReviewViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        //            private lateinit var listener: OnItemClickListener
+        private lateinit var listener: OnItemClickListener
         private var binding: ItemReviewBinding = ItemReviewBinding.bind(itemView)
 
         init {
             itemView.setOnClickListener {
                 val position = adapterPosition
-//                    if(listener != null) listener.onItemClick(this, itemView, position)
+                    if(listener != null) listener.onItemClick(this, itemView, position)
             }
         }
 
@@ -55,13 +55,19 @@ class ReviewRecyclerViewAdapter: RecyclerView.Adapter<ReviewRecyclerViewAdapter.
 //                    .load(diaryModel.coverImageUrl)
 //                    .apply(RequestOptions().centerCrop().override(250, 300))
 //                    .into(binding.diaryItemCoverImageView)
-            binding.idTextView.text = reviewModel.reviewerId
+            binding.idOrShopTextView.text = reviewModel.reviewerId
             binding.ratingBar.rating = reviewModel.reviewScore.toFloat()
             binding.reviewTextView.text = reviewModel.reviewText
+            reviewModel.shopName?.let{
+                binding.idOrShopTextView.run{ text = it; textSize = 20f; }
+                binding.reviewIconImageView.visibility = View.VISIBLE
+            }
+            reviewModel.shopAddress?.let{ binding.addressTextView.run{ text = it; visibility = View.VISIBLE } }
+            reviewModel.date?.let{ binding.dateTextView.run{ text = it; visibility = View.VISIBLE } }
         }
 
-//            fun setOnItemClickListener(listener: OnItemClickListener){
-//                this.listener = listener
-//            }
+        fun setOnItemClickListener(listener: OnItemClickListener){
+            this.listener = listener
+        }
     }
 }

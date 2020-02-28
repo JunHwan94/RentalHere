@@ -4,9 +4,9 @@
     tools:showIn="navigationView">
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_modify_info"
+            android:id="@+id/nav_edit_info"
             android:icon="@drawable/ic_enroll"
-            android:title="@string/modify_info" />
+            android:title="@string/edit_info" />
         <item
             android:id="@+id/nav_review"
             android:icon="@drawable/ic_review"

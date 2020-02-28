@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.dmon.rentalhere.R
 import com.dmon.rentalhere.ReviewRecyclerViewAdapter
 import com.dmon.rentalhere.model.ReviewResult
-import kotlinx.android.synthetic.main.activity_find_user.backButton
+import kotlinx.android.synthetic.main.activity_all_review.*
 import kotlinx.android.synthetic.main.fragment_shop_info.recyclerView
 
 class AllReviewActivity : AppCompatActivity(), View.OnClickListener {
@@ -15,6 +15,10 @@ class AllReviewActivity : AppCompatActivity(), View.OnClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_all_review)
+
+        when(intent.getIntExtra(REVIEW_TYPE_KEY, 0)){
+            MY_REVIEW_TYPE -> topTextView.run{ text = getString(R.string.my) + " " + text }
+        }
         setViewListener()
         setRecyclerView()
     }
@@ -28,6 +32,14 @@ class AllReviewActivity : AppCompatActivity(), View.OnClickListener {
             it.adapter = adapter
             it.layoutManager = LinearLayoutManager(this)
         }
+
+        adapter.setOnItemClickListener(object : ReviewRecyclerViewAdapter.OnItemClickListener{
+            override fun onItemClick(holder: ReviewRecyclerViewAdapter.ReviewViewHolder, view: View, position: Int) {
+                when(intent.getIntExtra(REVIEW_TYPE_KEY, 0)){
+
+                }
+            }
+        })
     }
 
     private fun setViewListener() {

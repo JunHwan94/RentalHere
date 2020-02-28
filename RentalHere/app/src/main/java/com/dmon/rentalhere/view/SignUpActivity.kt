@@ -1,5 +1,6 @@
 package com.dmon.rentalhere.view
 
+import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -18,6 +19,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import android.view.WindowManager
+import com.dmon.rentalhere.model.UserInfoResult
 import com.dmon.rentalhere.presenter.CLIENT_TYPE
 import com.dmon.rentalhere.presenter.OWNER_TYPE
 import com.dmon.rentalhere.retrofit.*
@@ -28,6 +30,12 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener, AnkoLogger {
     private lateinit var retrofitService: RetrofitService
     private var isIdChecked = false
     private var isSignedUp = false
+    private var isEditPage :Boolean = false
+    private lateinit var userId: String
+    private lateinit var userName: String
+    private lateinit var userEmail: String
+    private lateinit var userCpNum: String
+
     private val idWatcher = object : TextWatcher{
         override fun afterTextChanged(s: Editable?) { isIdChecked = false }
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -63,10 +71,25 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener, AnkoLogger {
     }
 
     private fun processIntent() {
+        // 일반 / 업주 구분
         userType = intent.getIntExtra(TYPE_KEY, 0)
         when(userType){
             CLIENT_TYPE -> topTextView.text = getString(R.string.client_sign_up)
             OWNER_TYPE -> topTextView.text = getString(R.string.owner_sign_up)
+        }
+
+        // 정보 수정이면 뷰 설정
+        val userModel = intent.getParcelableExtra<UserInfoResult.UserModel>(USER_MODEL_KEY)
+        userModel?.let{
+            isIdChecked = true
+            topTextView.text = getString(R.string.edit_info)
+            isEditPage = true
+            idEditText.run{ isEnabled = false; background = null }
+            dupCheckButton.visibility = View.INVISIBLE
+            idEditText.setText(it.userId)
+            nameEditText.setText(it.userName)
+            cpEditText.setText(it.userCpNum.replace("-", ""))
+            emailEditText.setText(it.userEmail)
         }
     }
 
@@ -89,28 +112,55 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener, AnkoLogger {
             pwEditText2.text.isEmpty() -> toast(getString(R.string.toast_type_pw2))
             pwEditText.text.toString() != pwEditText2.text.toString() -> toast(getString(R.string.toast_type_pw2))
             nameEditText.text.isEmpty() -> toast(getString(R.string.toast_type_name))
-            cpEditText.text.isEmpty() -> toast(getString(R.string.toast_type_cp))
+            cpEditText.text.isEmpty() or (cpEditText.text.length < 11) -> toast(getString(R.string.toast_type_cp))
             emailEditText.text.isEmpty() -> toast(getString(R.string.toast_type_email))
             !isIdChecked -> toast(getString(R.string.toast_check_dup))
-            else -> postSignUp()
+            else -> {
+                userId = idEditText.text.toString()
+                userName = nameEditText.text.toString()
+                userEmail = emailEditText.text.toString()
+                userCpNum = cpEditText.text.toString()
+                val map = HashMap<String, Any>().apply{
+                    this[FIELD_USER_ID] = userId
+                    this[FIELD_USER_PW] = pwEditText.text.toString()
+                    this[FIELD_USER_NAME] = userName
+                    this[FIELD_USER_EMAIL] = userEmail
+                    this[FIELD_USER_CP_NUM] = userCpNum
+                }
+                if(isEditPage) postEditUserInfo(map) else postSignUp(map)
+            }
         }
+    }
+
+    /**
+     * 정보 수정 요청
+     */
+    private fun postEditUserInfo(map: HashMap<String, Any>) {
+        retrofitService.postEditUserInfo(map).enqueue(object : Callback<BaseResult>{
+            override fun onResponse(call: Call<BaseResult>, response: Response<BaseResult>) {
+                val responseResult: BaseResult = response.body()!!
+                when(responseResult.baseModel.result){
+                    "Y" -> {
+                        toast(getString(R.string.edit_complete))
+                        setResult(Activity.RESULT_OK, Intent().apply{ putExtra(USER_MODEL_KEY, UserInfoResult.UserModel(
+                            userId, userName, userEmail, userCpNum
+                        )) })
+                        finish()
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<BaseResult>, t: Throwable) {
+                error("실패")
+            }
+        })
     }
 
     /**
      * 회원 가입 요청
      */
-    private fun postSignUp() {
-        val map = HashMap<String, Any>().apply{
-            this[FIELD_USER_ID] = idEditText.text.toString()
-            this[FIELD_USER_PW] = pwEditText.text.toString()
-            this[FIELD_USER_NAME] = nameEditText.text.toString()
-            this[FIELD_USER_EMAIL] = emailEditText.text.toString()
-            this[FIELD_USER_CP_NUM] = cpEditText.text.toString()
-            this[FIELD_USER_DIV] = userType
-        }
-        with(map){
-            info(this[FIELD_USER_CP_NUM])
-        }
+    private fun postSignUp(map: HashMap<String, Any>) {
+        map[FIELD_USER_DIV] = userType
         retrofitService.postSignUp(map).enqueue(object : Callback<BaseResult>{
             override fun onResponse(call: Call<BaseResult>, response: Response<BaseResult>) {
                 val responseResult: BaseResult = response.body()!!

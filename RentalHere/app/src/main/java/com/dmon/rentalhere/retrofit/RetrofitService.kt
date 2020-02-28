@@ -12,12 +12,15 @@ import retrofit2.http.*
 const val SERVER_URL = "app/app_main/"
 const val CHECK_ID_METHOD = "id_ck"
 const val SIGNUP_METHOD = "adduser"
-const val LOGIN_METHOD = "log_ck"
+const val CLIENT_LOGIN_METHOD = "log_ck"
 const val GET_USER_METHOD = "get_user"
 const val GET_SHOP_METHOD = "get_shop"
 const val GET_REVIEW_METHOD = "get_review"
 const val POST_REVIEW_METHOD = "add_review"
 const val FIND_USER_ID_METHOD = "get_userid"
+const val EDIT_USER_METHOD = "put_user"
+const val GET_MY_REVIEW_METHOD = "get_myreview"
+const val OWNER_LOGIN_METHOD = "log_manager"
 
 //FIELDS
 const val FIELD_USER_IDX = "mem_id"
@@ -54,10 +57,20 @@ interface RetrofitService {
     @POST(SERVER_URL + SIGNUP_METHOD)
     fun postSignUp(@FieldMap param: HashMap<String, Any>): Call<BaseResult>
 
-    // 로그인 요청
+    // 회원 정보 수정 요청
     @FormUrlEncoded
-    @POST(SERVER_URL + LOGIN_METHOD)
-    fun postLogin(@FieldMap param: HashMap<String, Any>): Call<BaseResult>
+    @POST(SERVER_URL + EDIT_USER_METHOD)
+    fun postEditUserInfo(@FieldMap param: HashMap<String, Any>): Call<BaseResult>
+
+    // 사용자 로그인 요청
+    @FormUrlEncoded
+    @POST(SERVER_URL + CLIENT_LOGIN_METHOD)
+    fun postClientLogin(@FieldMap param: HashMap<String, Any>): Call<BaseResult>
+
+    // 업주 로그인 요청
+    @FormUrlEncoded
+    @POST(SERVER_URL + OWNER_LOGIN_METHOD)
+    fun postOwnerLogin(@FieldMap param: HashMap<String, Any>): Call<BaseResult>
 
     // 회원정보 요청
     @FormUrlEncoded
@@ -78,6 +91,11 @@ interface RetrofitService {
     @FormUrlEncoded
     @POST(SERVER_URL + GET_REVIEW_METHOD)
     fun postGetReview(@FieldMap param: HashMap<String, Any>): Call<ReviewResult>
+
+    // 내 리뷰 목록 요청
+    @FormUrlEncoded
+    @POST(SERVER_URL + GET_MY_REVIEW_METHOD)
+    fun postGetMyReview(@FieldMap param: HashMap<String, Any>): Call<ReviewResult>
 
     // 리뷰 등록
     @FormUrlEncoded

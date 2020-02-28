@@ -1,7 +1,6 @@
 package com.dmon.rentalhere.view
 
 import android.app.Activity
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
