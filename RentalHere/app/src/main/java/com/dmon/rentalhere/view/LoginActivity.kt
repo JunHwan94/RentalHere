@@ -146,12 +146,17 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener, AnkoLogger, Log
         return false
     }
 
+    /**
+     * 자동 로그인 여부 체크
+     */
+    override val autoLoginEnabled:() -> Boolean = { autoLoginCheckBox.isChecked }
+
     override fun onClick(v: View?) {
         loginPresenter.onClick(v!!)
     }
 
     override fun onBackPressed() {
-        if(loginLayout.visibility == View.INVISIBLE)
+        if(loginLayout.visibility == View.GONE)
             super.onBackPressed()
         else
             loginPresenter.onBackPressed()

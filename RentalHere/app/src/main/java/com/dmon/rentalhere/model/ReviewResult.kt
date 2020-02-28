@@ -1,5 +1,7 @@
 package com.dmon.rentalhere.model
 
+import android.os.Parcel
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 
 data class ReviewResult(@SerializedName("resultItem") val reviewResultItem: ReviewResultItem){
@@ -9,5 +11,32 @@ data class ReviewResult(@SerializedName("resultItem") val reviewResultItem: Revi
                                    @SerializedName("result") val result: String)
     data class ReviewModel(@SerializedName("cr_text") val reviewText: String,
                            @SerializedName("cr_score") val reviewScore: String,
-                           @SerializedName("mem_userid") val reviewerId: String)
+                           @SerializedName("mem_userid") val reviewerId: String): Parcelable {
+        constructor(parcel: Parcel) : this(
+            parcel.readString()!!,
+            parcel.readString()!!,
+            parcel.readString()!!
+        ) {
+        }
+
+        override fun writeToParcel(parcel: Parcel, flags: Int) {
+            parcel.writeString(reviewText)
+            parcel.writeString(reviewScore)
+            parcel.writeString(reviewerId)
+        }
+
+        override fun describeContents(): Int {
+            return 0
+        }
+
+        companion object CREATOR : Parcelable.Creator<ReviewModel> {
+            override fun createFromParcel(parcel: Parcel): ReviewModel {
+                return ReviewModel(parcel)
+            }
+
+            override fun newArray(size: Int): Array<ReviewModel?> {
+                return arrayOfNulls(size)
+            }
+        }
+    }
 }

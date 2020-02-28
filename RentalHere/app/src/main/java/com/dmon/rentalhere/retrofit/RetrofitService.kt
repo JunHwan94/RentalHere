@@ -3,6 +3,7 @@ package com.dmon.rentalhere.retrofit
 import com.dmon.rentalhere.model.BaseResult
 import com.dmon.rentalhere.model.ReviewResult
 import com.dmon.rentalhere.model.ShopResult
+import com.dmon.rentalhere.model.UserInfoResult
 import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.http.*
@@ -15,8 +16,11 @@ const val LOGIN_METHOD = "log_ck"
 const val GET_USER_METHOD = "get_user"
 const val GET_SHOP_METHOD = "get_shop"
 const val GET_REVIEW_METHOD = "get_review"
+const val POST_REVIEW_METHOD = "add_review"
+const val FIND_USER_ID_METHOD = "get_userid"
 
 //FIELDS
+const val FIELD_USER_IDX = "mem_id"
 const val FIELD_USER_ID = "mem_userid"
 const val FIELD_USER_PW = "mem_password"
 const val FIELD_USER_NAME = "mem_username"
@@ -36,6 +40,9 @@ const val FIELD_SHOP_LAT = "cs_lat"
 const val FIELD_SHOP_LNG = "cs_lng"
 const val FIELD_SHOP_PHOTO1_URL = "poto1_url"
 const val FIELD_SHOP_PHOTO2_URL = "poto2_url"
+
+const val FIELD_REVIEW_CONTENT = "cr_text"
+const val FIELD_REVIEW_SCORE = "cr_score"
 interface RetrofitService {
     // 아이디 중복 확인
     @Multipart
@@ -52,6 +59,16 @@ interface RetrofitService {
     @POST(SERVER_URL + LOGIN_METHOD)
     fun postLogin(@FieldMap param: HashMap<String, Any>): Call<BaseResult>
 
+    // 회원정보 요청
+    @FormUrlEncoded
+    @POST(SERVER_URL + GET_USER_METHOD)
+    fun postGetUser(@FieldMap param: HashMap<String, Any>): Call<UserInfoResult>
+
+    // 아이디 요청
+    @FormUrlEncoded
+    @POST(SERVER_URL + FIND_USER_ID_METHOD)
+    fun postFindUserID(@FieldMap param: HashMap<String, Any>): Call<UserInfoResult>
+
     // 매장 정보 요청
     @FormUrlEncoded
     @POST(SERVER_URL + GET_SHOP_METHOD)
@@ -61,4 +78,9 @@ interface RetrofitService {
     @FormUrlEncoded
     @POST(SERVER_URL + GET_REVIEW_METHOD)
     fun postGetReview(@FieldMap param: HashMap<String, Any>): Call<ReviewResult>
+
+    // 리뷰 등록
+    @FormUrlEncoded
+    @POST(SERVER_URL + POST_REVIEW_METHOD)
+    fun postReview(@FieldMap param: HashMap<String, Any>): Call<BaseResult>
 }

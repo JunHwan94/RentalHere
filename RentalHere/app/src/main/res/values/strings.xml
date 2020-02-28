@@ -57,7 +57,13 @@
     <string name="review">리뷰</string>
     <string name="logout">로그아웃</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="write_review">리뷰쓰기</string>
+    <!--  ShopInfoFragment  -->
+    <string name="write_review">리뷰 작성</string>
+    <string name="user_review">사용자 리뷰</string>
+    <string name="no_review">사용자 리뷰 없음</string>
+    <string name="review_list">리뷰 목록</string>
+    <string name="register_review">리뷰 등록</string>
+    <string name="cant_find">일치하는 정보가 없습니다</string>
+    <string name="result">결과</string>
+    <string name="your_id_is">회원님의 가입된 아이디는 다음과 같습니다.</string>
 </resources>

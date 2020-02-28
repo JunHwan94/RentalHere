@@ -22,13 +22,27 @@ import com.dmon.rentalhere.presenter.CLIENT_TYPE
 import com.dmon.rentalhere.presenter.OWNER_TYPE
 import com.dmon.rentalhere.retrofit.*
 
-class SignUpActivity : AppCompatActivity(), View.OnClickListener, AnkoLogger, TextWatcher {
-    override val loggerTag: String
-        get() = "SignUpActivity"
+class SignUpActivity : AppCompatActivity(), View.OnClickListener, AnkoLogger {
+    override val loggerTag: String get() = "SignUpActivity"
     private var userType: Int = 0
     private lateinit var retrofitService: RetrofitService
     private var isIdChecked = false
     private var isSignedUp = false
+    private val idWatcher = object : TextWatcher{
+        override fun afterTextChanged(s: Editable?) { isIdChecked = false }
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+    }
+    private val cpWatcher = object : TextWatcher{
+        override fun afterTextChanged(s: Editable?) {
+            if(s.toString().length > 11) {
+                cpEditText.setText(s.toString().dropLast(1))
+                cpEditText.setSelection(11)
+            }
+        }
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,7 +58,8 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener, AnkoLogger, Te
         completeButton.setOnClickListener(this)
         backButton.setOnClickListener(this)
         findButton.setOnClickListener(this)
-        idEditText.addTextChangedListener(this)
+        idEditText.addTextChangedListener(idWatcher)
+        cpEditText.addTextChangedListener(cpWatcher)
     }
 
     private fun processIntent() {
@@ -92,6 +107,9 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener, AnkoLogger, Te
             this[FIELD_USER_EMAIL] = emailEditText.text.toString()
             this[FIELD_USER_CP_NUM] = cpEditText.text.toString()
             this[FIELD_USER_DIV] = userType
+        }
+        with(map){
+            info(this[FIELD_USER_CP_NUM])
         }
         retrofitService.postSignUp(map).enqueue(object : Callback<BaseResult>{
             override fun onResponse(call: Call<BaseResult>, response: Response<BaseResult>) {
@@ -151,20 +169,5 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener, AnkoLogger, Te
     override fun onBackPressed() {
         if(isSignedUp) startLoginActivity()
         else super.onBackPressed()
-    }
-
-    /**
-     * implements TextWatcher
-     */
-    override fun afterTextChanged(s: Editable?) {
-        isIdChecked = false
-    }
-
-    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-
-    }
-
-    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-
     }
 }

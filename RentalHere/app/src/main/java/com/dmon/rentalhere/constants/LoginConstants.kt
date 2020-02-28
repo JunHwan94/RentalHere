@@ -21,6 +21,7 @@ interface LoginConstants {
         fun checkBlank(): Boolean
         fun finish()
 
+        val autoLoginEnabled: () -> Boolean
         val android.view.View.fadeIn: () -> Unit
         val android.view.View.fadeOut: (Animation.AnimationListener) -> Unit
         val userId: () -> String

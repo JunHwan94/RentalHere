@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingTop="15dp"
-    tools:context=".view.SignUpActivity">
+    tools:context=".view.SignUpActivity"
+    android:id="@+id/rootLayout">
 
     <Button
         android:id="@+id/backButton"

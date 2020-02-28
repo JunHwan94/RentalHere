@@ -1,6 +1,7 @@
 package com.dmon.rentalhere
 
 import android.content.Context
+import android.util.Log
 import android.webkit.JavascriptInterface
 import com.dmon.rentalhere.model.ShopResult
 import com.dmon.rentalhere.retrofit.RetrofitService
@@ -10,8 +11,11 @@ import retrofit2.Response
 import com.dmon.rentalhere.retrofit.FIELD_SHOP_IDX
 import com.dmon.rentalhere.view.ShopInfoFragment
 import com.dmon.rentalhere.view.WebViewFragment
+import org.jetbrains.anko.AnkoLogger
+import org.jetbrains.anko.info
+import org.jetbrains.anko.toast
 
-class WebJavaScript(private var context: Context, private var retrofitService: RetrofitService, private var callback: WebViewFragment.OnFragmentInteractionListener) {
+class WebJavaScript(private var context: Context, private var retrofitService: RetrofitService, private var callback: WebViewFragment.OnFragmentInteractionListener){
     @JavascriptInterface
     fun getIndex(idx :String) {
 //        context.toast(idx)
@@ -23,7 +27,8 @@ class WebJavaScript(private var context: Context, private var retrofitService: R
                 val result = response.body()!!.shopModel
                 if(result.result == "Y"){
 //                    context.toast("성공")
-                    val shopInfoFragment = ShopInfoFragment.newInstance(result.shopIdx, result.shopAddress, result.shopTelNum, result.shopInfo, result.shopProfileImageUrl)
+//                    Log.d("WJS", result.shopIdx)
+                    val shopInfoFragment = ShopInfoFragment.newInstance(result.shopIdx, result.shopName, result.shopAddress, result.shopTelNum, result.shopInfo, result.shopProfileImageUrl)
                     callback.replaceFragment(shopInfoFragment, result.shopName)
                 }
             }

@@ -29,6 +29,8 @@ const val OWNER_TYPE = 1
 const val TYPE_KEY = "typeKey"
 const val ID_TYPE = 0
 const val PW_TYPE = 1
+const val ID_KEY = "idKey"
+const val PREF_KEY = "prefKey"
 class LoginPresenter(private val loginView: LoginConstants.View, private val context: Context): LoginConstants.Presenter, AnkoLogger {
     override val loggerTag: String get() = "LoginPresenter"
     private val loginModel: LoginModel = LoginModel()
@@ -76,8 +78,9 @@ class LoginPresenter(private val loginView: LoginConstants.View, private val con
             override fun onResponse(call: Call<BaseResult>, response: Response<BaseResult>) {
                 val result = response.body()!!.baseModel.result
                 if(result == "Y") {
-                    context.startActivity(Intent(context, MainActivity::class.java))
+                    context.startActivity(Intent(context, MainActivity::class.java).apply{ putExtra(ID_KEY, loginView.userId()) })
                     loginView.finish()
+                    if(loginView.autoLoginEnabled()) setAutoLogin()
                 }
                 else context.toast(context.getString(R.string.toast_check_id_pw))
             }
@@ -86,6 +89,17 @@ class LoginPresenter(private val loginView: LoginConstants.View, private val con
                 error("실패")
             }
         })
+    }
+
+    /**
+     * 자동로그인 설정
+     */
+    private fun setAutoLogin() {
+        val editor = context.getSharedPreferences(PREF_KEY, Context.MODE_PRIVATE).edit()
+        with(editor){
+            putString(ID_KEY, loginView.userId())
+            commit()
+        }
     }
 
     override fun onBackPressed() {
