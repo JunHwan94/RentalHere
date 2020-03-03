@@ -68,7 +68,7 @@ class LoginPresenter(private val loginView: LoginConstants.View, private val con
     private fun startFindActivity(type: Int) = context.startActivity(Intent(context, FindUserActivity::class.java).apply{ putExtra(TYPE_KEY, type) })
 
     /**
-     * 로그인 요청
+     * 로그인 요청 구분
      */
     override fun postLogin() {
         val map = HashMap<String, Any>().apply{
@@ -76,52 +76,45 @@ class LoginPresenter(private val loginView: LoginConstants.View, private val con
             this[FIELD_USER_PW] = loginView.userPw()
         }
         when(loginModel.userType) {
-            CLIENT_TYPE ->
-                retrofitService.postClientLogin(map).enqueue(object : Callback<BaseResult> {
-                    override fun onResponse(call: Call<BaseResult>, response: Response<BaseResult>) {
-                        val result = response.body()!!.baseModel.result
-                        if (result == "Y") {
-                            startClientMainActivity()
-                            if (loginView.autoLoginEnabled()) setAutoLogin()
-                        } else context.toast(context.getString(R.string.toast_check_id_pw))
-                    }
-
-                    override fun onFailure(call: Call<BaseResult>, t: Throwable) {
-                        error("실패")
-                    }
-                })
-            OWNER_TYPE ->
-                retrofitService.postOwnerLogin(map).enqueue(object : Callback<BaseResult>{
-                    override fun onResponse(call: Call<BaseResult>, response: Response<BaseResult>) {
-                        val result = response.body()!!.baseModel.result
-                        if (result == "Y") {
-                            startOwnerMainActivity()
-                            if (loginView.autoLoginEnabled()) startOwnerMainActivity()
-                        } else context.toast(context.getString(R.string.toast_check_id_pw))
-                    }
-
-                    override fun onFailure(call: Call<BaseResult>, t: Throwable) {
-                        error("실패")
-                    }
-                })
+            CLIENT_TYPE -> requestLogin(retrofitService.postClientLogin(map), ClientMainActivity::class.java)
+            OWNER_TYPE -> requestLogin(retrofitService.postOwnerLogin(map), OwnerMainActivity::class.java)
         }
     }
 
     /**
-     * 일반 액티비티 실행
+     * 로그인 요청
      */
-    private fun startClientMainActivity(){
-        context.startActivity(Intent(context, ClientMainActivity::class.java ).apply { putExtra(ID_KEY, loginView.userId()) })
-        loginView.finish()
+    private fun <T> requestLogin(call: Call<BaseResult>, activityClass: Class<T>){
+        call.enqueue(object : Callback<BaseResult>{
+            override fun onResponse(call: Call<BaseResult>, response: Response<BaseResult>) {
+                val result = response.body()!!.baseModel.result
+                if (result == "Y") {
+                    startMainActivity(activityClass)
+                    if (loginView.autoLoginEnabled()) setAutoLogin()
+                } else context.toast(context.getString(R.string.toast_check_id_pw))
+            }
+
+            override fun onFailure(call: Call<BaseResult>, t: Throwable) {
+                error("실패")
+            }
+        })
     }
 
     /**
-     * 업주 액티비티 실행
+     * 메인 액티비티 실행
      */
-    private fun startOwnerMainActivity(){
-        context.startActivity(Intent(context, OwnerMainActivity::class.java ).apply { putExtra(ID_KEY, loginView.userId()) })
+    private fun <T> startMainActivity(java: Class<T>) {
+        context.startActivity(Intent(context, java).apply { putExtra(ID_KEY, loginView.userId()) })
         loginView.finish()
     }
+
+//    /**
+//     * 업주 액티비티 실행
+//     */
+//    private fun startOwnerMainActivity(){
+//        context.startActivity(Intent(context, OwnerMainActivity::class.java).apply { putExtra(ID_KEY, loginView.userId()) })
+//        loginView.finish()
+//    }
 
     /**
      * 자동로그인 설정

@@ -4,8 +4,9 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.dmon.rentalhere.R
-import com.dmon.rentalhere.ReviewRecyclerViewAdapter
+import com.dmon.rentalhere.adapter.ReviewRecyclerViewAdapter
 import com.dmon.rentalhere.model.ReviewResult
 import kotlinx.android.synthetic.main.activity_all_review.*
 import kotlinx.android.synthetic.main.fragment_shop_info.recyclerView
@@ -25,12 +26,17 @@ class AllReviewActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun setRecyclerView() {
         val adapter = ReviewRecyclerViewAdapter().apply {
-            addAll(intent.getParcelableArrayListExtra<ReviewResult.ReviewModel>(REVIEW_LIST_KEY) as ArrayList)
+            val reviewModelList = intent.getParcelableArrayListExtra<ReviewResult.ReviewModel>(REVIEW_LIST_KEY) ?: ArrayList<ReviewResult.ReviewModel>()
+            if(reviewModelList.size == 0) run {
+                noReviewsTextView.visibility = View.VISIBLE
+                recyclerView.overScrollMode = RecyclerView.OVER_SCROLL_NEVER
+            }
+            else addAll(reviewModelList)
             notifyDataSetChanged()
         }
-        recyclerView.also{
-            it.adapter = adapter
-            it.layoutManager = LinearLayoutManager(this)
+        recyclerView.run{
+            this.adapter = adapter
+            layoutManager = LinearLayoutManager(this@AllReviewActivity)
         }
 
         adapter.setOnItemClickListener(object : ReviewRecyclerViewAdapter.OnItemClickListener{

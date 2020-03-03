@@ -13,8 +13,8 @@
         android:background="@color/white">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/shopRegisterButton"
-            android:layout_width="match_parent"
+            android:id="@+id/addShopButton"
+            android:layout_width="0dp"
             android:layout_height="150dp"
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
@@ -22,7 +22,7 @@
             android:background="@drawable/gray_border"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/recyclerView2">
+            app:layout_constraintTop_toBottomOf="@+id/recyclerView">
 
             <ImageView
                 android:id="@+id/imageView3"
@@ -39,7 +39,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:text="@string/register_shop"
+                android:text="@string/register_your_shop"
                 android:textSize="16sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -47,10 +47,15 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView2"
+            android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:padding="15dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            android:overScrollMode="never"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/appbar" />
@@ -109,7 +114,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
-                    android:layout_marginEnd="10dp"
+                    android:layout_marginEnd="15dp"
                     android:background="@drawable/ic_menu_24dp"
                     android:stateListAnimator="@null"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -124,6 +129,8 @@
             android:id="@+id/container"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:overScrollMode="never"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -155,7 +162,7 @@
         android:padding="20dp"
         android:visibility="invisible"
         app:headerLayout="@layout/nav_header_user_info"
-        app:menu="@menu/activity_main_user_info_drawer"
+        app:menu="@menu/activity_main_owner_info_drawer"
         tools:visibility="invisible" >
 
     </com.google.android.material.navigation.NavigationView>

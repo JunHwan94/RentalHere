@@ -14,9 +14,12 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 
 import com.dmon.rentalhere.R
-import com.dmon.rentalhere.ReviewRecyclerViewAdapter
+import com.dmon.rentalhere.adapter.ReviewRecyclerViewAdapter
 import com.dmon.rentalhere.databinding.FragmentShopInfoBinding
 import com.dmon.rentalhere.model.ReviewResult
+import com.dmon.rentalhere.presenter.CLIENT_TYPE
+import com.dmon.rentalhere.presenter.OWNER_TYPE
+import com.dmon.rentalhere.presenter.TYPE_KEY
 import com.dmon.rentalhere.retrofit.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -31,10 +34,10 @@ const val SHOP_INFO_TAG = "ShopInfoFragment"
 const val IMAGE_BASE_URL = "https://softer013.cafe24.com/uploads/"
 const val REVIEW_LIST_KEY = "reviewListKey"
 const val WRITE_REVIEW_CODE = 100
+const val EDIT_TYPE = 0
+const val EDIT_SHOP_CODE = 300
 class ShopInfoFragment : Fragment(), AnkoLogger, View.OnClickListener {
-
-    override val loggerTag: String
-        get() = SHOP_INFO_TAG
+    override val loggerTag: String get() = SHOP_INFO_TAG
     private lateinit var binding: FragmentShopInfoBinding
     private var shopIdx: String? = null
     private var shopName: String? = null
@@ -42,6 +45,7 @@ class ShopInfoFragment : Fragment(), AnkoLogger, View.OnClickListener {
     private var shopTelNum: String? = null
     private var shopInfo: String? = null
     private var shopProfileImageUrl: String? = null
+    private var userType: Int? = 0
     private lateinit var retrofitService: RetrofitService
     private lateinit var reviewAdapter: ReviewRecyclerViewAdapter
     private lateinit var reviewModelList: ArrayList<ReviewResult.ReviewModel>
@@ -55,6 +59,7 @@ class ShopInfoFragment : Fragment(), AnkoLogger, View.OnClickListener {
             shopTelNum = it.getString(FIELD_SHOP_TEL_NUM)
             shopInfo = it.getString(FIELD_SHOP_INFO)
             shopProfileImageUrl = it.getString(FIELD_SHOP_PHOTO1_URL)
+            userType = it.getInt(TYPE_KEY)
         }
     }
 
@@ -76,7 +81,8 @@ class ShopInfoFragment : Fragment(), AnkoLogger, View.OnClickListener {
     }
 
     private fun init(){
-        reviewAdapter = ReviewRecyclerViewAdapter().apply{ setOnItemClickListener(object : ReviewRecyclerViewAdapter.OnItemClickListener{
+        reviewAdapter = ReviewRecyclerViewAdapter()
+            .apply{ setOnItemClickListener(object : ReviewRecyclerViewAdapter.OnItemClickListener{
             override fun onItemClick(holder: ReviewRecyclerViewAdapter.ReviewViewHolder, view: View, position: Int) {}
         }) }
         binding.recyclerView.run{ adapter = reviewAdapter; layoutManager = LinearLayoutManager(context) }
@@ -84,7 +90,7 @@ class ShopInfoFragment : Fragment(), AnkoLogger, View.OnClickListener {
     }
 
     private fun setViewListener() {
-        binding.writeReviewButton.setOnClickListener(this)
+        binding.bottomButton.setOnClickListener(this)
         binding.allReviewsButton.setOnClickListener(this)
     }
 
@@ -124,33 +130,50 @@ class ShopInfoFragment : Fragment(), AnkoLogger, View.OnClickListener {
      * 뷰 설정
      */
     private fun setView(){
-        binding.addrTextView.text = shopAddress
+        binding.addressTextView.text = shopAddress
         binding.telNumTextView.text = shopTelNum
         binding.descTextView.text = shopInfo
         Glide.with(context!!)
             .load(shopProfileImageUrl)
             .apply(RequestOptions().centerInside())
             .into(binding.shopProfileImageView)
+        if(userType == OWNER_TYPE) binding.bottomButton.text = getString(R.string.edit_shop_info)
     }
 
     override fun onClick(v: View?) {
         when(v){
             // 리뷰 쓰기
-            binding.writeReviewButton -> {
-                startActivityForResult(Intent(context, WriteReviewActivity::class.java).apply{
-                    putExtra(FIELD_SHOP_IDX, shopIdx)
-                    putExtra(FIELD_USER_IDX, arguments!!.getString(FIELD_USER_IDX))
-                    flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
-                }, WRITE_REVIEW_CODE)
+            binding.bottomButton -> {
+                when(userType){
+                    CLIENT_TYPE -> startWriteReviewActivity() // 리뷰 쓰기
+                    OWNER_TYPE -> startEditShopActivity()// 매장 정보 수정
+                }
             }
             // 리뷰 목록
-            binding.allReviewsButton-> {
-                startActivity(Intent(context, AllReviewActivity::class.java).apply{
-                    putParcelableArrayListExtra(REVIEW_LIST_KEY, reviewModelList)
-                    flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
-                })
-            }
+            binding.allReviewsButton -> startAllReviewActivity()
         }
+    }
+
+    private fun startWriteReviewActivity(){
+        startActivityForResult(Intent(context, WriteReviewActivity::class.java).apply{
+            putExtra(FIELD_SHOP_IDX, shopIdx)
+            putExtra(FIELD_USER_IDX, arguments!!.getString(FIELD_USER_IDX))
+            flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
+        }, WRITE_REVIEW_CODE)
+    }
+
+    private fun startEditShopActivity(){
+        startActivityForResult(Intent(context, RegisterShopActivity::class.java).apply{
+            putExtra(TYPE_KEY, EDIT_TYPE)
+            flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
+        }, EDIT_SHOP_CODE)
+    }
+
+    private fun startAllReviewActivity(){
+        startActivity(Intent(context, AllReviewActivity::class.java).apply{
+            putParcelableArrayListExtra(REVIEW_LIST_KEY, reviewModelList)
+            flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
+        })
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -165,7 +188,7 @@ class ShopInfoFragment : Fragment(), AnkoLogger, View.OnClickListener {
 
     companion object {
         @JvmStatic
-        fun newInstance(shopIdx: String, shopName: String, shopAddress: String, shopTelNum: String, shopInfo: String, shopProfileImageUrl: String) =
+        fun newInstance(shopIdx: String, shopName: String, shopAddress: String, shopTelNum: String, shopInfo: String, shopProfileImageUrl: String, userType: Int) =
             ShopInfoFragment().apply {
                 arguments = Bundle().apply {
                     putString(FIELD_SHOP_IDX, shopIdx)
@@ -174,6 +197,7 @@ class ShopInfoFragment : Fragment(), AnkoLogger, View.OnClickListener {
                     putString(FIELD_SHOP_TEL_NUM, shopTelNum)
                     putString(FIELD_SHOP_INFO, shopInfo)
                     putString(FIELD_SHOP_PHOTO1_URL, shopProfileImageUrl)
+                    putInt(TYPE_KEY, userType)
                 }
             }
     }

@@ -1,9 +1,7 @@
 package com.dmon.rentalhere.retrofit
 
-import com.dmon.rentalhere.model.BaseResult
-import com.dmon.rentalhere.model.ReviewResult
-import com.dmon.rentalhere.model.ShopResult
-import com.dmon.rentalhere.model.UserInfoResult
+import com.dmon.rentalhere.model.*
+import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.http.*
@@ -21,6 +19,8 @@ const val FIND_USER_ID_METHOD = "get_userid"
 const val EDIT_USER_METHOD = "put_user"
 const val GET_MY_REVIEW_METHOD = "get_myreview"
 const val OWNER_LOGIN_METHOD = "log_manager"
+const val GET_MY_SHOPS_METHOD = "get_myshop"
+const val REGISTER_SHOP_METHOD = "add_company"
 
 //FIELDS
 const val FIELD_USER_IDX = "mem_id"
@@ -101,4 +101,27 @@ interface RetrofitService {
     @FormUrlEncoded
     @POST(SERVER_URL + POST_REVIEW_METHOD)
     fun postReview(@FieldMap param: HashMap<String, Any>): Call<BaseResult>
+
+    // 내 매장 목록 요청
+    @FormUrlEncoded
+    @POST(SERVER_URL + GET_MY_SHOPS_METHOD)
+    fun postGetMyShops(@FieldMap param: HashMap<String, Any>): Call<MyShopsResult>
+
+    /** 이미지 업로드를 위해 @Multipart 사용  */
+    @Multipart
+    @POST(SERVER_URL + REGISTER_SHOP_METHOD)
+    fun postRegisterShop(@Part(FIELD_USER_IDX) userIdx: RequestBody,
+                         @Part(FIELD_SHOP_NAME) shopName: RequestBody,
+                         @Part(FIELD_SHOP_TEL_NUM) shopTelNum: RequestBody,
+                         @Part(FIELD_SHOP_KEYWORD) shopKeyword: RequestBody,
+                         @Part(FIELD_SHOP_INFO) shopInfo: RequestBody,
+                         @Part(FIELD_SHOP_ADDRESS) shopAddress: RequestBody,
+                         @Part(FIELD_SHOP_LAT) shopLatitude: RequestBody,
+                         @Part(FIELD_SHOP_LNG) shopLongitude: RequestBody,
+                         @Part part1: MultipartBody.Part? = null,
+                         @Part part2: MultipartBody.Part? = null,
+                         @Part part3: MultipartBody.Part? = null,
+                         @Part part4: MultipartBody.Part? = null,
+                         @Part part5: MultipartBody.Part? = null
+    ): Call<BaseResult>
 }

@@ -26,11 +26,11 @@
                 tools:src="@tools:sample/backgrounds/scenic[1]" />
 
             <TextView
-                android:id="@+id/addrTextView"
+                android:id="@+id/addressTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
-                android:drawableLeft="@drawable/ic_location_on"
+                android:drawableStart="@drawable/ic_location_on"
                 android:drawablePadding="10dp"
                 android:textSize="18sp"
                 app:layout_constraintStart_toStartOf="@+id/leftGuideline"
@@ -42,11 +42,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
-                android:drawableLeft="@drawable/ic_call"
+                android:drawableStart="@drawable/ic_call"
                 android:drawablePadding="10dp"
                 android:textSize="18sp"
                 app:layout_constraintStart_toStartOf="@+id/leftGuideline"
-                app:layout_constraintTop_toBottomOf="@+id/addrTextView"
+                app:layout_constraintTop_toBottomOf="@+id/addressTextView"
                 tools:text="전화번호" />
 
             <TextView
@@ -54,7 +54,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
-                android:drawableLeft="@drawable/ic_filter_none"
+                android:drawableStart="@drawable/ic_filter_none"
                 android:drawablePadding="10dp"
                 android:textSize="18sp"
                 app:layout_constraintStart_toStartOf="@+id/leftGuideline"
@@ -69,7 +69,7 @@
                 android:layout_marginEnd="5dp"
                 android:layout_marginBottom="10dp"
                 android:overScrollMode="never"
-                app:layout_constraintBottom_toTopOf="@+id/writeReviewButton"
+                app:layout_constraintBottom_toTopOf="@+id/bottomButton"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/cardView"
@@ -164,7 +164,7 @@
                 tools:layout_editor_absoluteX="178dp" />
 
             <Button
-                android:id="@+id/writeReviewButton"
+                android:id="@+id/bottomButton"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="15dp"

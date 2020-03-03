@@ -1,9 +1,10 @@
-package com.dmon.rentalhere
+package com.dmon.rentalhere.adapter
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.dmon.rentalhere.R
 import com.dmon.rentalhere.databinding.ItemReviewBinding
 import com.dmon.rentalhere.model.ReviewResult
 

@@ -2,28 +2,24 @@ package com.dmon.rentalhere.view
 
 import android.Manifest
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
+import com.dmon.rentalhere.BaseActivity
 import com.dmon.rentalhere.R
 import com.dmon.rentalhere.model.ReviewResult
 import com.dmon.rentalhere.model.UserInfoResult
 import com.dmon.rentalhere.presenter.ID_KEY
-import com.dmon.rentalhere.presenter.PREF_KEY
 import com.dmon.rentalhere.retrofit.FIELD_USER_ID
 import com.dmon.rentalhere.retrofit.FIELD_USER_IDX
-import com.dmon.rentalhere.retrofit.RetrofitClient
-import com.dmon.rentalhere.retrofit.RetrofitService
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.tabs.TabLayout
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.TedPermission
-import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_client_main.*
 import kotlinx.android.synthetic.main.nav_header_user_info.view.*
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.error
@@ -38,18 +34,16 @@ const val USER_MODEL_KEY = "userModelKey"
 const val EDIT_USER_CODE = 101
 const val REVIEW_TYPE_KEY = "reviewTypeKey"
 const val MY_REVIEW_TYPE = 1
-class ClientMainActivity : AppCompatActivity(), View.OnClickListener, AnkoLogger, NavigationView.OnNavigationItemSelectedListener, WebViewFragment.OnFragmentInteractionListener{
+class ClientMainActivity : BaseActivity(), View.OnClickListener, AnkoLogger, NavigationView.OnNavigationItemSelectedListener, WebViewFragment.OnFragmentInteractionListener{
     override val loggerTag: String get() = MAIN_TAG
 //    private lateinit var adapter: ListPagerAdapter
-    private lateinit var retrofitService: RetrofitService
+//    private lateinit var retrofitService: RetrofitService
     private lateinit var shopInfoFragment: ShopInfoFragment
     private lateinit var distOrderFragment: WebViewFragment
-    private lateinit var userModel: UserInfoResult.UserModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        retrofitService = RetrofitClient.getRetrofitInstance()!!.create(RetrofitService::class.java)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_client_main)
 
         setPermission()
         setViewListener()
@@ -132,7 +126,7 @@ class ClientMainActivity : AppCompatActivity(), View.OnClickListener, AnkoLogger
             }
 
             override fun onFailure(call: Call<UserInfoResult>, t: Throwable) {
-                error("응답 실패")
+                error("요청 실패")
             }
 
         })
@@ -149,21 +143,11 @@ class ClientMainActivity : AppCompatActivity(), View.OnClickListener, AnkoLogger
     }
 
     /**
-     *  내비게이션 뷰 열기 / 닫기
-     */
-    private fun moveDrawer() {
-        if(!drawer.isDrawerOpen(GravityCompat.END))
-            drawer.openDrawer(GravityCompat.END)
-        else drawer.closeDrawer(GravityCompat.END)
-
-    }
-
-    /**
      *  내비게이션 뷰 아이템 이벤트
      */
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
-            R.id.nav_edit_info -> editUser()
+            R.id.nav_edit_info -> editUser(userModel)
             R.id.nav_review -> showAllReview()
             R.id.nav_log_out -> logOut()
         }
@@ -178,41 +162,28 @@ class ClientMainActivity : AppCompatActivity(), View.OnClickListener, AnkoLogger
         retrofitService.postGetMyReview(map).enqueue(object : Callback<ReviewResult>{
             override fun onResponse(call: Call<ReviewResult>, response: Response<ReviewResult>) {
                 val reviewResultItem = response.body()!!.reviewResultItem
-//                if(reviewResultItem.result == "Y") {
-                    startActivity(Intent(this@ClientMainActivity, AllReviewActivity::class.java).apply {
+                if(reviewResultItem.result == "Y") {
+                    startActivity(
+                        Intent(
+                            this@ClientMainActivity,
+                            AllReviewActivity::class.java
+                        ).apply {
+                            putExtra(REVIEW_TYPE_KEY, MY_REVIEW_TYPE)
+                            reviewResultItem.reviewModelList.let {
+                                putParcelableArrayListExtra(REVIEW_LIST_KEY, it)
+                            }
+                        })
+                }else{
+                    startActivity(Intent(this@ClientMainActivity, AllReviewActivity::class.java).apply{
                         putExtra(REVIEW_TYPE_KEY, MY_REVIEW_TYPE)
-                        putParcelableArrayListExtra(REVIEW_LIST_KEY, reviewResultItem.reviewModelList)
                     })
+                }
             }
 
             override fun onFailure(call: Call<ReviewResult>, t: Throwable) {
 
             }
         })
-    }
-
-    /**
-     * 정보 수정 (SignUpActivity 실행)
-     */
-    private fun editUser() {
-        startActivityForResult(Intent(this, SignUpActivity::class.java).apply{
-            putExtra(USER_MODEL_KEY, userModel)
-        }, EDIT_USER_CODE)
-    }
-
-    /**
-     * 로그아웃
-     */
-    private fun logOut() {
-        val editor = getSharedPreferences(PREF_KEY, Context.MODE_PRIVATE).edit()
-        with(editor){
-            clear()
-            commit()
-        }
-        startActivity(Intent(this, LoginActivity::class.java).apply{
-            flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
-        })
-        finish()
     }
 
     override fun onBackPressed() {
