@@ -16,10 +16,12 @@ data class ReviewResult(@SerializedName("resultItem") val reviewResultItem: Revi
                            @SerializedName("cs_idx") var shopIdx: String? = null,
                            @SerializedName("cs_name") var shopName: String? = null,
                            @SerializedName("cs_add") var shopAddress: String? = null,
-                           @SerializedName("cr_date") var date: String? = null): Parcelable {
+                           @SerializedName("cr_date") var date: String? = null,
+                           @SerializedName("cr_idx") var reviewIdx: String? = null): Parcelable {
         constructor(parcel: Parcel) : this(
             parcel.readString()!!,
             parcel.readString()!!,
+            parcel.readString(),
             parcel.readString(),
             parcel.readString(),
             parcel.readString(),
@@ -36,6 +38,7 @@ data class ReviewResult(@SerializedName("resultItem") val reviewResultItem: Revi
             parcel.writeString(shopName)
             parcel.writeString(shopAddress)
             parcel.writeString(date)
+            parcel.writeString(reviewIdx)
         }
 
         override fun describeContents(): Int {

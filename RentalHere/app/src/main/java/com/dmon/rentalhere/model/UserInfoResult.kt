@@ -10,17 +10,19 @@ data class UserInfoResult(@SerializedName("resultItem") val userModel: UserModel
                          @SerializedName("mem_userid") val userId: String,
                          @SerializedName("mem_username") val userName: String,
                          @SerializedName("mem_email") val userEmail: String,
-                         @SerializedName("mem_phone") val userCpNum: String): Parcelable {
+                         @SerializedName("mem_phone") val userCpNum: String,
+                         @SerializedName("pass") val pass: String? = null): Parcelable {
         constructor(parcel: Parcel) : this(
             parcel.readString()!!,
             parcel.readString()!!,
             parcel.readString()!!,
             parcel.readString()!!,
             parcel.readString()!!,
-            parcel.readString()!!
+            parcel.readString()!!,
+            parcel.readString()
         ) {
         }
-        constructor(userId: String, userName: String, userEmail: String, userCpNum: String) : this("Y", "", userId, userName, userEmail, userCpNum)
+        constructor(userId: String, userName: String, userEmail: String, userCpNum: String) : this("Y", "", userId, userName, userEmail, userCpNum, "")
 
         override fun writeToParcel(parcel: Parcel, flags: Int) {
             parcel.writeString(result)
@@ -29,6 +31,7 @@ data class UserInfoResult(@SerializedName("resultItem") val userModel: UserModel
             parcel.writeString(userName)
             parcel.writeString(userEmail)
             parcel.writeString(userCpNum)
+            parcel.writeString(pass)
         }
 
         override fun describeContents(): Int {

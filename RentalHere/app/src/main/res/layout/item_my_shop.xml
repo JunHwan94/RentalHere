@@ -7,13 +7,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
-        android:background="@color/light_light_gray"
+        android:layout_marginBottom="5dp"
+        android:background="@drawable/fill_gray_round_corner"
         android:orientation="vertical">
 
         <ImageView
             android:id="@+id/shopProfileImageView"
             android:layout_width="0dp"
-            android:layout_height="200dp"
+            android:layout_height="250dp"
             android:layout_marginStart="15dp"
             android:layout_marginTop="15dp"
             android:layout_marginEnd="15dp"
@@ -23,12 +24,12 @@
             tools:srcCompat="@tools:sample/avatars[1]" />
 
         <TextView
-            android:id="@+id/shopTextView"
+            android:id="@+id/shopNameTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:textColor="@color/colorPrimary"
-            android:textSize="18sp"
+            android:textSize="24sp"
             app:layout_constraintStart_toStartOf="@+id/shopProfileImageView"
             app:layout_constraintTop_toBottomOf="@+id/shopProfileImageView"
             tools:text="매장명" />
@@ -37,12 +38,12 @@
             android:id="@+id/addressTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="3dp"
+            android:layout_marginTop="5dp"
             android:drawableStart="@drawable/ic_location_on"
             android:drawablePadding="10dp"
             android:textSize="18sp"
-            app:layout_constraintStart_toStartOf="@+id/shopTextView"
-            app:layout_constraintTop_toBottomOf="@+id/shopTextView"
+            app:layout_constraintStart_toStartOf="@+id/shopNameTextView"
+            app:layout_constraintTop_toBottomOf="@+id/shopNameTextView"
             tools:text="주소" />
 
         <TextView

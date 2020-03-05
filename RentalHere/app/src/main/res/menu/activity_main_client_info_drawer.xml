@@ -6,15 +6,18 @@
         <item
             android:id="@+id/nav_edit_info"
             android:icon="@drawable/ic_enroll"
-            android:title="@string/edit_info" />
+            android:title="@string/edit_info"
+            android:checkable="false" />
         <item
             android:id="@+id/nav_review"
             android:icon="@drawable/ic_review"
-            android:title="@string/review" />
+            android:title="@string/review"
+            android:checkable="false" />
         <item
             android:id="@+id/nav_log_out"
             android:icon="@drawable/ic_log_out"
-            android:title="@string/logout" />
+            android:title="@string/logout"
+            android:checkable="false" />
     </group>
 
 <!--    <item android:title="설정">-->

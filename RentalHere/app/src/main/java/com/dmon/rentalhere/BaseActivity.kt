@@ -43,7 +43,6 @@ open class BaseActivity : AppCompatActivity(){
         if(!drawer.isDrawerOpen(GravityCompat.END))
             drawer.openDrawer(GravityCompat.END)
         else drawer.closeDrawer(GravityCompat.END)
-
     }
 
     /**

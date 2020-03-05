@@ -179,7 +179,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
                 android:layout_marginBottom="15dp"
-                android:background="@drawable/fill_round_corner"
+                android:background="@drawable/fill_primary_round_corner"
                 android:text="@string/sign_up"
                 android:textColor="@color/white"
                 android:textSize="18sp"

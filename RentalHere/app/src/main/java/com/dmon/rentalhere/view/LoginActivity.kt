@@ -75,7 +75,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener, AnkoLogger, Log
      * 일반, 업주 로그인 뷰 보이게
      */
     override fun showLoginDivide() {
-        loginLayout.visibility = View.INVISIBLE
+        loginLayout.visibility = View.GONE
         loginDivideLayout.apply{
             background = getDrawable(R.drawable.splash)
             fadeIn()
@@ -146,6 +146,12 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener, AnkoLogger, Log
         return false
     }
 
+    private fun removeValues(){
+        idEditText.text.clear()
+        pwEditText.text.clear()
+        autoLoginCheckBox.isChecked = false
+    }
+
     /**
      * 자동 로그인 여부 체크
      */
@@ -158,8 +164,10 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener, AnkoLogger, Log
     override fun onBackPressed() {
         if(loginLayout.visibility == View.GONE)
             super.onBackPressed()
-        else
+        else {
+            removeValues()
             loginPresenter.onBackPressed()
+        }
     }
 
     override fun finish(){

@@ -20,7 +20,10 @@ import com.google.android.material.tabs.TabLayout
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.TedPermission
 import kotlinx.android.synthetic.main.activity_client_main.*
+import kotlinx.android.synthetic.main.activity_client_main.backButton
 import kotlinx.android.synthetic.main.nav_header_user_info.view.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.error
 import org.jetbrains.anko.info
@@ -34,12 +37,16 @@ const val USER_MODEL_KEY = "userModelKey"
 const val EDIT_USER_CODE = 101
 const val REVIEW_TYPE_KEY = "reviewTypeKey"
 const val MY_REVIEW_TYPE = 1
+const val EVERY_REVIEW_TYPE = 2
+const val DIST_TYPE = 1
+const val REC_TYPE= 2
+const val SEARCH_TYPE= 3
 class ClientMainActivity : BaseActivity(), View.OnClickListener, AnkoLogger, NavigationView.OnNavigationItemSelectedListener, WebViewFragment.OnFragmentInteractionListener{
     override val loggerTag: String get() = MAIN_TAG
 //    private lateinit var adapter: ListPagerAdapter
-//    private lateinit var retrofitService: RetrofitService
     private lateinit var shopInfoFragment: ShopInfoFragment
     private lateinit var distOrderFragment: WebViewFragment
+    private lateinit var searchFragment: WebViewFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,8 +60,8 @@ class ClientMainActivity : BaseActivity(), View.OnClickListener, AnkoLogger, Nav
      *  탭레이아웃 설정
      */
     private fun setTabs() {
-        distOrderFragment = WebViewFragment.newInstance()
-        val recOrderFragment = WebViewFragment.newInstance()
+        distOrderFragment = WebViewFragment.newInstance(DIST_TYPE)
+        val recOrderFragment = WebViewFragment.newInstance(REC_TYPE)
         supportFragmentManager.beginTransaction().replace(R.id.container, distOrderFragment).commit()
 
         tabs.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener{
@@ -139,6 +146,7 @@ class ClientMainActivity : BaseActivity(), View.OnClickListener, AnkoLogger, Nav
         when(v){
             menuButton -> moveDrawer()
             backButton -> onBackPressed()
+            searchButton -> showSearchFragmentInContainer3()
         }
     }
 
@@ -189,10 +197,16 @@ class ClientMainActivity : BaseActivity(), View.OnClickListener, AnkoLogger, Nav
     override fun onBackPressed() {
         when{
             drawer.isDrawerOpen(GravityCompat.END) -> drawer.closeDrawer(GravityCompat.END)
+            shopTextView.text != getString(R.string.search_location) && container3.visibility == View.VISIBLE -> showSearchFragment()
             tabs.visibility != View.VISIBLE -> showMain()
 //            viewPager.visibility != View.VISIBLE -> showMain()
             else -> super.onBackPressed()
         }
+    }
+
+    private fun showSearchFragment(){
+        shopTextView.text = getString(R.string.search_location)
+        supportFragmentManager.beginTransaction().remove(shopInfoFragment).commit()
     }
 
     /**
@@ -201,29 +215,45 @@ class ClientMainActivity : BaseActivity(), View.OnClickListener, AnkoLogger, Nav
     private fun showMain(){
         container2.visibility = View.GONE
         container2.removeAllViews()
-        supportFragmentManager.beginTransaction().remove(shopInfoFragment)
-//        supportFragmentManager.popBackStackImmediate()
+        container3.visibility = View.GONE
+        container3.removeAllViews()
         shopTextView.visibility = View.INVISIBLE
         backButton.visibility = View.INVISIBLE
         topImageView.visibility = View.VISIBLE
         searchButton.visibility = View.VISIBLE
         tabs.visibility = View.VISIBLE
 //        viewPager.visibility = View.VISIBLE
-//        supportFragmentManager.beginTransaction()/*.setCustomAnimations(R.anim.fade_in, R.anim.fade_out)*/.replace(R.id.container, distOrderFragment).commit()
 
         container.visibility = View.VISIBLE
     }
 
     /**
-     * frameLayout ShopInfoFragment 적용
+     * frameLayout container2에 ShopInfoFragment 적용
      */
-    override fun replaceFragment(fragment: Fragment, shopName: String) {
+    override fun showShopInfoFragmentInContainer2(fragment: Fragment, shopName: String) {
         fragment.arguments?.apply{
             putString(FIELD_USER_IDX, userModel.userIdx)
         }
         supportFragmentManager.beginTransaction().setCustomAnimations(R.anim.fade_in, R.anim.fade_out).replace(R.id.container2, fragment).commit()
         this.shopInfoFragment = fragment as ShopInfoFragment
         shopTextView.apply{ visibility = View.VISIBLE; text = shopName}
+        hideMain()
+        container2.visibility = View.VISIBLE
+    }
+
+    /**
+     * container3에 SearchFragment 적용
+     */
+    private fun showSearchFragmentInContainer3(){
+        searchFragment = WebViewFragment.newInstance(SEARCH_TYPE)
+        supportFragmentManager.beginTransaction().setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
+            .replace(R.id.container3, searchFragment).commit()
+        hideMain()
+        shopTextView.apply{ visibility = View.VISIBLE; text = getString(R.string.search_location) }
+        container3.visibility = View.VISIBLE
+    }
+
+    private fun hideMain(){
         backButton.visibility = View.VISIBLE
         topImageView.visibility = View.GONE
         searchButton.visibility = View.GONE
@@ -231,7 +261,21 @@ class ClientMainActivity : BaseActivity(), View.OnClickListener, AnkoLogger, Nav
 //        viewPager.visibility = View.GONE // 중첩된 프래그먼트에서 터치가 중복되어 뷰페이저 가리기
 
         container.visibility = View.GONE
-        container2.visibility = View.VISIBLE
+    }
+
+    /**
+     * container3에 ShopInfoFragment 적용
+     */
+    override fun showShopInfoFragmentInContainer3(fragment: Fragment, shopName: String) {
+        fragment.arguments?.apply{
+            putString(FIELD_USER_IDX, userModel.userIdx)
+        }
+        supportFragmentManager.beginTransaction().setCustomAnimations(R.anim.fade_in, R.anim.fade_out).add(R.id.container3, fragment).commit()
+        this.shopInfoFragment = fragment as ShopInfoFragment
+        shopTextView.apply{ visibility = View.VISIBLE; text = shopName}
+        topImageView.visibility = View.GONE
+//        container3.visibility = View.GONE
+//        container4.visibility = View.VISIBLE
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

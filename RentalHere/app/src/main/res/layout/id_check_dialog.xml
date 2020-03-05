@@ -43,7 +43,7 @@
         android:id="@+id/closeButton"
         android:layout_width="30dp"
         android:layout_height="30dp"
-        android:background="@drawable/ic_close_black_24dp"
+        android:background="@drawable/ic_close_black_50dp"
         android:stateListAnimator="@null"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -54,7 +54,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="25dp"
         android:layout_marginBottom="5dp"
-        android:background="@drawable/fill_round_corner"
+        android:background="@drawable/fill_primary_round_corner"
         android:text="@string/use_id"
         android:textColor="@color/white"
         android:textSize="18sp"

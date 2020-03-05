@@ -45,7 +45,7 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener, AnkoLogger {
         override fun afterTextChanged(s: Editable?) {
             if(s.toString().length > 11) {
                 cpEditText.setText(s.toString().dropLast(1))
-                cpEditText.setSelection(11)
+                cpEditText.setSelection(11) // todo : 수정?
             }
         }
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -170,7 +170,7 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener, AnkoLogger {
                         congTextView.visibility = View.VISIBLE
                         findButton.visibility = View.VISIBLE
                         scrollView.visibility = View.INVISIBLE
-                        backButton.setOnClickListener { _ -> startLoginActivity() } }
+                        backButton.setOnClickListener { startLoginActivity() } }
                 }
             }
 

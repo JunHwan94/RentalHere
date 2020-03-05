@@ -1,5 +1,6 @@
 package com.dmon.rentalhere.view
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
@@ -18,6 +19,7 @@ import com.dmon.rentalhere.retrofit.FIELD_USER_ID
 import com.dmon.rentalhere.retrofit.FIELD_USER_IDX
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_owner_main.*
+import kotlinx.android.synthetic.main.activity_owner_main.backButton
 import kotlinx.android.synthetic.main.nav_header_user_info.view.*
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.error
@@ -27,7 +29,8 @@ import retrofit2.Response
 import java.util.HashMap
 
 const val OWNER_MAIN_TAG = "OwnerMainActivity"
-class OwnerMainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener, View.OnClickListener, AnkoLogger{
+const val REGISTER_SHOP_CODE = 101
+class OwnerMainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener, View.OnClickListener, AnkoLogger, ShopInfoFragment.OnFragmentInteractionListener{
     override val loggerTag: String get() = OWNER_MAIN_TAG
     private lateinit var shopAdapter: ShopRecyclerViewAdapter
     private lateinit var shopInfoFragment: ShopInfoFragment
@@ -41,6 +44,9 @@ class OwnerMainActivity : BaseActivity(), NavigationView.OnNavigationItemSelecte
         setViewListener()
     }
 
+    /**
+     * 어댑터, 리사이클러뷰 설정
+     */
     private fun setAdapter() {
         shopAdapter = ShopRecyclerViewAdapter().apply { setOnItemClickListener(object : ShopRecyclerViewAdapter.OnItemClickListener{
             override fun onItemClick(holder: ShopRecyclerViewAdapter.ShopViewHolder, view: View, position: Int) {
@@ -53,9 +59,14 @@ class OwnerMainActivity : BaseActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
+    /**
+     * 매장 정보 화면
+     */
     fun setFragment(shopModel: ShopResult.ShopModel){
+        shopTextView.text = shopModel.shopName
+        backButton.visibility = View.VISIBLE
         container.visibility = View.VISIBLE
-        shopInfoFragment = ShopInfoFragment.newInstance(shopModel.shopIdx, shopModel.shopName, shopModel.shopAddress, shopModel.shopTelNum, shopModel.shopInfo, shopModel.shopProfileImageUrl, OWNER_TYPE)
+        shopInfoFragment = ShopInfoFragment.newInstance(shopModel, OWNER_TYPE)
         supportFragmentManager.beginTransaction().replace(R.id.container, shopInfoFragment).commit()
     }
 
@@ -77,7 +88,6 @@ class OwnerMainActivity : BaseActivity(), NavigationView.OnNavigationItemSelecte
             override fun onFailure(call: Call<UserInfoResult>, t: Throwable) {
                 error( "요청 실패")
             }
-
         })
     }
 
@@ -102,6 +112,7 @@ class OwnerMainActivity : BaseActivity(), NavigationView.OnNavigationItemSelecte
                         addAll(shopResultItem.shopModelList)
                         notifyDataSetChanged()
                     }
+                    addShopButton.visibility = View.GONE
                 }
             }
 
@@ -115,9 +126,9 @@ class OwnerMainActivity : BaseActivity(), NavigationView.OnNavigationItemSelecte
      * 매장 등록
      */
     private fun startRegisterShopActivity() {
-        startActivity(Intent(this, RegisterShopActivity::class.java).apply{
+        startActivityForResult(Intent(this, RegisterShopActivity::class.java).apply{
             putExtra(FIELD_USER_IDX, userModel.userIdx)
-        })
+        }, REGISTER_SHOP_CODE)
     }
 
     /**
@@ -135,6 +146,8 @@ class OwnerMainActivity : BaseActivity(), NavigationView.OnNavigationItemSelecte
      * 첫 화면으로 다시 설정
      */
     private fun showMain() {
+        shopTextView.text = getString(R.string.my_shop_list)
+        backButton.visibility = View.GONE
         container.visibility = View.GONE
         container.removeAllViews()
         supportFragmentManager.beginTransaction().remove(shopInfoFragment)
@@ -148,6 +161,17 @@ class OwnerMainActivity : BaseActivity(), NavigationView.OnNavigationItemSelecte
         navigationView.setNavigationItemSelectedListener(this)
         backButton.setOnClickListener(this)
         addShopButton.setOnClickListener(this)
+    }
+
+    override fun loadShops() = loadMyShops()
+
+    override fun backPress() = onBackPressed()
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(requestCode == REGISTER_SHOP_CODE && resultCode == Activity.RESULT_OK){
+            loadMyShops()
+        }
     }
 
     override fun onClick(v: View?) {

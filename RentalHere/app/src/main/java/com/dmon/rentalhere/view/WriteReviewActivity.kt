@@ -9,13 +9,14 @@ import com.dmon.rentalhere.model.BaseResult
 import com.dmon.rentalhere.retrofit.*
 import kotlinx.android.synthetic.main.activity_write_review.*
 import org.jetbrains.anko.AnkoLogger
+import org.jetbrains.anko.toast
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
+const val WRITE_TAG = "WriteReviewActivity"
 class WriteReviewActivity : AppCompatActivity(), View.OnClickListener, AnkoLogger {
-    override val loggerTag: String
-        get() = "WriteReviewAc"
+    override val loggerTag: String get() = WRITE_TAG
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,7 +32,15 @@ class WriteReviewActivity : AppCompatActivity(), View.OnClickListener, AnkoLogge
     override fun onClick(v: View?) {
         when(v){
             backButton -> finish()
-            postButton -> postReview()
+            postButton -> checkBlank()
+        }
+    }
+
+    private fun checkBlank(){
+        when{
+            ratingBar.rating == 0f -> toast(getString(R.string.toast_set_rating))
+            editText.text.isEmpty() -> toast(getString(R.string.toast_type_review))
+            else -> postReview()
         }
     }
 

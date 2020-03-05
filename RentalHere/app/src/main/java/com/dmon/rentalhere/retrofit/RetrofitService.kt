@@ -16,11 +16,15 @@ const val GET_SHOP_METHOD = "get_shop"
 const val GET_REVIEW_METHOD = "get_review"
 const val POST_REVIEW_METHOD = "add_review"
 const val FIND_USER_ID_METHOD = "get_userid"
+const val FIND_USER_PW_METHOD = "find_pass"
 const val EDIT_USER_METHOD = "put_user"
 const val GET_MY_REVIEW_METHOD = "get_myreview"
 const val OWNER_LOGIN_METHOD = "log_manager"
 const val GET_MY_SHOPS_METHOD = "get_myshop"
 const val REGISTER_SHOP_METHOD = "add_company"
+const val DELETE_REVIEW_METHOD = "del_review"
+const val DELETE_SHOP_METHOD = "del_company"
+const val EDIT_SHOP_METHOD = "up_company"
 
 //FIELDS
 const val FIELD_USER_IDX = "mem_id"
@@ -46,6 +50,7 @@ const val FIELD_SHOP_PHOTO2_URL = "poto2_url"
 
 const val FIELD_REVIEW_CONTENT = "cr_text"
 const val FIELD_REVIEW_SCORE = "cr_score"
+const val FIELD_REVIEW_IDX = "cr_idx"
 interface RetrofitService {
     // 아이디 중복 확인
     @Multipart
@@ -77,10 +82,15 @@ interface RetrofitService {
     @POST(SERVER_URL + GET_USER_METHOD)
     fun postGetUser(@FieldMap param: HashMap<String, Any>): Call<UserInfoResult>
 
-    // 아이디 요청
+    // 아이디 찾기 요청
     @FormUrlEncoded
     @POST(SERVER_URL + FIND_USER_ID_METHOD)
     fun postFindUserID(@FieldMap param: HashMap<String, Any>): Call<UserInfoResult>
+
+    // 비밀번호 찾기 요청
+    @FormUrlEncoded
+    @POST(SERVER_URL + FIND_USER_PW_METHOD)
+    fun postFindUserPW(@FieldMap param: HashMap<String, Any>): Call<UserInfoResult>
 
     // 매장 정보 요청
     @FormUrlEncoded
@@ -124,4 +134,19 @@ interface RetrofitService {
                          @Part part4: MultipartBody.Part? = null,
                          @Part part5: MultipartBody.Part? = null
     ): Call<BaseResult>
+
+    // 리뷰 삭제
+    @FormUrlEncoded
+    @POST(SERVER_URL + DELETE_REVIEW_METHOD)
+    fun postDeleteReview(@FieldMap param: HashMap<String, Any>): Call<BaseResult>
+
+    // 매장 삭제
+    @FormUrlEncoded
+    @POST(SERVER_URL + DELETE_SHOP_METHOD)
+    fun postDeleteShop(@FieldMap param: HashMap<String, Any>): Call<BaseResult>
+
+    // 매장 삭제
+    @FormUrlEncoded
+    @POST(SERVER_URL + EDIT_SHOP_METHOD)
+    fun postEditShop(@FieldMap param: HashMap<String, Any>): Call<BaseResult>
 }

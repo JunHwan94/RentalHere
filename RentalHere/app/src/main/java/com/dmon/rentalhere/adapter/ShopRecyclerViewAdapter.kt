@@ -53,11 +53,13 @@ class ShopRecyclerViewAdapter: RecyclerView.Adapter<ShopRecyclerViewAdapter.Shop
         }
 
         fun setItem(shopModel: ShopResult.ShopModel){
-            Glide.with(itemView.context)
-                .load(R.drawable.splash)
-                .apply(RequestOptions().centerCrop())
-                .into(binding.shopProfileImageView)
-            binding.shopTextView.text = shopModel.shopName
+            shopModel.shopProfileImageUrl.let{
+                Glide.with(itemView.context)
+                    .load(if(it == "") R.drawable.icon else it)
+                    .apply(RequestOptions().centerCrop())
+                    .into(binding.shopProfileImageView)
+            }
+            binding.shopNameTextView.text = shopModel.shopName
             binding.addressTextView.text = shopModel.shopAddress
             binding.telNumTextView.text = shopModel.shopTelNum
             binding.descTextView.text = shopModel.shopInfo

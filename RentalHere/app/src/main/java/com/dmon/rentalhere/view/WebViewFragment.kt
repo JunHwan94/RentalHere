@@ -14,18 +14,23 @@ import com.dmon.rentalhere.R
 import androidx.databinding.DataBindingUtil
 import com.dmon.rentalhere.WebJavaScript
 import com.dmon.rentalhere.databinding.FragmentWebViewBinding
+import com.dmon.rentalhere.presenter.TYPE_KEY
 import com.dmon.rentalhere.retrofit.RetrofitClient
 import com.dmon.rentalhere.retrofit.RetrofitService
 
-const val MAP_URL = "https://softer013.cafe24.com/mapview/android_map"
+const val DIST_ORDER_MAP_URL = "https://softer013.cafe24.com/mapview/android_map"
+const val REC_ORDER_MAP_URL = "https://softer013.cafe24.com/mapview/android_map_key"
+const val SEARCH_MAP_URL = "https://softer013.cafe24.com/mapview/find_map"
 const val WEB_APP_ID = "RentalHere"
 class WebViewFragment : Fragment() {
     private lateinit var binding: FragmentWebViewBinding
     private lateinit var retrofitService: RetrofitService
     private var callback: OnFragmentInteractionListener? = null
+    private var fragmentType: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        arguments?.let{ fragmentType = it.getInt(TYPE_KEY) }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -41,8 +46,12 @@ class WebViewFragment : Fragment() {
         binding.webView.webViewClient = WebViewClient()
         binding.webView.webChromeClient = newWebChromeClient()
 //        binding.webView.addJavascriptInterface(WebJavascript1.getInstance(activity), WEB_APP_ID)
-        binding.webView.addJavascriptInterface(WebJavaScript(context!!, retrofitService, callback!!), WEB_APP_ID)
-        binding.webView.loadUrl(MAP_URL)
+        binding.webView.addJavascriptInterface(WebJavaScript(retrofitService, callback!!, fragmentType), WEB_APP_ID)
+        when(fragmentType){
+            DIST_TYPE -> binding.webView.loadUrl(DIST_ORDER_MAP_URL)
+            REC_TYPE -> binding.webView.loadUrl(REC_ORDER_MAP_URL)
+            SEARCH_TYPE -> binding.webView.loadUrl(SEARCH_MAP_URL)
+        }
     }
 
     private fun newWebChromeClient() = object : WebChromeClient(){
@@ -63,15 +72,16 @@ class WebViewFragment : Fragment() {
     }
 
     interface OnFragmentInteractionListener {
-        fun replaceFragment(fragment: Fragment, shopName: String)
+        fun showShopInfoFragmentInContainer2(fragment: Fragment, shopName: String)
+        fun showShopInfoFragmentInContainer3(fragment: Fragment, shopName: String)
     }
 
     companion object {
         @JvmStatic
-        fun newInstance() =
+        fun newInstance(fragmentType: Int) =
             WebViewFragment().apply {
                 arguments = Bundle().apply {
-//                    putString(ARG_PARAM1, param1)
+                    putInt(TYPE_KEY, fragmentType)
                 }
             }
     }
