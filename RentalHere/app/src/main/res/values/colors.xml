@@ -8,4 +8,5 @@
     <color name="transParent">#00000000</color>
     <color name="tabSelected">#FFEB3B</color>
     <color name="light_light_gray">#EEEFF0</color>
+    <color name="trans_light_light_gray">#99EEEFF0</color>
 </resources>

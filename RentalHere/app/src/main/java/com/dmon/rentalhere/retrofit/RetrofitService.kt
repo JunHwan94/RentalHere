@@ -25,7 +25,9 @@ const val REGISTER_SHOP_METHOD = "add_company"
 const val DELETE_REVIEW_METHOD = "del_review"
 const val DELETE_SHOP_METHOD = "del_company"
 const val EDIT_SHOP_METHOD = "up_company"
-
+const val EDIT_SHOP_PICTURE_METHOD = "fix_poto"
+const val DELETE_SHOP_PICTURE_METHOD = "del_poto"
+const val EDIT_SHOP_MAIN_PICTURE_METHOD = "pick_poto"
 //FIELDS
 const val FIELD_USER_IDX = "mem_id"
 const val FIELD_USER_ID = "mem_userid"
@@ -42,11 +44,12 @@ const val FIELD_SHOP_TEL_NUM = "cs_phone"
 const val FIELD_SHOP_ADDRESS = "cs_add"
 const val FIELD_SHOP_KEYWORD = "cs_keyword"
 const val FIELD_SHOP_INFO = "cs_info"
-const val FIELD_SHOP_MAIN_PICTURE = "cs_poto1"
 const val FIELD_SHOP_LAT = "cs_lat"
 const val FIELD_SHOP_LNG = "cs_lng"
 const val FIELD_SHOP_PHOTO1_URL = "poto1_url"
 const val FIELD_SHOP_PHOTO2_URL = "poto2_url"
+const val FIELD_SHOP_PIC_NUM = "num"
+const val FIELD_SHOP_MAIN_PIC_NUM = "cs_main_poto"
 
 const val FIELD_REVIEW_CONTENT = "cr_text"
 const val FIELD_REVIEW_SCORE = "cr_score"
@@ -145,8 +148,25 @@ interface RetrofitService {
     @POST(SERVER_URL + DELETE_SHOP_METHOD)
     fun postDeleteShop(@FieldMap param: HashMap<String, Any>): Call<BaseResult>
 
-    // 매장 삭제
+    // 매장 수정
     @FormUrlEncoded
     @POST(SERVER_URL + EDIT_SHOP_METHOD)
     fun postEditShop(@FieldMap param: HashMap<String, Any>): Call<BaseResult>
+
+    // 매장 사진 수정
+    @Multipart
+    @POST(SERVER_URL + EDIT_SHOP_PICTURE_METHOD)
+    fun postEditShopPicture(@Part(FIELD_SHOP_IDX) shopIdx: RequestBody,
+                        @Part(FIELD_SHOP_PIC_NUM) picNum: RequestBody,
+                        @Part part: MultipartBody.Part): Call<BaseResult>
+
+    // 매장 사진 삭제
+    @FormUrlEncoded
+    @POST(SERVER_URL + DELETE_SHOP_PICTURE_METHOD)
+    fun postDeleteShopPicture(@FieldMap param: HashMap<String, Any>): Call<BaseResult>
+
+    // 매장 메인 사진 설정
+    @FormUrlEncoded
+    @POST(SERVER_URL + EDIT_SHOP_MAIN_PICTURE_METHOD)
+    fun postEditShopMainPicture(@FieldMap param: HashMap<String, Any>): Call<BaseResult>
 }

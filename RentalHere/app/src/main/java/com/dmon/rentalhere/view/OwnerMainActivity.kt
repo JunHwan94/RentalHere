@@ -23,6 +23,7 @@ import kotlinx.android.synthetic.main.activity_owner_main.backButton
 import kotlinx.android.synthetic.main.nav_header_user_info.view.*
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.error
+import org.jetbrains.anko.info
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -81,7 +82,6 @@ class OwnerMainActivity : BaseActivity(), NavigationView.OnNavigationItemSelecte
                 if(userModel.result == "Y"){
                     setNavigationView(userModel.userId)
                     loadMyShops()
-                    addShopButton.visibility = View.GONE
                 }
             }
 
@@ -103,16 +103,20 @@ class OwnerMainActivity : BaseActivity(), NavigationView.OnNavigationItemSelecte
      * 내 매장 불러오기
      */
     private fun loadMyShops() {
+        info("loadMyShops called")
         val map = HashMap<String, Any>().apply{ this[FIELD_USER_IDX] = userModel.userIdx }
         retrofitService.postGetMyShops(map).enqueue(object : Callback<MyShopsResult>{
             override fun onResponse(call: Call<MyShopsResult>, response: Response<MyShopsResult>) {
                 val shopResultItem = response.body()!!.myShopsResultItem
                 if(shopResultItem.result == "Y"){
+                    recyclerView.visibility = View.VISIBLE
                     shopAdapter.run{
                         addAll(shopResultItem.shopModelList)
                         notifyDataSetChanged()
                     }
                     addShopButton.visibility = View.GONE
+                }else{
+                    addShopButton.visibility = View.VISIBLE
                 }
             }
 
@@ -126,6 +130,7 @@ class OwnerMainActivity : BaseActivity(), NavigationView.OnNavigationItemSelecte
      * 매장 등록
      */
     private fun startRegisterShopActivity() {
+        info("startRegisterShopActivity called")
         startActivityForResult(Intent(this, RegisterShopActivity::class.java).apply{
             putExtra(FIELD_USER_IDX, userModel.userIdx)
         }, REGISTER_SHOP_CODE)
@@ -163,9 +168,17 @@ class OwnerMainActivity : BaseActivity(), NavigationView.OnNavigationItemSelecte
         addShopButton.setOnClickListener(this)
     }
 
-    override fun loadShops() = loadMyShops()
+    override fun loadShops(){
+        addShopButton.visibility = View.VISIBLE
+        recyclerView.visibility = View.GONE
+        loadMyShops()
+    }
 
     override fun backPress() = onBackPressed()
+
+    override fun setShopName(shopName: String) {
+        shopTextView.text = shopName
+    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)

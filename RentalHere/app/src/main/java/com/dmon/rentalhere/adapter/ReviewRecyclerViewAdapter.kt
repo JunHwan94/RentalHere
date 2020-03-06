@@ -82,6 +82,7 @@ class ReviewRecyclerViewAdapter(val type: Int, val context: Context): RecyclerVi
                         positiveButton(R.string.confirm) {
                             adapter.postDelete(position)
                         }
+                        negativeButton(getString(R.string.cancel)){}
                     }.show()
                 }
             }
@@ -115,7 +116,7 @@ class ReviewRecyclerViewAdapter(val type: Int, val context: Context): RecyclerVi
             this.listener = listener
         }
 
-        fun ReviewRecyclerViewAdapter.postDelete(position: Int){
+        private fun ReviewRecyclerViewAdapter.postDelete(position: Int){
             val reviewIdx = getItem(position).reviewIdx!!
             val map = HashMap<String, Any>().apply{ this[FIELD_REVIEW_IDX] = reviewIdx }
             retrofitService.postDeleteReview(map).enqueue(object : Callback<BaseResult> {

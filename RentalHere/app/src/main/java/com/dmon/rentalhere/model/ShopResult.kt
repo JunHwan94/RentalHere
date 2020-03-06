@@ -17,9 +17,13 @@ data class ShopResult(@SerializedName("resultItem") val shopModel: ShopModel) {
                          @SerializedName("cs_info") val shopInfo: String,
                          @SerializedName("cs_lat") val shopLatitude: String,
                          @SerializedName("cs_lng") val shopLongitude: String,
+                         @SerializedName("cs_main_poto") val mainPicNum: String,
                          @SerializedName("mem_userid") val managerId: String,
-                         @SerializedName("mem_email") val managerEmail: String,
-                         @SerializedName("poto1_url") val shopProfileImageUrl: String): Parcelable {
+                         @SerializedName("poto1_url") val shopProfileImageUrl1: String,
+                         @SerializedName("poto2_url") val shopProfileImageUrl2: String,
+                         @SerializedName("poto3_url") val shopProfileImageUrl3: String,
+                         @SerializedName("poto4_url") val shopProfileImageUrl4: String,
+                         @SerializedName("poto5_url") val shopProfileImageUrl5: String): Parcelable {
         constructor(parcel: Parcel) : this(
             "",
             "",
@@ -33,9 +37,13 @@ data class ShopResult(@SerializedName("resultItem") val shopModel: ShopModel) {
             parcel.readString()!!,
             parcel.readString()!!,
             parcel.readString()!!,
-            "",
-            "",
-            ""
+            parcel.readString()!!,
+            parcel.readString()!!,
+            parcel.readString()!!,
+            parcel.readString()!!,
+            parcel.readString()!!,
+            parcel.readString()!!,
+            parcel.readString()!!
         ) {
         }
 
@@ -49,9 +57,13 @@ data class ShopResult(@SerializedName("resultItem") val shopModel: ShopModel) {
             parcel.writeString(shopInfo)
             parcel.writeString(shopLatitude)
             parcel.writeString(shopLongitude)
+            parcel.writeString(mainPicNum)
             parcel.writeString(managerId)
-            parcel.writeString(managerEmail)
-            parcel.writeString(shopProfileImageUrl)
+            parcel.writeString(shopProfileImageUrl1)
+            parcel.writeString(shopProfileImageUrl2)
+            parcel.writeString(shopProfileImageUrl3)
+            parcel.writeString(shopProfileImageUrl4)
+            parcel.writeString(shopProfileImageUrl5)
         }
 
         override fun describeContents(): Int {

@@ -87,11 +87,20 @@ class LoginPresenter(private val loginView: LoginConstants.View, private val con
     private fun <T> requestLogin(call: Call<BaseResult>, activityClass: Class<T>){
         call.enqueue(object : Callback<BaseResult>{
             override fun onResponse(call: Call<BaseResult>, response: Response<BaseResult>) {
-                val result = response.body()!!.baseModel.result
-                if (result == "Y") {
-                    startMainActivity(activityClass)
-                    if (loginView.autoLoginEnabled()) setAutoLogin()
-                } else context.toast(context.getString(R.string.toast_check_id_pw))
+                val result = response.body()!!.baseModel
+                when{
+                    result.result == "Y" -> {
+                        startMainActivity(activityClass)
+                        if (loginView.autoLoginEnabled()) setAutoLogin()
+                    }
+                    result.result == "N" ->{
+                        when(result.message){
+                            context.getString(R.string.login_failed) ->
+                                context.toast(context.getString(R.string.toast_check_id_pw))
+                            else -> context.toast(result.message)
+                        }
+                    }
+                }
             }
 
             override fun onFailure(call: Call<BaseResult>, t: Throwable) {
@@ -107,14 +116,6 @@ class LoginPresenter(private val loginView: LoginConstants.View, private val con
         context.startActivity(Intent(context, java).apply { putExtra(ID_KEY, loginView.userId()) })
         loginView.finish()
     }
-
-//    /**
-//     * 업주 액티비티 실행
-//     */
-//    private fun startOwnerMainActivity(){
-//        context.startActivity(Intent(context, OwnerMainActivity::class.java).apply { putExtra(ID_KEY, loginView.userId()) })
-//        loginView.finish()
-//    }
 
     /**
      * 자동로그인 설정

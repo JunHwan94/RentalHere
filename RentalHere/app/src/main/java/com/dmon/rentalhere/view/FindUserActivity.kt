@@ -19,6 +19,8 @@ import android.text.InputType
 import android.text.TextWatcher
 import android.view.inputmethod.InputMethodManager
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.dmon.rentalhere.BaseActivity
+import com.dmon.rentalhere.model.BaseResult
 import com.dmon.rentalhere.presenter.ID_TYPE
 import com.dmon.rentalhere.retrofit.*
 import kotlinx.android.synthetic.main.activity_find_user.backButton
@@ -29,8 +31,7 @@ import kotlinx.android.synthetic.main.activity_find_user.nameEditText
 import kotlinx.android.synthetic.main.activity_find_user.topTextView
 import kotlinx.android.synthetic.main.activity_sign_up.*
 
-class FindUserActivity : AppCompatActivity(), View.OnClickListener {
-    private lateinit var retrofitService: RetrofitService
+class FindUserActivity : BaseActivity(), View.OnClickListener {
     private var findType: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,7 +67,6 @@ class FindUserActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun processIntent() {
-        retrofitService = RetrofitClient.getRetrofitInstance()!!.create(RetrofitService::class.java)
         findType = intent.getIntExtra(TYPE_KEY, 0)
         when(findType){
             PW_TYPE -> setView()
@@ -170,7 +170,6 @@ class FindUserActivity : AppCompatActivity(), View.OnClickListener {
      * 키보드 가리기
      */
     fun hideKeyBoard(){
-        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(cpEditText.windowToken, 0)
         imm.hideSoftInputFromWindow(nameEditText.windowToken, 0)
     }

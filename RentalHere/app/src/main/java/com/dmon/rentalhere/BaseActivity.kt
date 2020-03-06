@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import com.dmon.rentalhere.model.UserInfoResult
@@ -15,14 +16,17 @@ import com.dmon.rentalhere.view.LoginActivity
 import com.dmon.rentalhere.view.SignUpActivity
 import com.dmon.rentalhere.view.USER_MODEL_KEY
 import kotlinx.android.synthetic.main.activity_client_main.*
+import kotlinx.android.synthetic.main.activity_find_user.*
 
 open class BaseActivity : AppCompatActivity(){
+    lateinit var imm: InputMethodManager
     lateinit var retrofitService: RetrofitService
     lateinit var userModel: UserInfoResult.UserModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         retrofitService = RetrofitClient.getRetrofitInstance()!!.create(RetrofitService::class.java)
+        imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

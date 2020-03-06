@@ -7,23 +7,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.dmon.rentalhere.BaseActivity
 import com.dmon.rentalhere.R
 import com.dmon.rentalhere.adapter.ReviewRecyclerViewAdapter
-import com.dmon.rentalhere.model.BaseResult
 import com.dmon.rentalhere.model.ReviewResult
-import com.dmon.rentalhere.retrofit.FIELD_REVIEW_IDX
 import kotlinx.android.synthetic.main.activity_all_review.*
-import kotlinx.android.synthetic.main.fragment_shop_info.recyclerView
-import kotlinx.android.synthetic.main.item_review.*
-import kotlinx.android.synthetic.main.item_review.view.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.jetbrains.anko.AnkoLogger
-import org.jetbrains.anko.alert
-import org.jetbrains.anko.info
-import org.jetbrains.anko.toast
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 const val ALL_REVIEW_TAG = "AllReviewActivity"
 class AllReviewActivity : BaseActivity(), View.OnClickListener, AnkoLogger {
@@ -66,6 +55,18 @@ class AllReviewActivity : BaseActivity(), View.OnClickListener, AnkoLogger {
 
             }
         })
+
+        adapter.runAdapterWatchRoutine()
+    }
+
+    private fun ReviewRecyclerViewAdapter.runAdapterWatchRoutine() {
+        if(0 < itemCount)
+            GlobalScope.launch{
+                while(true){
+                    delay(200)
+                    if(itemCount == 0) runOnUiThread { noReviewsTextView.visibility = View.VISIBLE }
+                }
+            }
     }
 
     private fun setViewListener() {

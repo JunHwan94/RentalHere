@@ -16,7 +16,8 @@
         android:supportsRtl="true"
         android:theme="@style/WhiteStatusBar"
         android:usesCleartextTraffic="true">
-        <activity android:name=".view.SearchActivity"></activity>
+        <activity android:name=".view.EditPicturesActivity"></activity>
+        <activity android:name=".view.SearchActivity" />
         <activity android:name=".view.RegisterShopActivity" />
         <activity android:name=".view.OwnerMainActivity" />
         <activity

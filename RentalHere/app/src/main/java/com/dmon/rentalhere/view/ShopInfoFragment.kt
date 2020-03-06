@@ -9,9 +9,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
+import androidx.viewpager.widget.ViewPager
 
 import com.dmon.rentalhere.R
 import com.dmon.rentalhere.adapter.ReviewRecyclerViewAdapter
@@ -24,6 +25,7 @@ import com.dmon.rentalhere.presenter.OWNER_TYPE
 import com.dmon.rentalhere.presenter.TYPE_KEY
 import com.dmon.rentalhere.retrofit.FIELD_SHOP_IDX
 import com.dmon.rentalhere.retrofit.*
+import kotlinx.android.synthetic.main.fragment_shop_info.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.jetbrains.anko.AnkoLogger
@@ -42,6 +44,7 @@ const val SHOP_IDX_KEY = "shopIdxKey"
 const val WRITE_REVIEW_CODE = 100
 const val EDIT_TYPE = 10
 const val EDIT_SHOP_CODE = 300
+const val EDIT_PIC_CODE = 301
 const val SHOP_MODEL_KEY = "shopModelKey"
 class ShopInfoFragment : Fragment(), AnkoLogger, View.OnClickListener {
     override val loggerTag: String get() = SHOP_INFO_TAG
@@ -87,14 +90,8 @@ class ShopInfoFragment : Fragment(), AnkoLogger, View.OnClickListener {
                     override fun onItemClick(holder: ReviewRecyclerViewAdapter.ReviewViewHolder, view: View, position: Int) {}
                 })
             }
-        binding.recyclerView.run{ adapter = reviewAdapter; layoutManager = LinearLayoutManager(context) }
+        binding.reviewRecyclerView.run{ adapter = reviewAdapter; layoutManager = LinearLayoutManager(context) }
         retrofitService = RetrofitClient.getRetrofitInstance()!!.create(RetrofitService::class.java)
-    }
-
-    private fun setViewListener() {
-        binding.bottomButton.setOnClickListener(this)
-        binding.allReviewsButton.setOnClickListener(this)
-        binding.deleteButton.setOnClickListener(this)
     }
 
     /**
@@ -103,7 +100,7 @@ class ShopInfoFragment : Fragment(), AnkoLogger, View.OnClickListener {
     private fun loadReview() {
 //        info(shopIdx)
         reviewAdapter.clear()
-        val map = HashMap<String, Any>().apply{ this[FIELD_SHOP_IDX] = shopModel.shopIdx!! }
+        val map = HashMap<String, Any>().apply{ this[FIELD_SHOP_IDX] = shopModel.shopIdx }
         retrofitService.postGetReview(map).enqueue(object : Callback<ReviewResult>{
             override fun onResponse(call: Call<ReviewResult>, response: Response<ReviewResult>) {
                 val reviewResultItem = response.body()!!.reviewResultItem
@@ -136,14 +133,59 @@ class ShopInfoFragment : Fragment(), AnkoLogger, View.OnClickListener {
         binding.addressTextView.text = shopModel.shopAddress
         binding.telNumTextView.text = shopModel.shopTelNum
         binding.descTextView.text = shopModel.shopInfo
-        Glide.with(context!!)
-            .load(shopModel.shopProfileImageUrl)
-            .apply(RequestOptions().centerInside())
-            .into(binding.shopProfileImageView)
+//        Glide.with(context!!)
+//            .load(shopModel.shopProfileImageUrl)
+//            .apply(RequestOptions().centerInside())
+//            .into(binding.shopProfileImageView)
         if(userType == OWNER_TYPE) {
+            binding.editPicturesButton.visibility = View.VISIBLE
             binding.bottomButton.text = getString(R.string.edit_shop_info)
             binding.deleteButton.visibility = View.VISIBLE
         }
+        setImagePagerAdapter()
+    }
+
+    /**
+     * 매장사진 뷰페이저로 보여주기
+     */
+    private fun setImagePagerAdapter() {
+        val adapter = ListPagerAdapter(childFragmentManager)
+        binding.imagePager.run{
+            this.adapter = adapter
+            addOnPageChangeListener(object : ViewPager.OnPageChangeListener{
+                override fun onPageScrollStateChanged(state: Int) {
+                }
+
+                override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+                }
+
+                override fun onPageSelected(position: Int) {
+                    // todo : 아래 점 위치 바꾸기
+                }
+            })
+        }
+        addAdapterItems(adapter)
+    }
+
+    private fun addAdapterItems(adapter: ListPagerAdapter){
+        GlobalScope.launch {
+            adapter.addItem(ImageFragment.newInstance(shopModel.shopProfileImageUrl1))
+            if(shopModel.shopProfileImageUrl2 != "") adapter.addItem(ImageFragment.newInstance(shopModel.shopProfileImageUrl2))
+            if(shopModel.shopProfileImageUrl3 != "") adapter.addItem(ImageFragment.newInstance(shopModel.shopProfileImageUrl3))
+            if(shopModel.shopProfileImageUrl4 != "") adapter.addItem(ImageFragment.newInstance(shopModel.shopProfileImageUrl4))
+            if(shopModel.shopProfileImageUrl5 != "") adapter.addItem(ImageFragment.newInstance(shopModel.shopProfileImageUrl5))
+
+            runOnUiThread {
+                adapter.notifyDataSetChanged()
+            }
+        }
+    }
+
+    private fun setViewListener() {
+        binding.bottomButton.setOnClickListener(this)
+        binding.allReviewsButton.setOnClickListener(this)
+        binding.deleteButton.setOnClickListener(this)
+        binding.editPicturesButton.setOnClickListener(this)
     }
 
     override fun onClick(v: View?) {
@@ -158,11 +200,20 @@ class ShopInfoFragment : Fragment(), AnkoLogger, View.OnClickListener {
             // 리뷰 목록
             binding.allReviewsButton -> startAllReviewActivity()
             binding.deleteButton -> deleteShop()
+            binding.editPicturesButton -> startEditPicturesActivity()
         }
     }
 
+    private fun startEditPicturesActivity() {
+        startActivityForResult(Intent(context, EditPicturesActivity::class.java).apply{
+            putExtra(SHOP_MODEL_KEY, shopModel)
+        }, EDIT_PIC_CODE)
+    }
+
+    /**
+     * 매장 삭제 요청
+     */
     private fun deleteShop() {
-        //todo : alert넣기
         alert(getString(R.string.dialog_delete_shop)){
             positiveButton(getString(R.string.confirm)){
                 val map = HashMap<String, Any>().apply{ this[FIELD_SHOP_IDX] = shopModel.shopIdx }
@@ -213,11 +264,40 @@ class ShopInfoFragment : Fragment(), AnkoLogger, View.OnClickListener {
         if(requestCode == WRITE_REVIEW_CODE && resultCode == RESULT_OK){
             loadReview()
         }
+        if(requestCode == EDIT_SHOP_CODE && resultCode == RESULT_OK && data != null){
+            callback!!.setShopName(data.getStringExtra(FIELD_SHOP_NAME)!!)
+            addressTextView.text = data.getStringExtra(FIELD_SHOP_ADDRESS)
+            telNumTextView.text = data.getStringExtra(FIELD_SHOP_TEL_NUM)
+            descTextView.text = data.getStringExtra(FIELD_SHOP_INFO)
+        }
+        if(requestCode == EDIT_PIC_CODE && resultCode == RESULT_OK){
+            loadShop()
+            callback!!.loadShops()
+        }
+    }
+
+    private fun loadShop() {
+        info("loadShop 실행됨")
+        val map = HashMap<String, Any>().apply{ this[FIELD_SHOP_IDX] = shopModel.shopIdx }
+        retrofitService.postGetShop(map).enqueue(object : Callback<ShopResult>{
+            override fun onResponse(call: Call<ShopResult>, response: Response<ShopResult>) {
+                val shopModel = response.body()!!.shopModel
+                if(shopModel.result == "Y"){
+                    this@ShopInfoFragment.shopModel = shopModel
+                    setView()
+                }
+            }
+
+            override fun onFailure(call: Call<ShopResult>, t: Throwable) {
+                error("요청 실패")
+            }
+        })
     }
 
     interface OnFragmentInteractionListener {
         fun loadShops()
         fun backPress()
+        fun setShopName(shopName: String)
     }
 
     companion object {
@@ -229,5 +309,29 @@ class ShopInfoFragment : Fragment(), AnkoLogger, View.OnClickListener {
                     putInt(TYPE_KEY, userType)
                 }
             }
+    }
+
+    class ListPagerAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(fm) {
+        private val fragmentList = ArrayList<Fragment>()
+        init {
+            fragmentList.clear()
+        }
+
+        fun addItem(item: Fragment) {
+            if(!fragmentList.contains(item))
+                fragmentList.add(item)
+            notifyDataSetChanged()
+        }
+
+        fun clear(){
+            fragmentList.clear()
+            notifyDataSetChanged()
+        }
+
+        override fun getItem(position: Int): Fragment {
+            return fragmentList[position]
+        }
+
+        override fun getCount(): Int = fragmentList.size
     }
 }

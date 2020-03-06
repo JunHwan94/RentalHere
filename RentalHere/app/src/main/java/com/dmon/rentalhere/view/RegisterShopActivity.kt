@@ -25,7 +25,6 @@ import com.gun0912.tedpermission.TedPermission
 import kotlinx.android.synthetic.main.activity_register_shop.*
 import kotlinx.android.synthetic.main.activity_register_shop.backButton
 import kotlinx.android.synthetic.main.activity_register_shop.topTextView
-import kotlinx.android.synthetic.main.activity_sign_up.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import okhttp3.MediaType
@@ -49,6 +48,7 @@ class RegisterShopActivity : BaseActivity(), AnkoLogger, View.OnClickListener {
     private lateinit var imageAdapter: ImageRecyclerAdapter
     private lateinit var userIdx: String
     private var shopModel: ShopResult.ShopModel? = null
+    private var mainUri: String? = null
 //    private lateinit var fileList: ArrayList<File>
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,32 +60,29 @@ class RegisterShopActivity : BaseActivity(), AnkoLogger, View.OnClickListener {
     }
 
     private fun init(){
+        setAdapter()
+        // 매장 수정일 떄
         intent.getParcelableExtra<ShopResult.ShopModel>(SHOP_MODEL_KEY)?.let{
             shopModel = it
-            setView()
+            setEditView()
             // todo : 사진 처리하기
         }
+        // 매장 등록일 떄
         if(shopModel == null) {
             userIdx = intent.getStringExtra(FIELD_USER_IDX)!!
-            setAdapter()
-        }
-        // TYPE_KEY로 값 안들어감.
-//        if(registerType == EDIT_TYPE){
-//            shopModel = intent.getParcelableExtra(SHOP_MODEL_KEY)!!
-//            setView()
-//        }else {
-//            userIdx = intent.getStringExtra(FIELD_USER_IDX)!!
 //            setAdapter()
-//        }
+        }
     }
 
-    private fun setView() {
+    private fun setEditView() {
         topTextView.text = getString(R.string.edit_shop_info)
         shopNameEditText.setText(shopModel!!.shopName)
         telEditText.setText(shopModel!!.shopTelNum)
         addressEditText.setText(shopModel!!.shopAddress)
         keywordEditText.setText(shopModel!!.shopKeyword)
         descEditText.setText(shopModel!!.shopInfo)
+        textView17.visibility = View.GONE
+        imageRecyclerView.visibility = View.GONE
     }
 
     private fun setViewListener() {
@@ -98,7 +95,7 @@ class RegisterShopActivity : BaseActivity(), AnkoLogger, View.OnClickListener {
         override fun afterTextChanged(s: Editable?) {
             if(s.toString().length > 11) {
                 telEditText.setText(s.toString().dropLast(1))
-                cpEditText.setSelection(11) // todo : 수정?
+                telEditText.setSelection(11) // todo : 수정?
             }
         }
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -108,34 +105,60 @@ class RegisterShopActivity : BaseActivity(), AnkoLogger, View.OnClickListener {
     override fun onClick(v: View?) {
         when(v){
             requestButton -> {
+                hideKeyBoard()
                 when(shopModel){
-                    null -> requestApproval()
+                    null -> checkImageBlank()
                     else -> requestEdit()
                 }
             }
             backButton -> onBackPressed()
+//            mainImageView -> setPermission(MAIN_PICK_FROM_ALBUM_CODE)
         }
+    }
+
+    /**
+     * 사진 선택했는지 체크
+     */
+    private fun checkImageBlank(){
+        if(imageAdapter.itemCount == 0) toast(getString(R.string.toast_select_image))
+        else requestApproval()
+    }
+
+    private fun hideKeyBoard() {
+        imm.hideSoftInputFromWindow(rootLayout.windowToken, 0)
     }
 
     /**
      * 매장 정보 수정
      */
     private fun requestEdit() {
+        val shopName = shopNameEditText.text.toString()
+        val shopTelNum = telEditText.text.toString()
+        val shopKeyword = keywordEditText.text.toString()
+        val shopInfo = descEditText.text.toString()
+        val shopAddress = addressEditText.text.toString()
         val map = HashMap<String, Any>().apply{
             this[FIELD_SHOP_IDX] = shopModel!!.shopIdx
-            this[FIELD_SHOP_NAME] = shopNameEditText.text.toString()
-            this[FIELD_SHOP_TEL_NUM] = telEditText.text.toString()
-            this[FIELD_SHOP_KEYWORD] = keywordEditText.text.toString()
-            this[FIELD_SHOP_INFO] = descEditText.text.toString()
-            this[FIELD_SHOP_ADDRESS] = addressEditText.text.toString()
+            this[FIELD_SHOP_NAME] = shopName
+            this[FIELD_SHOP_TEL_NUM] = shopTelNum
+            this[FIELD_SHOP_KEYWORD] = shopKeyword
+            this[FIELD_SHOP_INFO] = shopInfo
+            this[FIELD_SHOP_ADDRESS] = shopAddress
             this[FIELD_SHOP_LAT] = getGeoCode().first.toString()
             this[FIELD_SHOP_LNG] = getGeoCode().second.toString()
         }
+        scrollView.isEnabled = false
+        progressLayout.visibility = View.VISIBLE
         retrofitService.postEditShop(map).enqueue(object : Callback<BaseResult>{
             override fun onResponse(call: Call<BaseResult>, response: Response<BaseResult>) {
                 if(response.body()!!.baseModel.result == "Y"){
                     toast(getString(R.string.toast_request_edit_complete))
-                    setResult(RESULT_OK)
+                    setResult(RESULT_OK, Intent().apply{
+                        putExtra(FIELD_SHOP_NAME, shopName)
+                        putExtra(FIELD_SHOP_TEL_NUM, shopTelNum)
+                        putExtra(FIELD_SHOP_ADDRESS, shopAddress)
+                        putExtra(FIELD_SHOP_INFO, shopInfo)
+                    })
                     finish()
                 }else toast(getString(R.string.toast_request_failed))
             }
@@ -160,10 +183,15 @@ class RegisterShopActivity : BaseActivity(), AnkoLogger, View.OnClickListener {
         val shopAddress = getRequestBody(addressEditText.text.toString())
         val shopLatitude = getRequestBody(getGeoCode().first!!)
         val shopLongitude = getRequestBody(getGeoCode().second!!)
+        var firstPart: MultipartBody.Part
         val partList = ArrayList<MultipartBody.Part?>(5)
-
+        scrollView.isEnabled = false
+        progressLayout.visibility = View.VISIBLE
         // 사진 파일 처리, 매장 등록 요청
         GlobalScope.launch {
+//            val mainFile = File(getRealPathFromURI(Uri.parse(mainUri)))
+//            val mainBody = RequestBody.create(MediaType.parse(""), mainFile)
+//            firstPart = MultipartBody.Part.createFormData("file1", mainFile.name, mainBody)
             info("Coroutine 실행됨")
             while(imageAdapter.itemCount < 5){
                 imageAdapter.addItem("")
@@ -233,8 +261,8 @@ class RegisterShopActivity : BaseActivity(), AnkoLogger, View.OnClickListener {
             setOnItemClickListener(object : ImageRecyclerAdapter.OnItemClickListener{
                 override fun onItemClick(holder: ImageRecyclerAdapter.ImageViewHolder, view: View, position: Int) {
                     when{
-                        imageAdapter.itemCount == 5 -> toast(getString(R.string.toast_photo_limit))
-                        position == 0 -> setPermission()
+                        imageAdapter.getRealSize() == 6 -> toast(getString(R.string.toast_photo_limit))
+                        position == 0 -> setPermission(PICK_FROM_ALBUM_CODE)
                     }
 //                    view.deleteButton.setOnClickListener{v ->
 //                        removeItem(position)
@@ -250,13 +278,13 @@ class RegisterShopActivity : BaseActivity(), AnkoLogger, View.OnClickListener {
     /**
      * 저장소 권한 부여
      */
-    private fun setPermission(){
+    private fun setPermission(code :Int){
         TedPermission.with(this@RegisterShopActivity)
             .setPermissionListener(object : PermissionListener{
                 override fun onPermissionGranted() {
                     startActivityForResult(
                         Intent(Intent.ACTION_PICK).apply{ type = MediaStore.Images.Media.CONTENT_TYPE},
-                        PICK_FROM_ALBUM_CODE
+                        code
                     )
                 }
 
@@ -290,6 +318,19 @@ class RegisterShopActivity : BaseActivity(), AnkoLogger, View.OnClickListener {
      */
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+//        if (requestCode == MAIN_PICK_FROM_ALBUM_CODE && resultCode == RESULT_OK && data != null) {
+//            val uri = data.data!!
+//            info(uri)
+//            imageFile = File(getRealPathFromURI(uri))
+//            if (imageFile.isFile) {
+//                // TODO
+//                mainUri = uri.toString()
+//                Glide.with(this)
+//                    .load(imageFile)
+//                    .apply(RequestOptions().centerCrop())
+//                    .into(mainImageView)
+//            }
+//        }
         if (requestCode == PICK_FROM_ALBUM_CODE && resultCode == RESULT_OK && data != null) {
             val uri = data.data!!
             info(uri)

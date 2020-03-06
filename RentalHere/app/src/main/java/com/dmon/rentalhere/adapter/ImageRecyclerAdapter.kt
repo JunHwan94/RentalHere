@@ -30,6 +30,7 @@ class ImageRecyclerAdapter: RecyclerView.Adapter<ImageRecyclerAdapter.ImageViewH
     }
 
     override fun getItemCount(): Int = uriList.size
+    fun getRealSize() = uriList.filter{ it != "" }.size
     fun addItem(uri: String){
         uriList.add(uri)
         if(uriList.size == 6) uriList.removeAt(0)
