@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
 import com.dmon.rentalhere.BaseActivity
@@ -27,6 +28,7 @@ import kotlinx.coroutines.launch
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.error
 import org.jetbrains.anko.info
+import org.jetbrains.anko.toast
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -39,7 +41,7 @@ const val REVIEW_TYPE_KEY = "reviewTypeKey"
 const val MY_REVIEW_TYPE = 1
 const val EVERY_REVIEW_TYPE = 2
 const val DIST_TYPE = 1
-const val REC_TYPE= 2
+const val REC_TYPE = 2
 const val SEARCH_TYPE= 3
 class ClientMainActivity : BaseActivity(), View.OnClickListener, AnkoLogger, NavigationView.OnNavigationItemSelectedListener, WebViewFragment.OnFragmentInteractionListener{
     override val loggerTag: String get() = MAIN_TAG
@@ -47,6 +49,7 @@ class ClientMainActivity : BaseActivity(), View.OnClickListener, AnkoLogger, Nav
     private lateinit var shopInfoFragment: ShopInfoFragment
     private lateinit var distOrderFragment: WebViewFragment
     private lateinit var searchFragment: WebViewFragment
+    private var backPressedTime = 0L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -195,12 +198,23 @@ class ClientMainActivity : BaseActivity(), View.OnClickListener, AnkoLogger, Nav
     }
 
     override fun onBackPressed() {
+        val toast = Toast.makeText(this, getString(R.string.toast_finish_on_twice_pressed), Toast.LENGTH_SHORT)
         when{
             drawer.isDrawerOpen(GravityCompat.END) -> drawer.closeDrawer(GravityCompat.END)
             shopTextView.text != getString(R.string.search_location) && container3.visibility == View.VISIBLE -> showSearchFragment()
             tabs.visibility != View.VISIBLE -> showMain()
 //            viewPager.visibility != View.VISIBLE -> showMain()
-            else -> super.onBackPressed()
+            else -> {
+                if(System.currentTimeMillis() > backPressedTime + 2000){
+                    backPressedTime = System.currentTimeMillis()
+                    toast.show()
+                    return
+                }
+                if(System.currentTimeMillis() <= backPressedTime + 2000){
+                    super.onBackPressed()
+                    toast.cancel()
+                }
+            }
         }
     }
 

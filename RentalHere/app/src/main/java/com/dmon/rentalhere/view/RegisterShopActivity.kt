@@ -49,7 +49,7 @@ class RegisterShopActivity : BaseActivity(), AnkoLogger, View.OnClickListener {
     private lateinit var userIdx: String
     private var shopModel: ShopResult.ShopModel? = null
     private var mainUri: String? = null
-//    private lateinit var fileList: ArrayList<File>
+    private var isAppUpLoading = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,7 +65,6 @@ class RegisterShopActivity : BaseActivity(), AnkoLogger, View.OnClickListener {
         intent.getParcelableExtra<ShopResult.ShopModel>(SHOP_MODEL_KEY)?.let{
             shopModel = it
             setEditView()
-            // todo : 사진 처리하기
         }
         // 매장 등록일 떄
         if(shopModel == null) {
@@ -77,7 +76,7 @@ class RegisterShopActivity : BaseActivity(), AnkoLogger, View.OnClickListener {
     private fun setEditView() {
         topTextView.text = getString(R.string.edit_shop_info)
         shopNameEditText.setText(shopModel!!.shopName)
-        telEditText.setText(shopModel!!.shopTelNum)
+        telEditText.setText(shopModel!!.shopTelNum.replace("-", ""))
         addressEditText.setText(shopModel!!.shopAddress)
         keywordEditText.setText(shopModel!!.shopKeyword)
         descEditText.setText(shopModel!!.shopInfo)
@@ -104,23 +103,48 @@ class RegisterShopActivity : BaseActivity(), AnkoLogger, View.OnClickListener {
 
     override fun onClick(v: View?) {
         when(v){
-            requestButton -> {
+            requestButton -> checkBlank()
+            backButton -> onBackPressed()
+//            mainImageView -> setPermission(MAIN_PICK_FROM_ALBUM_CODE)
+        }
+    }
+
+    private fun checkBlank() {
+        when{
+            shopNameEditText.text.isEmpty() -> toast(getString(R.string.toast_type_shop_name))
+            telEditText.text.isEmpty() or (telEditText.text.length < 10) -> toast(getString(R.string.toast_type_cp))
+            addressEditText.text.isEmpty() -> toast(getString(R.string.toast_type_address))
+            keywordEditText.text.isEmpty() -> toast(getString(R.string.toast_type_keyword))
+            descEditText.text.isEmpty() -> toast(getString(R.string.toast_type_info))
+            else -> {
                 hideKeyBoard()
+                setAdapterEmptyListener()
                 when(shopModel){
                     null -> checkImageBlank()
                     else -> requestEdit()
                 }
             }
-            backButton -> onBackPressed()
-//            mainImageView -> setPermission(MAIN_PICK_FROM_ALBUM_CODE)
         }
+    }
+
+    override fun onBackPressed() {
+        if(!isAppUpLoading) super.onBackPressed()
+    }
+
+    /**
+     * ImageRecyclerAdapter 클릭 이벤트 없애는 메소드
+     */
+    private fun setAdapterEmptyListener(){
+        imageAdapter.setOnItemClickListener(object : ImageRecyclerAdapter.OnItemClickListener{
+            override fun onItemClick(holder: ImageRecyclerAdapter.ImageViewHolder, view: View, position: Int) {}
+        })
     }
 
     /**
      * 사진 선택했는지 체크
      */
     private fun checkImageBlank(){
-        if(imageAdapter.itemCount == 0) toast(getString(R.string.toast_select_image))
+        if(imageAdapter.getRealSize() == 0) toast(getString(R.string.toast_select_image))
         else requestApproval()
     }
 
@@ -132,6 +156,7 @@ class RegisterShopActivity : BaseActivity(), AnkoLogger, View.OnClickListener {
      * 매장 정보 수정
      */
     private fun requestEdit() {
+        setViewWhenUploading()
         val shopName = shopNameEditText.text.toString()
         val shopTelNum = telEditText.text.toString()
         val shopKeyword = keywordEditText.text.toString()
@@ -147,7 +172,6 @@ class RegisterShopActivity : BaseActivity(), AnkoLogger, View.OnClickListener {
             this[FIELD_SHOP_LAT] = getGeoCode().first.toString()
             this[FIELD_SHOP_LNG] = getGeoCode().second.toString()
         }
-        scrollView.isEnabled = false
         progressLayout.visibility = View.VISIBLE
         retrofitService.postEditShop(map).enqueue(object : Callback<BaseResult>{
             override fun onResponse(call: Call<BaseResult>, response: Response<BaseResult>) {
@@ -170,10 +194,21 @@ class RegisterShopActivity : BaseActivity(), AnkoLogger, View.OnClickListener {
         })
     }
 
+    private fun setViewWhenUploading(){
+        isAppUpLoading = true
+        shopNameEditText.isEnabled = false
+        telEditText.isEnabled = false
+        addressEditText.isEnabled = false
+        keywordEditText.isEnabled = false
+        descEditText.isEnabled = false
+        imageRecyclerView.isEnabled = false
+    }
+
     /**
      * 매장 등록 요청
      */
     private fun requestApproval() {
+        setViewWhenUploading()
         info("requestApproval실행됨")
         val userIdx = getRequestBody(userIdx)
         val shopName = getRequestBody(shopNameEditText.text.toString())
@@ -181,31 +216,31 @@ class RegisterShopActivity : BaseActivity(), AnkoLogger, View.OnClickListener {
         val shopKeyword = getRequestBody(keywordEditText.text.toString())
         val shopInfo = getRequestBody(descEditText.text.toString())
         val shopAddress = getRequestBody(addressEditText.text.toString())
-        val shopLatitude = getRequestBody(getGeoCode().first!!)
-        val shopLongitude = getRequestBody(getGeoCode().second!!)
-        var firstPart: MultipartBody.Part
+        val shopLatitude = getRequestBody(getGeoCode().first ?: "0")
+        val shopLongitude = getRequestBody(getGeoCode().second ?: "0")
         val partList = ArrayList<MultipartBody.Part?>(5)
-        scrollView.isEnabled = false
         progressLayout.visibility = View.VISIBLE
         // 사진 파일 처리, 매장 등록 요청
         GlobalScope.launch {
-//            val mainFile = File(getRealPathFromURI(Uri.parse(mainUri)))
-//            val mainBody = RequestBody.create(MediaType.parse(""), mainFile)
-//            firstPart = MultipartBody.Part.createFormData("file1", mainFile.name, mainBody)
             info("Coroutine 실행됨")
             while(imageAdapter.itemCount < 5){
                 imageAdapter.addItem("")
             }
             var i = 0
             do{
-                info(imageAdapter.getItem(i))
-                val file = File(getRealPathFromURI(Uri.parse(imageAdapter.getItem(i))))
-                val requestBody = RequestBody.create(MediaType.parse("image/jpeg"), file)
                 if(imageAdapter.getItem(i) != "") {
-                    info("file${i}")
-                    val part = MultipartBody.Part.createFormData("file${i}", file.name, requestBody)
+                    info("uri " + imageAdapter.getItem(i))
+                    val realPath = getRealPathFromURI(Uri.parse(imageAdapter.getItem(i)))
+                    info("실제경로 " + realPath)
+                    val file = resizedFile(this@RegisterShopActivity, realPath, MIN_IMAGE_SIZE)
+                    val requestBody = RequestBody.create(MediaType.parse(""), file)
+                    info("file${i + 1}")
+                    val part = MultipartBody.Part.createFormData("file${i + 1}", file.name, requestBody)
                     partList.add(part)
-                }else partList.add(null)
+                }else {
+                    info("uri is \"\" " + imageAdapter.getItem(i))
+                    partList.add(null)
+                }
                 i++
             }while(i < 5)
 
@@ -261,8 +296,8 @@ class RegisterShopActivity : BaseActivity(), AnkoLogger, View.OnClickListener {
             setOnItemClickListener(object : ImageRecyclerAdapter.OnItemClickListener{
                 override fun onItemClick(holder: ImageRecyclerAdapter.ImageViewHolder, view: View, position: Int) {
                     when{
-                        imageAdapter.getRealSize() == 6 -> toast(getString(R.string.toast_photo_limit))
-                        position == 0 -> setPermission(PICK_FROM_ALBUM_CODE)
+                        imageAdapter.getRealSize() == 5 -> toast(getString(R.string.toast_photo_limit)) // todo : 다시 확인
+                        position == 0 -> setPermission()
                     }
 //                    view.deleteButton.setOnClickListener{v ->
 //                        removeItem(position)
@@ -278,13 +313,15 @@ class RegisterShopActivity : BaseActivity(), AnkoLogger, View.OnClickListener {
     /**
      * 저장소 권한 부여
      */
-    private fun setPermission(code :Int){
+    private fun setPermission(){
         TedPermission.with(this@RegisterShopActivity)
             .setPermissionListener(object : PermissionListener{
                 override fun onPermissionGranted() {
                     startActivityForResult(
-                        Intent(Intent.ACTION_PICK).apply{ type = MediaStore.Images.Media.CONTENT_TYPE},
-                        code
+                        Intent(Intent.ACTION_PICK).apply{
+                            type = MediaStore.Images.Media.CONTENT_TYPE
+                            flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        }, PICK_FROM_ALBUM_CODE
                     )
                 }
 
@@ -318,19 +355,6 @@ class RegisterShopActivity : BaseActivity(), AnkoLogger, View.OnClickListener {
      */
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-//        if (requestCode == MAIN_PICK_FROM_ALBUM_CODE && resultCode == RESULT_OK && data != null) {
-//            val uri = data.data!!
-//            info(uri)
-//            imageFile = File(getRealPathFromURI(uri))
-//            if (imageFile.isFile) {
-//                // TODO
-//                mainUri = uri.toString()
-//                Glide.with(this)
-//                    .load(imageFile)
-//                    .apply(RequestOptions().centerCrop())
-//                    .into(mainImageView)
-//            }
-//        }
         if (requestCode == PICK_FROM_ALBUM_CODE && resultCode == RESULT_OK && data != null) {
             val uri = data.data!!
             info(uri)

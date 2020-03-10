@@ -40,12 +40,12 @@ class AllReviewActivity : BaseActivity(), View.OnClickListener, AnkoLogger {
             val reviewModelList = intent.getParcelableArrayListExtra<ReviewResult.ReviewModel>(REVIEW_LIST_KEY) ?: ArrayList<ReviewResult.ReviewModel>()
             if(reviewModelList.size == 0) run {
                 noReviewsTextView.visibility = View.VISIBLE
-                recyclerView.overScrollMode = RecyclerView.OVER_SCROLL_NEVER
+                reviewRecyclerView.overScrollMode = RecyclerView.OVER_SCROLL_NEVER
             }
             else addAll(reviewModelList)
             notifyDataSetChanged()
         }
-        recyclerView.run{
+        reviewRecyclerView.run{
             this.adapter = adapter
             layoutManager = LinearLayoutManager(this@AllReviewActivity)
         }

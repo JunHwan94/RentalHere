@@ -22,7 +22,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 const val PICK_FROM_ALBUM_AND_OVERRIDE_CODE = 303
-class EditImageRecyclerAdapter(private val activity: Activity, private val shopIdx: String, private val mainPosition: String): RecyclerView.Adapter<EditImageRecyclerAdapter.ImageViewHolder>() {
+class EditImageRecyclerAdapter(private val activity: Activity, private val shopIdx: String, var mainPosition: String): RecyclerView.Adapter<EditImageRecyclerAdapter.ImageViewHolder>() {
     private val uriList = ArrayList<String>()
     private lateinit var listener: OnItemClickListener
 
@@ -54,7 +54,7 @@ class EditImageRecyclerAdapter(private val activity: Activity, private val shopI
         this.listener = listener
     }
 
-    class ImageViewHolder(itemView: View, val adapter: EditImageRecyclerAdapter, private var activity: Activity, private val shopIdx: String, private val mainPosition: String) : RecyclerView.ViewHolder(itemView){
+    class ImageViewHolder(itemView: View, val adapter: EditImageRecyclerAdapter, private var activity: Activity, private val shopIdx: String, private var mainPosition: String) : RecyclerView.ViewHolder(itemView){
         private lateinit var listener: OnItemClickListener
         private var binding = FragmentImageBinding.bind(itemView)
         private var retrofitService: RetrofitService = RetrofitClient.getRetrofitInstance()!!.create(RetrofitService::class.java)
@@ -66,6 +66,10 @@ class EditImageRecyclerAdapter(private val activity: Activity, private val shopI
             }
             itemView.editButton.setOnClickListener{ editPicture() }
             itemView.deleteButton.setOnClickListener{ deletePicture() }
+            if(mainPosition.toInt() == position + 1){
+//                binding.rootLayout.background = activity.getDrawable(R.drawable.fill_primary)
+//                    mainPosition = (-1).toString()
+            }
         }
 
         fun setItem(uri: String){
@@ -77,7 +81,6 @@ class EditImageRecyclerAdapter(private val activity: Activity, private val shopI
                 binding.editButton.visibility = View.VISIBLE
                 binding.deleteButton.visibility = View.VISIBLE
                 Log.e(mainPosition, position.toString())
-                if(mainPosition.toInt() == position + 1) binding.rootLayout.background = activity.getDrawable(R.drawable.fill_primary)
             }
         }
 
@@ -97,7 +100,7 @@ class EditImageRecyclerAdapter(private val activity: Activity, private val shopI
                     else -> it.alert(it.getString(R.string.dialog_delete_picture)) {
                         positiveButton(it.getString(R.string.confirm)) {
                             Log.d("포지션", position.inc().toString())
-                            requestDelete()
+                            (activity as EditPicturesActivity).deletePicture(position)
                         }
                         negativeButton(it.getString(R.string.cancel)) {}
                     }.show()
@@ -105,27 +108,27 @@ class EditImageRecyclerAdapter(private val activity: Activity, private val shopI
             }
         }
 
-        fun requestDelete(){
-            val map = HashMap<String, Any>().apply {
-                this[FIELD_SHOP_IDX] = shopIdx
-                this[FIELD_SHOP_PIC_NUM] = position.inc().toString()
-            }
-            retrofitService.postDeleteShopPicture(map)
-                .enqueue(object : Callback<BaseResult> {
-                    override fun onResponse(
-                        call: Call<BaseResult>,
-                        response: Response<BaseResult>
-                    ) {
-                        adapter.run {
-                            removeItem(position)
-                            notifyDataSetChanged()
-                        }
-                    }
-
-                    override fun onFailure(call: Call<BaseResult>, t: Throwable) {
-
-                    }
-                })
-        }
+//        fun requestDelete(){
+//            val map = HashMap<String, Any>().apply {
+//                this[FIELD_SHOP_IDX] = shopIdx
+//                this[FIELD_SHOP_PIC_NUM] = position.inc().toString()
+//            }
+//            retrofitService.postDeleteShopPicture(map)
+//                .enqueue(object : Callback<BaseResult> {
+//                    override fun onResponse(
+//                        call: Call<BaseResult>,
+//                        response: Response<BaseResult>
+//                    ) {
+//                        adapter.run {
+//                            removeItem(position)
+//                            notifyDataSetChanged()
+//                        }
+//                    }
+//
+//                    override fun onFailure(call: Call<BaseResult>, t: Throwable) {
+//
+//                    }
+//                })
+//        }
     }
 }

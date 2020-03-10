@@ -4,10 +4,12 @@ import android.app.Activity.RESULT_OK
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.transition.TransitionInflater
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.app.ActivityOptionsCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
@@ -62,6 +64,7 @@ class ShopInfoFragment : Fragment(), AnkoLogger, View.OnClickListener {
             shopModel = it.getParcelable(SHOP_MODEL_KEY)!!
             userType = it.getInt(TYPE_KEY)
         }
+        sharedElementEnterTransition = TransitionInflater.from(context).inflateTransition(android.R.transition.move)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -207,6 +210,7 @@ class ShopInfoFragment : Fragment(), AnkoLogger, View.OnClickListener {
     private fun startEditPicturesActivity() {
         startActivityForResult(Intent(context, EditPicturesActivity::class.java).apply{
             putExtra(SHOP_MODEL_KEY, shopModel)
+            flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
         }, EDIT_PIC_CODE)
     }
 
@@ -269,6 +273,7 @@ class ShopInfoFragment : Fragment(), AnkoLogger, View.OnClickListener {
             addressTextView.text = data.getStringExtra(FIELD_SHOP_ADDRESS)
             telNumTextView.text = data.getStringExtra(FIELD_SHOP_TEL_NUM)
             descTextView.text = data.getStringExtra(FIELD_SHOP_INFO)
+            callback!!.loadShops()
         }
         if(requestCode == EDIT_PIC_CODE && resultCode == RESULT_OK){
             loadShop()

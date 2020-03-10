@@ -5,7 +5,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import androidx.core.view.GravityCompat
+import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dmon.rentalhere.BaseActivity
 import com.dmon.rentalhere.R
@@ -20,6 +22,7 @@ import com.dmon.rentalhere.retrofit.FIELD_USER_IDX
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_owner_main.*
 import kotlinx.android.synthetic.main.activity_owner_main.backButton
+import kotlinx.android.synthetic.main.item_my_shop.view.*
 import kotlinx.android.synthetic.main.nav_header_user_info.view.*
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.error
@@ -35,6 +38,7 @@ class OwnerMainActivity : BaseActivity(), NavigationView.OnNavigationItemSelecte
     override val loggerTag: String get() = OWNER_MAIN_TAG
     private lateinit var shopAdapter: ShopRecyclerViewAdapter
     private lateinit var shopInfoFragment: ShopInfoFragment
+    private var backPressedTime = 0L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -116,7 +120,6 @@ class OwnerMainActivity : BaseActivity(), NavigationView.OnNavigationItemSelecte
                     }
                     addShopButton.visibility = View.GONE
                 }else{
-                    addShopButton.visibility = View.VISIBLE
                 }
             }
 
@@ -169,6 +172,7 @@ class OwnerMainActivity : BaseActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun loadShops(){
+        info("loadShops 실행됨")
         addShopButton.visibility = View.VISIBLE
         recyclerView.visibility = View.GONE
         loadMyShops()
@@ -196,10 +200,21 @@ class OwnerMainActivity : BaseActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onBackPressed() {
-        when{
+        val toast = Toast.makeText(this, getString(R.string.toast_finish_on_twice_pressed), Toast.LENGTH_SHORT)
+        when {
             drawer.isDrawerOpen(GravityCompat.END) -> drawer.closeDrawer(GravityCompat.END)
             container.visibility == View.VISIBLE -> showMain()
-            else -> super.onBackPressed()
+            else -> {
+                if (System.currentTimeMillis() > backPressedTime + 2000) {
+                    backPressedTime = System.currentTimeMillis()
+                    toast.show()
+                    return
+                }
+                if (System.currentTimeMillis() <= backPressedTime + 2000) {
+                    super.onBackPressed()
+                    toast.cancel()
+                }
+            }
         }
     }
 }

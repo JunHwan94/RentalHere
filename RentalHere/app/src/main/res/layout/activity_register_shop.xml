@@ -152,7 +152,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:ems="10"
-                android:hint="@string/toast_type_shop_name"
+                android:hint="@string/hint_type_shop_name"
                 android:inputType="textPersonName"
                 android:singleLine="true"
                 android:textSize="18sp"

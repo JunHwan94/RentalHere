@@ -16,33 +16,39 @@
         android:supportsRtl="true"
         android:theme="@style/WhiteStatusBar"
         android:usesCleartextTraffic="true">
-        <activity android:name=".view.EditPicturesActivity"></activity>
-        <activity android:name=".view.SearchActivity" />
-        <activity android:name=".view.RegisterShopActivity" />
-        <activity android:name=".view.OwnerMainActivity" />
+        <activity android:name=".view.EditPicturesActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"></activity>
+        <activity android:name=".view.SearchActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"/>
+        <activity android:name=".view.RegisterShopActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:windowSoftInputMode="adjustResize" />
+        <activity android:name=".view.OwnerMainActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize" />
         <activity
             android:name=".view.WriteReviewActivity"
-            android:configChanges="orientation|keyboardHidden" />
+            android:configChanges="orientation|keyboardHidden|screenSize" />
         <activity
             android:name=".view.AllReviewActivity"
-            android:configChanges="orientation|keyboardHidden" />
+            android:configChanges="orientation|keyboardHidden|screenSize" />
         <activity
             android:name=".view.FindUserActivity"
-            android:configChanges="orientation|keyboardHidden" />
+            android:configChanges="orientation|keyboardHidden|screenSize" />
         <activity
             android:name=".view.TermsActivity"
-            android:configChanges="orientation|keyboardHidden"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:theme="@style/NoStatusBar" />
         <activity
             android:name=".view.SignUpActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:theme="@style/NoStatusBar" />
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:theme="@style/NoStatusBar"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".view.LoginActivity"
-            android:configChanges="orientation" />
+            android:configChanges="orientation|keyboardHidden|screenSize" />
         <activity
             android:name=".view.SplashActivity"
-            android:configChanges="orientation|keyboardHidden"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:theme="@style/NoStatusBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -52,7 +58,7 @@
         </activity>
         <activity
             android:name=".view.ClientMainActivity"
-            android:configChanges="orientation|keyboardHidden"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:theme="@style/WhiteStatusBar" />
     </application>
 

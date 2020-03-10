@@ -2,18 +2,23 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
+
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:animateLayoutChanges="true">
+
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:animateLayoutChanges="true"
             android:background="@color/white"
             android:nestedScrollingEnabled="true">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:animateLayoutChanges="true"
                 android:background="@color/white"
                 tools:context=".view.ShopInfoFragment">
 
@@ -21,20 +26,21 @@
                     android:id="@+id/imagePager"
                     android:layout_width="match_parent"
                     android:layout_height="280dp"
+                    android:animateLayoutChanges="true"
                     android:orientation="horizontal"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-<!--                <ImageView-->
-<!--                    android:id="@+id/shopProfileImageView"-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="300dp"-->
-<!--                    android:layout_marginTop="15dp"-->
-<!--                    app:layout_constraintEnd_toEndOf="@id/rightGuideline"-->
-<!--                    app:layout_constraintStart_toStartOf="@id/leftGuideline"-->
-<!--                    app:layout_constraintTop_toTopOf="parent"-->
-<!--                    tools:src="@tools:sample/backgrounds/scenic[1]" />-->
+                <!--                <ImageView-->
+                <!--                    android:id="@+id/shopProfileImageView"-->
+                <!--                    android:layout_width="wrap_content"-->
+                <!--                    android:layout_height="300dp"-->
+                <!--                    android:layout_marginTop="15dp"-->
+                <!--                    app:layout_constraintEnd_toEndOf="@id/rightGuideline"-->
+                <!--                    app:layout_constraintStart_toStartOf="@id/leftGuideline"-->
+                <!--                    app:layout_constraintTop_toTopOf="parent"-->
+                <!--                    tools:src="@tools:sample/backgrounds/scenic[1]" />-->
 
                 <TextView
                     android:id="@+id/addressTextView"
@@ -101,6 +107,7 @@
                     android:id="@+id/cardView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:animateLayoutChanges="true"
                     app:cardBackgroundColor="@color/lightGray"
                     app:cardElevation="0dp"
                     app:layout_constraintBottom_toTopOf="@+id/reviewRecyclerView"
