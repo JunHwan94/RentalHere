@@ -4,6 +4,7 @@ import android.app.Activity
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import com.dmon.rentalhere.BaseActivity
 import com.dmon.rentalhere.R
 import com.dmon.rentalhere.model.BaseResult
 import com.dmon.rentalhere.retrofit.*
@@ -15,7 +16,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 const val WRITE_TAG = "WriteReviewActivity"
-class WriteReviewActivity : AppCompatActivity(), View.OnClickListener, AnkoLogger {
+class WriteReviewActivity : BaseActivity(), View.OnClickListener, AnkoLogger {
     override val loggerTag: String get() = WRITE_TAG
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,7 +46,6 @@ class WriteReviewActivity : AppCompatActivity(), View.OnClickListener, AnkoLogge
     }
 
     private fun postReview() {
-        val retrofitService = RetrofitClient.getRetrofitInstance()!!.create(RetrofitService::class.java)
         val map = HashMap<String, Any>().apply{
             this[FIELD_SHOP_IDX] = intent.getStringExtra(FIELD_SHOP_IDX)!!
             this[FIELD_USER_IDX] = intent.getStringExtra(FIELD_USER_IDX)!!

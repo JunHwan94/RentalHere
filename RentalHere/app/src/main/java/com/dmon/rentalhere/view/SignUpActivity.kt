@@ -2,7 +2,6 @@ package com.dmon.rentalhere.view
 
 import android.app.Activity
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -12,22 +11,25 @@ import com.dmon.rentalhere.model.BaseResult
 import com.dmon.rentalhere.model.CustomDialog
 import com.dmon.rentalhere.presenter.TYPE_KEY
 import kotlinx.android.synthetic.main.activity_sign_up.*
-import okhttp3.MediaType
-import okhttp3.RequestBody
 import org.jetbrains.anko.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import android.view.WindowManager
+import com.dmon.rentalhere.BaseActivity
 import com.dmon.rentalhere.model.UserInfoResult
 import com.dmon.rentalhere.presenter.CLIENT_TYPE
 import com.dmon.rentalhere.presenter.OWNER_TYPE
 import com.dmon.rentalhere.retrofit.*
+import kotlinx.android.synthetic.main.activity_sign_up.backButton
+import kotlinx.android.synthetic.main.activity_sign_up.elecCheckBox
+import kotlinx.android.synthetic.main.activity_sign_up.scrollView
+import kotlinx.android.synthetic.main.activity_sign_up.topTextView
 
-class SignUpActivity : AppCompatActivity(), View.OnClickListener, AnkoLogger {
-    override val loggerTag: String get() = "SignUpActivity"
+const val SIGNUP_TAG = "SignUpActivity"
+class SignUpActivity : BaseActivity(), View.OnClickListener, AnkoLogger {
+    override val loggerTag: String get() = SIGNUP_TAG
     private var userType: Int = 0
-    private lateinit var retrofitService: RetrofitService
     private var isIdChecked = false
     private var isSignedUp = false
     private var isEditPage :Boolean = false
@@ -56,7 +58,6 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener, AnkoLogger {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign_up)
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN) // edittext에 포커스 생겼을때 키보드에 가려지지 않게
-        retrofitService = RetrofitClient.getRetrofitInstance()!!.create(RetrofitService::class.java)
         processIntent()
         setViewListener()
     }
@@ -75,10 +76,16 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener, AnkoLogger {
         userType = intent.getIntExtra(TYPE_KEY, 0)
         when(userType){
             CLIENT_TYPE -> topTextView.text = getString(R.string.client_sign_up)
-            OWNER_TYPE -> topTextView.text = getString(R.string.owner_sign_up)
+            OWNER_TYPE -> setOwnerView()
         }
 
-        // 정보 수정이면 뷰 설정
+        setEditView()
+    }
+
+    /**
+     * 정보 수정일 때 뷰 설정
+     */
+    private fun setEditView(){
         val userModel = intent.getParcelableExtra<UserInfoResult.UserModel>(USER_MODEL_KEY)
         userModel?.let{
             isIdChecked = true
@@ -90,7 +97,31 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener, AnkoLogger {
             nameEditText.setText(it.userName)
             cpEditText.setText(it.userCpNum.replace("-", ""))
             emailEditText.setText(it.userEmail)
+            if(userType == CLIENT_TYPE) checkJobKinds(userModel)
         }
+    }
+
+    private fun checkJobKinds(userModel: UserInfoResult.UserModel){
+        userModel.userJobKinds.run{
+            if(contains(getString(R.string.electric))) elecCheckBox.isChecked = true
+            if(contains(getString(R.string.fireFighting))) fireCheckBox.isChecked = true
+            if(contains(getString(R.string.iron))) ironCheckBox.isChecked = true
+            if(contains(getString(R.string.plastere))) plasCheckBox.isChecked = true
+            if(contains(getString(R.string.etc))) etcCheckBox.isChecked = true
+        }
+    }
+
+    /**
+     * 업주일 때 뷰 설정
+     */
+    private fun setOwnerView(){
+        topTextView.text = getString(R.string.owner_sign_up)
+        jobKindsTextView.visibility = View.GONE
+        elecCheckBox.visibility = View.GONE
+        fireCheckBox.visibility = View.GONE
+        ironCheckBox.visibility = View.GONE
+        plasCheckBox.visibility = View.GONE
+        etcCheckBox.visibility = View.GONE
     }
 
     override fun onClick(v: View?) {
@@ -113,7 +144,12 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener, AnkoLogger {
             pwEditText.text.toString() != pwEditText2.text.toString() -> toast(getString(R.string.toast_type_pw2))
             nameEditText.text.isEmpty() -> toast(getString(R.string.toast_type_name))
             cpEditText.text.isEmpty() or (cpEditText.text.length < 11) -> toast(getString(R.string.toast_type_cp))
-            emailEditText.text.isEmpty() -> toast(getString(R.string.toast_type_email))
+//            emailEditText.text.isEmpty() -> toast(getString(R.string.toast_type_email))
+            !elecCheckBox.isChecked &&
+                    !fireCheckBox.isChecked &&
+                    !ironCheckBox.isChecked &&
+                    !plasCheckBox.isChecked &&
+                    !etcCheckBox.isChecked -> toast(getString(R.string.toast_check_jobs))
             !isIdChecked -> toast(getString(R.string.toast_check_dup))
             else -> {
                 userId = idEditText.text.toString()
@@ -126,10 +162,22 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener, AnkoLogger {
                     this[FIELD_USER_NAME] = userName
                     this[FIELD_USER_EMAIL] = userEmail
                     this[FIELD_USER_CP_NUM] = userCpNum
+//                    this[FIELD_USER_COMPANY] =
+                    this[FIELD_USER_JOB_KINDS] = getJobKinds()
                 }
                 if(isEditPage) postEditUserInfo(map) else postSignUp(map)
             }
         }
+    }
+
+    private fun getJobKinds(): String{
+        var s = ""
+        if(elecCheckBox.isChecked) s += elecCheckBox.text.toString()
+        if(fireCheckBox.isChecked) s += fireCheckBox.text.toString()
+        if(ironCheckBox.isChecked) s += ironCheckBox.text.toString()
+        if(plasCheckBox.isChecked) s += plasCheckBox.text.toString()
+        if(etcCheckBox.isChecked) s += etcCheckBox.text.toString()
+        return s
     }
 
     /**
@@ -143,7 +191,7 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener, AnkoLogger {
                     "Y" -> {
                         toast(getString(R.string.edit_complete))
                         setResult(Activity.RESULT_OK, Intent().apply{ putExtra(USER_MODEL_KEY, UserInfoResult.UserModel(
-                            userId, userName, userEmail, userCpNum
+                            userId, userName, userEmail, userCpNum, getJobKinds()
                         )) })
                         finish()
                     }
@@ -213,8 +261,6 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener, AnkoLogger {
             })
         }else toast(getString(R.string.toast_type_id))
     }
-
-    val getRequestBody: (String) -> RequestBody = { RequestBody.create(MediaType.parse("text/plain"), it) }
 
     override fun onBackPressed() {
         if(isSignedUp) startLoginActivity()

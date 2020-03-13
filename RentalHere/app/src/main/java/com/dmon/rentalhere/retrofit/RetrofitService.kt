@@ -37,6 +37,7 @@ const val FIELD_USER_NAME = "mem_username"
 const val FIELD_USER_EMAIL = "mem_email"
 const val FIELD_USER_CP_NUM = "mem_phone"
 const val FIELD_USER_DIV = "mem_manager"
+const val FIELD_USER_JOB_KINDS = "mem_type"
 
 const val FIELD_SHOP_IDX = "cs_idx"
 const val FIELD_SHOP_MANAGER_ID = "mem_id"

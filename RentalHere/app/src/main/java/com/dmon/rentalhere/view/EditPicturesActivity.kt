@@ -271,7 +271,7 @@ class EditPicturesActivity : BaseActivity(), View.OnClickListener, AnkoLogger {
         super.onActivityResult(requestCode, resultCode, data)
         if(requestCode == PICK_FROM_ALBUM_CODE && resultCode == RESULT_OK && data != null){
             GlobalScope.launch {
-                val file = resizedFile(this@EditPicturesActivity, getRealPathFromURI(data.data!!), MIN_IMAGE_SIZE)
+                val file = getResizedFile(this@EditPicturesActivity, getRealPathFromURI(data.data!!), MIN_IMAGE_SIZE)
 //            info("파일 크기 = ${file.length()}")
                 uploadFileMap[adapter.itemCount + 1] = file
                 adapter.run {
@@ -282,7 +282,7 @@ class EditPicturesActivity : BaseActivity(), View.OnClickListener, AnkoLogger {
         }
         if(requestCode == PICK_FROM_ALBUM_AND_OVERRIDE_CODE && resultCode == Activity.RESULT_OK && data != null){
             GlobalScope.launch {
-                val file = resizedFile(this@EditPicturesActivity, getRealPathFromURI(data.data!!), MIN_IMAGE_SIZE)
+                val file = getResizedFile(this@EditPicturesActivity, getRealPathFromURI(data.data!!), MIN_IMAGE_SIZE)
                 uploadFileMap[positionToEdit + 1] = file
                 adapter.run {
                     replaceItem(positionToEdit, data.data.toString())
@@ -291,12 +291,6 @@ class EditPicturesActivity : BaseActivity(), View.OnClickListener, AnkoLogger {
             }
         }
     }
-
-    /**
-     * RequestBody 객체를 반환함
-     * @param value 요청 시 보낼 필드에 따른 값
-     */
-    private fun getRequestBody(value: String) = RequestBody.create(MediaType.parse("text/plain"), value)
 
     fun editPicture(position: Int){
         positionToEdit = position

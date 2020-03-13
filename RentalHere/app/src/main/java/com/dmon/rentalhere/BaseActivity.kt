@@ -17,6 +17,8 @@ import com.dmon.rentalhere.retrofit.RetrofitClient
 import com.dmon.rentalhere.retrofit.RetrofitService
 import com.dmon.rentalhere.view.*
 import kotlinx.android.synthetic.main.activity_client_main.*
+import okhttp3.MediaType
+import okhttp3.RequestBody
 import java.io.*
 import java.util.*
 const val MAX_IMAGE_SIZE = 1024 * 1024
@@ -76,6 +78,13 @@ abstract class BaseActivity : AppCompatActivity(){
         finish()
     }
 
+
+    /**
+     * 요청 시 보낼 필드에 따른 값을 넣으면
+     * RequestBody 객체를 반환함
+     */
+    val getRequestBody: (String) -> RequestBody = { RequestBody.create(MediaType.parse("text/plain"), it) }
+
     /**
      * 사진 크기 줄이기
      * @param context: Context
@@ -83,7 +92,7 @@ abstract class BaseActivity : AppCompatActivity(){
      * @param resize: 반환하는 파일 최소 크기
      * @return 처리한 비트맵으로 캐시에 저장된 파일 반환
      */
-    fun resizedFile(context: Context, uri: String, resize: Int): File {
+    fun getResizedFile(context: Context, uri: String, resize: Int): File {
         val options = BitmapFactory.Options()
         /************************************ 추가한 부분 *************************/
         options.inJustDecodeBounds = true

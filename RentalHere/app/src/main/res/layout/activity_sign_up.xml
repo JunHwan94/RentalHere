@@ -37,8 +37,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/topTextView"
-        tools:visibility="gone">
+        app:layout_constraintTop_toBottomOf="@+id/topTextView">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -81,7 +80,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/emailEditText" />
+                app:layout_constraintTop_toBottomOf="@+id/elecCheckBox" />
 
             <TextView
                 android:id="@+id/textView8"
@@ -90,8 +89,8 @@
                 android:layout_marginTop="15dp"
                 android:text="@string/email"
                 android:textSize="18sp"
-                app:layout_constraintTop_toBottomOf="@+id/cpEditText"
-                tools:layout_editor_absoluteX="15dp" />
+                app:layout_constraintStart_toStartOf="@+id/cpEditText"
+                app:layout_constraintTop_toBottomOf="@+id/cpEditText" />
 
             <EditText
                 android:id="@+id/emailEditText"
@@ -216,6 +215,70 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView4" />
+
+            <CheckBox
+                android:id="@+id/elecCheckBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="@+id/jobKindsTextView"
+                app:layout_constraintTop_toBottomOf="@+id/jobKindsTextView"
+                android:text="@string/electric" />
+
+            <CheckBox
+                android:id="@+id/fireCheckBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="5dp"
+                android:textSize="18sp"
+                app:layout_constraintStart_toEndOf="@+id/elecCheckBox"
+                app:layout_constraintTop_toBottomOf="@+id/jobKindsTextView"
+                android:text="@string/fireFighting" />
+
+            <CheckBox
+                android:id="@+id/ironCheckBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="5dp"
+                android:textSize="18sp"
+                app:layout_constraintStart_toEndOf="@+id/fireCheckBox"
+                app:layout_constraintTop_toBottomOf="@+id/jobKindsTextView"
+                android:text="@string/iron" />
+
+            <CheckBox
+                android:id="@+id/plasCheckBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="5dp"
+                android:textSize="18sp"
+                app:layout_constraintStart_toEndOf="@+id/ironCheckBox"
+                app:layout_constraintTop_toBottomOf="@+id/jobKindsTextView"
+                android:text="@string/plastere" />
+
+            <CheckBox
+                android:id="@+id/etcCheckBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="5dp"
+                android:textSize="18sp"
+                app:layout_constraintStart_toEndOf="@+id/plasCheckBox"
+                app:layout_constraintTop_toBottomOf="@+id/jobKindsTextView"
+                android:text="@string/etc" />
+
+            <TextView
+                android:id="@+id/jobKindsTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:text="@string/job_kinds"
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="@+id/emailEditText"
+                app:layout_constraintTop_toBottomOf="@+id/emailEditText" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 

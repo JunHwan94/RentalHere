@@ -127,4 +127,11 @@
     <string name="aerialPlatform">고소작업대</string>
     <string name="forkLift">지게차</string>
     <string name="towerCrane">타워크레인</string>
+    <string name="job_kinds">직종</string>
+    <string name="electric">전기</string>
+    <string name="toast_check_jobs">직종을 하나 이상 선택하세요</string>
+    <string name="etc">기타</string>
+    <string name="plastere">미장</string>
+    <string name="iron">철근</string>
+    <string name="fireFighting">소방</string>
 </resources>

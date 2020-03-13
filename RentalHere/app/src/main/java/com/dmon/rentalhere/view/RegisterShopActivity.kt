@@ -258,7 +258,7 @@ class RegisterShopActivity : BaseActivity(), AnkoLogger, View.OnClickListener {
                     info("uri " + imageAdapter.getItem(i))
                     val realPath = getRealPathFromURI(Uri.parse(imageAdapter.getItem(i)))
 //                    info("실제경로 " + realPath)
-                    val file = resizedFile(this@RegisterShopActivity, realPath, MIN_IMAGE_SIZE)
+                    val file = getResizedFile(this@RegisterShopActivity, realPath, MIN_IMAGE_SIZE)
                     val requestBody = RequestBody.create(MediaType.parse(""), file)
                     info("file${i + 1}")
                     val part = MultipartBody.Part.createFormData("file${i + 1}", file.name, requestBody)
@@ -318,11 +318,6 @@ class RegisterShopActivity : BaseActivity(), AnkoLogger, View.OnClickListener {
 
         return Pair(null, null)
     }
-
-    /**
-     * RequestBody 얻기
-     */
-    private fun getRequestBody(value: String) = RequestBody.create(MediaType.parse("text/plain"), value)
 
     /**
      * imageAdapter 설정
@@ -420,7 +415,7 @@ class RegisterShopActivity : BaseActivity(), AnkoLogger, View.OnClickListener {
             GlobalScope.launch {
                 val uri = data.data!!
                 info("받은 URI : $uri")
-                val bcFile = resizedFile(this@RegisterShopActivity, getRealPathFromURI(uri), MIN_IMAGE_SIZE)
+                val bcFile = getResizedFile(this@RegisterShopActivity, getRealPathFromURI(uri), MIN_IMAGE_SIZE)
                 if (bcFile.isFile){
                     isBcPicked = true
                     info("파일 크기 = ${bcFile.length()}")
