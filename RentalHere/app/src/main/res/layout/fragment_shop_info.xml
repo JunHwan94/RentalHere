@@ -188,7 +188,7 @@
                     android:id="@+id/space"
                     android:layout_width="wrap_content"
                     android:layout_height="20dp"
-                    app:layout_constraintTop_toBottomOf="@+id/descTextView"
+                    app:layout_constraintTop_toBottomOf="@+id/bcImageView"
                     tools:layout_editor_absoluteX="178dp" />
 
                 <Button
@@ -235,6 +235,15 @@
                     android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="@+id/imagePager"
                     app:layout_constraintEnd_toEndOf="parent" />
+
+                <ImageView
+                    android:id="@+id/bcImageView"
+                    android:layout_width="280dp"
+                    android:layout_height="180dp"
+                    android:layout_marginTop="15dp"
+                    app:layout_constraintStart_toStartOf="@+id/leftGuideline"
+                    app:layout_constraintTop_toBottomOf="@+id/imageView4"
+                    tools:srcCompat="@tools:sample/avatars" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>

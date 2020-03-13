@@ -20,7 +20,7 @@ import kotlinx.android.synthetic.main.activity_client_main.*
 import java.io.*
 import java.util.*
 const val MAX_IMAGE_SIZE = 1024 * 1024
-open class BaseActivity : AppCompatActivity(){
+abstract class BaseActivity : AppCompatActivity(){
     lateinit var imm: InputMethodManager
     lateinit var retrofitService: RetrofitService
     lateinit var userModel: UserInfoResult.UserModel

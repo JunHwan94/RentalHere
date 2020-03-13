@@ -22,6 +22,14 @@ import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.TedPermission
 import kotlinx.android.synthetic.main.activity_client_main.*
 import kotlinx.android.synthetic.main.activity_client_main.backButton
+import kotlinx.android.synthetic.main.activity_client_main.container
+import kotlinx.android.synthetic.main.activity_client_main.container2
+import kotlinx.android.synthetic.main.activity_client_main.drawer
+import kotlinx.android.synthetic.main.activity_client_main.menuButton
+import kotlinx.android.synthetic.main.activity_client_main.navigationView
+import kotlinx.android.synthetic.main.activity_client_main.shopTextView
+import kotlinx.android.synthetic.main.activity_client_main.topImageView
+import kotlinx.android.synthetic.main.activity_owner_main.*
 import kotlinx.android.synthetic.main.nav_header_user_info.view.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -156,11 +164,21 @@ class ClientMainActivity : BaseActivity(), View.OnClickListener, AnkoLogger, Nav
     /**
      *  내비게이션 뷰 아이템 이벤트
      */
+    //todo 바꾸기
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
-            R.id.nav_edit_info -> editUser(userModel)
-            R.id.nav_review -> showAllReview()
-            R.id.nav_log_out -> logOut()
+            R.id.nav_edit_info -> {
+                drawer.closeDrawer(GravityCompat.END)
+                editUser(userModel)
+            }
+            R.id.nav_review -> {
+                drawer.closeDrawer(GravityCompat.END)
+                showAllReview()
+            }
+            R.id.nav_log_out -> {
+                drawer.closeDrawer(GravityCompat.END)
+                logOut()
+            }
         }
         return true
     }

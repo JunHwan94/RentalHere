@@ -7,7 +7,6 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.core.view.GravityCompat
-import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dmon.rentalhere.BaseActivity
 import com.dmon.rentalhere.R
@@ -22,7 +21,6 @@ import com.dmon.rentalhere.retrofit.FIELD_USER_IDX
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_owner_main.*
 import kotlinx.android.synthetic.main.activity_owner_main.backButton
-import kotlinx.android.synthetic.main.item_my_shop.view.*
 import kotlinx.android.synthetic.main.nav_header_user_info.view.*
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.error
@@ -65,7 +63,7 @@ class OwnerMainActivity : BaseActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     /**
-     * 매장 정보 화면
+     * 업체 정보 화면
      */
     fun setFragment(shopModel: ShopResult.ShopModel){
         shopTextView.text = shopModel.shopName
@@ -104,7 +102,7 @@ class OwnerMainActivity : BaseActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     /**
-     * 내 매장 불러오기
+     * 내 업체 불러오기
      */
     private fun loadMyShops() {
         info("loadMyShops called")
@@ -120,6 +118,7 @@ class OwnerMainActivity : BaseActivity(), NavigationView.OnNavigationItemSelecte
                     }
                     addShopButton.visibility = View.GONE
                 }else{
+                    addShopButton.visibility = View.VISIBLE
                 }
             }
 
@@ -130,7 +129,7 @@ class OwnerMainActivity : BaseActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     /**
-     * 매장 등록
+     * 업체 등록
      */
     private fun startRegisterShopActivity() {
         info("startRegisterShopActivity called")
@@ -142,11 +141,21 @@ class OwnerMainActivity : BaseActivity(), NavigationView.OnNavigationItemSelecte
     /**
      *  내비게이션 뷰 아이템 이벤트
      */
+    //todo 바꾸기
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
-            R.id.nav_edit_info -> editUser(userModel)
-            R.id.nav_register_shop -> startRegisterShopActivity()
-            R.id.nav_log_out -> logOut()
+            R.id.nav_edit_info -> {
+                drawer.closeDrawer(GravityCompat.END)
+                editUser(userModel)
+            }
+            R.id.nav_register_shop -> {
+                drawer.closeDrawer(GravityCompat.END)
+                startRegisterShopActivity()
+            }
+            R.id.nav_log_out -> {
+                drawer.closeDrawer(GravityCompat.END)
+                logOut()
+            }
         }
         return true
     }
@@ -171,9 +180,10 @@ class OwnerMainActivity : BaseActivity(), NavigationView.OnNavigationItemSelecte
         addShopButton.setOnClickListener(this)
     }
 
+
     override fun loadShops(){
         info("loadShops 실행됨")
-        addShopButton.visibility = View.VISIBLE
+//        addShopButton.visibility = View.VISIBLE
         recyclerView.visibility = View.GONE
         loadMyShops()
     }

@@ -44,7 +44,6 @@ class EditImageRecyclerAdapter(private val activity: Activity, private val shopI
     override fun getItemCount(): Int = uriList.size
     fun addItem(uri: String){
         if(uri != "") uriList.add(uri)
-//        if(uriList.size == 6) uriList.removeAt(0)
     }
     fun removeItem(position: Int) = uriList.removeAt(position)
     fun replaceItem(position: Int, uri: String){ uriList[position] = uri }
@@ -57,7 +56,6 @@ class EditImageRecyclerAdapter(private val activity: Activity, private val shopI
     class ImageViewHolder(itemView: View, val adapter: EditImageRecyclerAdapter, private var activity: Activity, private val shopIdx: String, private var mainPosition: String) : RecyclerView.ViewHolder(itemView){
         private lateinit var listener: OnItemClickListener
         private var binding = FragmentImageBinding.bind(itemView)
-        private var retrofitService: RetrofitService = RetrofitClient.getRetrofitInstance()!!.create(RetrofitService::class.java)
 
         init {
             itemView.setOnClickListener {
@@ -66,10 +64,6 @@ class EditImageRecyclerAdapter(private val activity: Activity, private val shopI
             }
             itemView.editButton.setOnClickListener{ editPicture() }
             itemView.deleteButton.setOnClickListener{ deletePicture() }
-            if(mainPosition.toInt() == position + 1){
-//                binding.rootLayout.background = activity.getDrawable(R.drawable.fill_primary)
-//                    mainPosition = (-1).toString()
-            }
         }
 
         fun setItem(uri: String){
@@ -81,6 +75,11 @@ class EditImageRecyclerAdapter(private val activity: Activity, private val shopI
                 binding.editButton.visibility = View.VISIBLE
                 binding.deleteButton.visibility = View.VISIBLE
                 Log.e(mainPosition, position.toString())
+                // todo 테스트
+                if(mainPosition.toInt() == position + 1){
+                    binding.rootLayout.background = activity.getDrawable(R.drawable.fill_primary)
+//                    mainPosition = (-1).toString()
+                }
             }
         }
 

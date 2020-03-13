@@ -39,7 +39,7 @@ class EditPicturesActivity : BaseActivity(), View.OnClickListener, AnkoLogger {
     private lateinit var shopModel: ShopResult.ShopModel
     private lateinit var adapter: EditImageRecyclerAdapter
     private var isChanged = false
-    private var isMainSelected = false
+    private var isMainSelected = true // todo 테스트
     private var mainPosition = 0
     private var positionToEdit = 0
     private lateinit var uploadFileMap: HashMap<Int, File>
@@ -89,7 +89,7 @@ class EditPicturesActivity : BaseActivity(), View.OnClickListener, AnkoLogger {
                 false -> {
                     background = getDrawable(R.drawable.fill_primary)
                     isMainSelected = true
-                    this@EditPicturesActivity.mainPosition = position + 1
+                    this@EditPicturesActivity.mainPosition = position
                     adapter.mainPosition = position.toString()
                 }
             }

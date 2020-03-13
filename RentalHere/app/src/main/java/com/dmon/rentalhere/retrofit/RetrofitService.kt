@@ -28,6 +28,7 @@ const val EDIT_SHOP_METHOD = "up_company"
 const val EDIT_SHOP_PICTURE_METHOD = "fix_poto"
 const val DELETE_SHOP_PICTURE_METHOD = "del_poto"
 const val EDIT_SHOP_MAIN_PICTURE_METHOD = "pick_poto"
+
 //FIELDS
 const val FIELD_USER_IDX = "mem_id"
 const val FIELD_USER_ID = "mem_userid"
@@ -46,10 +47,11 @@ const val FIELD_SHOP_KEYWORD = "cs_keyword"
 const val FIELD_SHOP_INFO = "cs_info"
 const val FIELD_SHOP_LAT = "cs_lat"
 const val FIELD_SHOP_LNG = "cs_lng"
-const val FIELD_SHOP_PHOTO1_URL = "poto1_url"
-const val FIELD_SHOP_PHOTO2_URL = "poto2_url"
 const val FIELD_SHOP_PIC_NUM = "num"
 const val FIELD_SHOP_MAIN_PIC_NUM = "cs_main_poto"
+const val FIELD_SHOP_BC_PIC = "file_bc"
+const val FIELD_SHOP_ITEM_KINDS = "cs_keyword"
+const val FIELD_SHOP_BC_PIC_URL = "poto_bc_url"
 
 const val FIELD_REVIEW_CONTENT = "cr_text"
 const val FIELD_REVIEW_SCORE = "cr_score"
@@ -95,7 +97,7 @@ interface RetrofitService {
     @POST(SERVER_URL + FIND_USER_PW_METHOD)
     fun postFindUserPW(@FieldMap param: HashMap<String, Any>): Call<UserInfoResult>
 
-    // 매장 정보 요청
+    // 업체 정보 요청
     @FormUrlEncoded
     @POST(SERVER_URL + GET_SHOP_METHOD)
     fun postGetShop(@FieldMap param: HashMap<String, Any>): Call<ShopResult>
@@ -115,19 +117,20 @@ interface RetrofitService {
     @POST(SERVER_URL + POST_REVIEW_METHOD)
     fun postReview(@FieldMap param: HashMap<String, Any>): Call<BaseResult>
 
-    // 내 매장 목록 요청
+    // 내 업체 목록 요청
     @FormUrlEncoded
     @POST(SERVER_URL + GET_MY_SHOPS_METHOD)
     fun postGetMyShops(@FieldMap param: HashMap<String, Any>): Call<MyShopsResult>
 
+    // 업체 등록
     /** 이미지 업로드를 위해 @Multipart 사용  */
     @Multipart
     @POST(SERVER_URL + REGISTER_SHOP_METHOD)
     fun postRegisterShop(@Part(FIELD_USER_IDX) userIdx: RequestBody,
                          @Part(FIELD_SHOP_NAME) shopName: RequestBody,
                          @Part(FIELD_SHOP_TEL_NUM) shopTelNum: RequestBody,
-                         @Part(FIELD_SHOP_KEYWORD) shopKeyword: RequestBody,
-                         @Part(FIELD_SHOP_INFO) shopInfo: RequestBody,
+                         @Part(FIELD_SHOP_KEYWORD) shopItemKinds: RequestBody,
+//                         @Part(FIELD_SHOP_INFO) shopInfo: RequestBody,
                          @Part(FIELD_SHOP_ADDRESS) shopAddress: RequestBody,
                          @Part(FIELD_SHOP_LAT) shopLatitude: RequestBody,
                          @Part(FIELD_SHOP_LNG) shopLongitude: RequestBody,
@@ -135,7 +138,8 @@ interface RetrofitService {
                          @Part part2: MultipartBody.Part? = null,
                          @Part part3: MultipartBody.Part? = null,
                          @Part part4: MultipartBody.Part? = null,
-                         @Part part5: MultipartBody.Part? = null
+                         @Part part5: MultipartBody.Part? = null,
+                         @Part bcPart: MultipartBody.Part? = null
     ): Call<BaseResult>
 
     // 리뷰 삭제
@@ -143,29 +147,38 @@ interface RetrofitService {
     @POST(SERVER_URL + DELETE_REVIEW_METHOD)
     fun postDeleteReview(@FieldMap param: HashMap<String, Any>): Call<BaseResult>
 
-    // 매장 삭제
+    // 업체 삭제
     @FormUrlEncoded
     @POST(SERVER_URL + DELETE_SHOP_METHOD)
     fun postDeleteShop(@FieldMap param: HashMap<String, Any>): Call<BaseResult>
 
-    // 매장 수정
-    @FormUrlEncoded
+    // 업체 수정
+    @Multipart
     @POST(SERVER_URL + EDIT_SHOP_METHOD)
-    fun postEditShop(@FieldMap param: HashMap<String, Any>): Call<BaseResult>
+    fun postEditShop(@Part(FIELD_SHOP_IDX) shopIdx: RequestBody,
+                     @Part(FIELD_SHOP_NAME) shopName: RequestBody,
+                     @Part(FIELD_SHOP_TEL_NUM) shopTelNum: RequestBody,
+                     @Part(FIELD_SHOP_KEYWORD) shopKeyword: RequestBody,
+                     @Part(FIELD_SHOP_ADDRESS) shopAddress: RequestBody,
+                     @Part(FIELD_SHOP_LAT) shopLatitude: RequestBody,
+                     @Part(FIELD_SHOP_LNG) shopLongitude: RequestBody,
+                     @Part bcPart: MultipartBody.Part? = null,
+                     @Part(FIELD_SHOP_ITEM_KINDS) shopItemKinds: RequestBody
+    ): Call<BaseResult>
 
-    // 매장 사진 수정
+    // 업체 사진 수정
     @Multipart
     @POST(SERVER_URL + EDIT_SHOP_PICTURE_METHOD)
     fun postEditShopPicture(@Part(FIELD_SHOP_IDX) shopIdx: RequestBody,
                         @Part(FIELD_SHOP_PIC_NUM) picNum: RequestBody,
                         @Part part: MultipartBody.Part): Call<BaseResult>
 
-    // 매장 사진 삭제
+    // 업체 사진 삭제
     @FormUrlEncoded
     @POST(SERVER_URL + DELETE_SHOP_PICTURE_METHOD)
     fun postDeleteShopPicture(@FieldMap param: HashMap<String, Any>): Call<BaseResult>
 
-    // 매장 메인 사진 설정
+    // 업체 메인 사진 설정
     @FormUrlEncoded
     @POST(SERVER_URL + EDIT_SHOP_MAIN_PICTURE_METHOD)
     fun postEditShopMainPicture(@FieldMap param: HashMap<String, Any>): Call<BaseResult>

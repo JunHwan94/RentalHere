@@ -15,6 +15,8 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager.widget.ViewPager
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 
 import com.dmon.rentalhere.R
 import com.dmon.rentalhere.adapter.ReviewRecyclerViewAdapter
@@ -64,7 +66,7 @@ class ShopInfoFragment : Fragment(), AnkoLogger, View.OnClickListener {
             shopModel = it.getParcelable(SHOP_MODEL_KEY)!!
             userType = it.getInt(TYPE_KEY)
         }
-        sharedElementEnterTransition = TransitionInflater.from(context).inflateTransition(android.R.transition.move)
+//        sharedElementEnterTransition = TransitionInflater.from(context).inflateTransition(android.R.transition.move)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -135,11 +137,11 @@ class ShopInfoFragment : Fragment(), AnkoLogger, View.OnClickListener {
     private fun setView(){
         binding.addressTextView.text = shopModel.shopAddress
         binding.telNumTextView.text = shopModel.shopTelNum
-        binding.descTextView.text = shopModel.shopInfo
-//        Glide.with(context!!)
-//            .load(shopModel.shopProfileImageUrl)
-//            .apply(RequestOptions().centerInside())
-//            .into(binding.shopProfileImageView)
+        binding.descTextView.text = shopModel.shopItemKinds
+        Glide.with(context!!)
+            .load(shopModel.shopBcImageUrl)
+            .apply(RequestOptions().centerCrop())
+            .into(binding.bcImageView)
         if(userType == OWNER_TYPE) {
             binding.editPicturesButton.visibility = View.VISIBLE
             binding.bottomButton.text = getString(R.string.edit_shop_info)
@@ -149,7 +151,7 @@ class ShopInfoFragment : Fragment(), AnkoLogger, View.OnClickListener {
     }
 
     /**
-     * 매장사진 뷰페이저로 보여주기
+     * 업체사진 뷰페이저로 보여주기
      */
     private fun setImagePagerAdapter() {
         val adapter = ListPagerAdapter(childFragmentManager)
@@ -197,7 +199,7 @@ class ShopInfoFragment : Fragment(), AnkoLogger, View.OnClickListener {
             binding.bottomButton -> {
                 when(userType){
                     CLIENT_TYPE -> startWriteReviewActivity() // 리뷰 쓰기
-                    OWNER_TYPE -> startEditShopActivity()// 매장 정보 수정
+                    OWNER_TYPE -> startEditShopActivity()// 업체 정보 수정
                 }
             }
             // 리뷰 목록
@@ -215,7 +217,7 @@ class ShopInfoFragment : Fragment(), AnkoLogger, View.OnClickListener {
     }
 
     /**
-     * 매장 삭제 요청
+     * 업체 삭제 요청
      */
     private fun deleteShop() {
         alert(getString(R.string.dialog_delete_shop)){
@@ -270,9 +272,10 @@ class ShopInfoFragment : Fragment(), AnkoLogger, View.OnClickListener {
         }
         if(requestCode == EDIT_SHOP_CODE && resultCode == RESULT_OK && data != null){
             callback!!.setShopName(data.getStringExtra(FIELD_SHOP_NAME)!!)
-            addressTextView.text = data.getStringExtra(FIELD_SHOP_ADDRESS)
-            telNumTextView.text = data.getStringExtra(FIELD_SHOP_TEL_NUM)
-            descTextView.text = data.getStringExtra(FIELD_SHOP_INFO)
+//            addressTextView.text = data.getStringExtra(FIELD_SHOP_ADDRESS)
+//            telNumTextView.text = data.getStringExtra(FIELD_SHOP_TEL_NUM)
+//            descTextView.text = data.getStringExtra(FIELD_SHOP_INFO)
+            loadShop()
             callback!!.loadShops()
         }
         if(requestCode == EDIT_PIC_CODE && resultCode == RESULT_OK){
@@ -288,6 +291,7 @@ class ShopInfoFragment : Fragment(), AnkoLogger, View.OnClickListener {
             override fun onResponse(call: Call<ShopResult>, response: Response<ShopResult>) {
                 val shopModel = response.body()!!.shopModel
                 if(shopModel.result == "Y"){
+                    info("뷰 리셋")
                     this@ShopInfoFragment.shopModel = shopModel
                     setView()
                 }

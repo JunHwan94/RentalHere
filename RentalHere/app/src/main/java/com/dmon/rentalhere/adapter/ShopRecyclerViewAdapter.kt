@@ -71,7 +71,7 @@ class ShopRecyclerViewAdapter: RecyclerView.Adapter<ShopRecyclerViewAdapter.Shop
             binding.shopNameTextView.text = shopModel.shopName
             binding.addressTextView.text = shopModel.shopAddress
             binding.telNumTextView.text = shopModel.shopTelNum
-            binding.descTextView.text = shopModel.shopInfo
+            binding.descTextView.text = shopModel.shopItemKinds
         }
 
         fun setOnItemClickListener(listener: OnItemClickListener){

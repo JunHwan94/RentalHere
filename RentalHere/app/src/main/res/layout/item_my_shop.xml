@@ -33,7 +33,7 @@
             android:textSize="24sp"
             app:layout_constraintStart_toStartOf="@+id/shopProfileImageView"
             app:layout_constraintTop_toBottomOf="@+id/shopProfileImageView"
-            tools:text="매장명" />
+            tools:text="업체명" />
 
         <TextView
             android:id="@+id/addressTextView"
@@ -61,7 +61,7 @@
 
         <TextView
             android:id="@+id/descTextView"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
@@ -74,7 +74,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/imageView6"
             app:layout_constraintTop_toBottomOf="@+id/telNumTextView"
-            tools:text="소개" />
+            tools:text="장비종류" />
 
         <ImageView
             android:id="@+id/imageView6"
@@ -84,5 +84,6 @@
             app:layout_constraintStart_toStartOf="@+id/telNumTextView"
             app:layout_constraintTop_toBottomOf="@+id/telNumTextView"
             app:srcCompat="@drawable/ic_filter_none" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

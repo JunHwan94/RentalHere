@@ -28,7 +28,7 @@
             android:textSize="16sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/divider"
-            tools:text="아이디 또는 매장명" />
+            tools:text="아이디 또는 업체명" />
 
         <TextView
             android:id="@+id/addressTextView"
@@ -39,7 +39,7 @@
             android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/idOrShopTextView"
-            tools:text="아이디 또는 매장명" />
+            tools:text="주소" />
 
         <RatingBar
             android:id="@+id/ratingBar"
