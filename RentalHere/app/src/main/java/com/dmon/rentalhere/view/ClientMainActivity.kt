@@ -33,6 +33,7 @@ import kotlinx.android.synthetic.main.activity_owner_main.*
 import kotlinx.android.synthetic.main.nav_header_user_info.view.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.error
 import org.jetbrains.anko.info
@@ -65,6 +66,11 @@ class ClientMainActivity : BaseActivity(), View.OnClickListener, AnkoLogger, Nav
 
         setPermission()
         setViewListener()
+    }
+
+    override fun onStop() {
+        drawer.closeDrawer(GravityCompat.END)
+        super.onStop()
     }
 
     /**
@@ -168,15 +174,12 @@ class ClientMainActivity : BaseActivity(), View.OnClickListener, AnkoLogger, Nav
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
             R.id.nav_edit_info -> {
-                drawer.closeDrawer(GravityCompat.END)
                 editUser(userModel)
             }
             R.id.nav_review -> {
-                drawer.closeDrawer(GravityCompat.END)
                 showAllReview()
             }
             R.id.nav_log_out -> {
-                drawer.closeDrawer(GravityCompat.END)
                 logOut()
             }
         }

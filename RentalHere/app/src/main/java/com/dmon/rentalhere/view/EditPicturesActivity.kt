@@ -69,6 +69,7 @@ class EditPicturesActivity : BaseActivity(), View.OnClickListener, AnkoLogger {
             setOnItemClickListener(object : EditImageRecyclerAdapter.OnItemClickListener {
                 override fun onItemClick(holder: EditImageRecyclerAdapter.ImageViewHolder, view: View, position: Int) {
                     processItemView(holder, position)
+                    mainPosition = position.toString()
                 }
             })
         }

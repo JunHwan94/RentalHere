@@ -21,6 +21,11 @@ import com.dmon.rentalhere.retrofit.FIELD_USER_IDX
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_owner_main.*
 import kotlinx.android.synthetic.main.activity_owner_main.backButton
+import kotlinx.android.synthetic.main.activity_owner_main.container
+import kotlinx.android.synthetic.main.activity_owner_main.drawer
+import kotlinx.android.synthetic.main.activity_owner_main.menuButton
+import kotlinx.android.synthetic.main.activity_owner_main.navigationView
+import kotlinx.android.synthetic.main.activity_owner_main.shopTextView
 import kotlinx.android.synthetic.main.nav_header_user_info.view.*
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.error
@@ -45,6 +50,11 @@ class OwnerMainActivity : BaseActivity(), NavigationView.OnNavigationItemSelecte
         setAdapter()
         loadUserInfo()
         setViewListener()
+    }
+
+    override fun onStop() {
+        drawer.closeDrawer(GravityCompat.END)
+        super.onStop()
     }
 
     /**
@@ -145,20 +155,18 @@ class OwnerMainActivity : BaseActivity(), NavigationView.OnNavigationItemSelecte
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
             R.id.nav_edit_info -> {
-                drawer.closeDrawer(GravityCompat.END)
                 editUser(userModel)
             }
             R.id.nav_register_shop -> {
-                drawer.closeDrawer(GravityCompat.END)
                 startRegisterShopActivity()
             }
             R.id.nav_log_out -> {
-                drawer.closeDrawer(GravityCompat.END)
                 logOut()
             }
         }
         return true
     }
+
     /**
      * 첫 화면으로 다시 설정
      */
