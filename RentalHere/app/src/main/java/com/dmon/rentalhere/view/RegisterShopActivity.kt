@@ -299,7 +299,7 @@ class RegisterShopActivity : BaseActivity(), AnkoLogger, View.OnClickListener {
         if(checkBox1.isChecked) s += "${checkBox1.text},"
         if(checkBox2.isChecked) s += "${checkBox2.text},"
         if(checkBox3.isChecked) s += "${checkBox3.text}"
-        return s
+        return if(s.endsWith(',')) s.dropLast(1) else s
     }
 
     /**

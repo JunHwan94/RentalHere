@@ -13,6 +13,7 @@ import com.dmon.rentalhere.BaseActivity
 import com.dmon.rentalhere.R
 import com.dmon.rentalhere.model.ReviewResult
 import com.dmon.rentalhere.model.UserInfoResult
+import com.dmon.rentalhere.presenter.CLIENT_TYPE
 import com.dmon.rentalhere.presenter.ID_KEY
 import com.dmon.rentalhere.retrofit.FIELD_USER_ID
 import com.dmon.rentalhere.retrofit.FIELD_USER_IDX
@@ -174,7 +175,7 @@ class ClientMainActivity : BaseActivity(), View.OnClickListener, AnkoLogger, Nav
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
             R.id.nav_edit_info -> {
-                editUser(userModel)
+                editUser(userModel, CLIENT_TYPE)
             }
             R.id.nav_review -> {
                 showAllReview()
@@ -202,6 +203,7 @@ class ClientMainActivity : BaseActivity(), View.OnClickListener, AnkoLogger, Nav
                         ).apply {
                             putExtra(REVIEW_TYPE_KEY, MY_REVIEW_TYPE)
                             reviewResultItem.reviewModelList.let {
+                                it.reverse()
                                 putParcelableArrayListExtra(REVIEW_LIST_KEY, it)
                             }
                         })

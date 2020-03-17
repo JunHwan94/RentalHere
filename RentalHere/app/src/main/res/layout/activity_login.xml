@@ -11,10 +11,9 @@
         android:id="@+id/loginDivideLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/splash"
+        android:background="@drawable/login"
         android:paddingStart="40dp"
-        android:paddingEnd="40dp"
-        tools:background="@null">
+        android:paddingEnd="40dp">
 
         <ImageView
             android:id="@+id/topTextView"

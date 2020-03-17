@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import com.dmon.rentalhere.model.UserInfoResult
 import com.dmon.rentalhere.presenter.PREF_KEY
+import com.dmon.rentalhere.presenter.TYPE_KEY
 import com.dmon.rentalhere.retrofit.RetrofitClient
 import com.dmon.rentalhere.retrofit.RetrofitService
 import com.dmon.rentalhere.view.*
@@ -21,7 +22,7 @@ import okhttp3.MediaType
 import okhttp3.RequestBody
 import java.io.*
 import java.util.*
-const val MAX_IMAGE_SIZE = 1024 * 1024
+const val MAX_IMAGE_SIZE = 768 * 768
 abstract class BaseActivity : AppCompatActivity(){
     lateinit var imm: InputMethodManager
     lateinit var retrofitService: RetrofitService
@@ -57,9 +58,10 @@ abstract class BaseActivity : AppCompatActivity(){
      * 정보 수정 (SignUpActivity 실행)
      * @param userModel: 기존 정보 설정을 위해 넘겨줌
      */
-    fun editUser(userModel: UserInfoResult.UserModel) {
+    fun editUser(userModel: UserInfoResult.UserModel, userType: Int) {
         startActivityForResult(Intent(this, SignUpActivity::class.java).apply{
             putExtra(USER_MODEL_KEY, userModel)
+            putExtra(TYPE_KEY, userType)
         }, EDIT_USER_CODE)
     }
 
@@ -77,7 +79,6 @@ abstract class BaseActivity : AppCompatActivity(){
         })
         finish()
     }
-
 
     /**
      * 요청 시 보낼 필드에 따른 값을 넣으면

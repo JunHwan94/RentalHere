@@ -4,6 +4,7 @@ import android.os.Parcel
 import android.os.Parcelable
 import com.dmon.rentalhere.retrofit.FIELD_USER_JOB_KINDS
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
 data class UserInfoResult(@SerializedName("resultItem") val userModel: UserModel) {
     data class UserModel(@SerializedName("result") val result: String,
@@ -25,7 +26,7 @@ data class UserInfoResult(@SerializedName("resultItem") val userModel: UserModel
             parcel.readString()!!
         ) {
         }
-        constructor(userId: String, userName: String, userEmail: String, userCpNum: String, jobKinds: String) : this("Y", "", userId, userName, userEmail, userCpNum, "", jobKinds)
+        constructor(userIdx: String, userId: String, userName: String, userEmail: String, userCpNum: String, jobKinds: String) : this("Y", userIdx, userId, userName, userEmail, userCpNum, "", jobKinds)
 
         override fun writeToParcel(parcel: Parcel, flags: Int) {
             parcel.writeString(result)

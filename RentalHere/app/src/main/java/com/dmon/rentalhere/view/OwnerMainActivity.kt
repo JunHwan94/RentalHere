@@ -36,7 +36,7 @@ import retrofit2.Response
 import java.util.HashMap
 
 const val OWNER_MAIN_TAG = "OwnerMainActivity"
-const val REGISTER_SHOP_CODE = 101
+const val REGISTER_SHOP_CODE = 102
 class OwnerMainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener, View.OnClickListener, AnkoLogger, ShopInfoFragment.OnFragmentInteractionListener{
     override val loggerTag: String get() = OWNER_MAIN_TAG
     private lateinit var shopAdapter: ShopRecyclerViewAdapter
@@ -87,11 +87,13 @@ class OwnerMainActivity : BaseActivity(), NavigationView.OnNavigationItemSelecte
      * 사용자 정보 요청
      */
     private fun loadUserInfo() {
+        info("loadUserInfo called")
         val map = HashMap<String, Any>().apply{ this[FIELD_USER_ID] = intent.getStringExtra(ID_KEY)!! }
         retrofitService.postGetUser(map).enqueue(object : Callback<UserInfoResult> {
             override fun onResponse(call: Call<UserInfoResult>, response: Response<UserInfoResult>) {
                 userModel = response.body()!!.userModel
                 if(userModel.result == "Y"){
+                    info("userIdx : ${userModel.userIdx}")
                     setNavigationView(userModel.userId)
                     loadMyShops()
                 }
@@ -116,6 +118,7 @@ class OwnerMainActivity : BaseActivity(), NavigationView.OnNavigationItemSelecte
      */
     private fun loadMyShops() {
         info("loadMyShops called")
+        info("userIdx : ${userModel.userIdx}")
         val map = HashMap<String, Any>().apply{ this[FIELD_USER_IDX] = userModel.userIdx }
         retrofitService.postGetMyShops(map).enqueue(object : Callback<MyShopsResult>{
             override fun onResponse(call: Call<MyShopsResult>, response: Response<MyShopsResult>) {
@@ -128,6 +131,8 @@ class OwnerMainActivity : BaseActivity(), NavigationView.OnNavigationItemSelecte
                     }
                     addShopButton.visibility = View.GONE
                 }else{
+                    info(userModel.userIdx)
+                    info("${shopResultItem.message} addShopButton 보이게함")
                     addShopButton.visibility = View.VISIBLE
                 }
             }
@@ -155,7 +160,7 @@ class OwnerMainActivity : BaseActivity(), NavigationView.OnNavigationItemSelecte
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
             R.id.nav_edit_info -> {
-                editUser(userModel)
+                editUser(userModel, OWNER_TYPE)
             }
             R.id.nav_register_shop -> {
                 startRegisterShopActivity()
@@ -187,7 +192,6 @@ class OwnerMainActivity : BaseActivity(), NavigationView.OnNavigationItemSelecte
         backButton.setOnClickListener(this)
         addShopButton.setOnClickListener(this)
     }
-
 
     override fun loadShops(){
         info("loadShops 실행됨")

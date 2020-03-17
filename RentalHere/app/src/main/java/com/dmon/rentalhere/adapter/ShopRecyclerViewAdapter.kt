@@ -55,23 +55,31 @@ class ShopRecyclerViewAdapter: RecyclerView.Adapter<ShopRecyclerViewAdapter.Shop
         fun setItem(shopModel: ShopResult.ShopModel){
             shopModel.mainPicNum.also{
                 var url: String =
-                when(it){
-                    "1" -> shopModel.shopProfileImageUrl1
-                    "2" -> shopModel.shopProfileImageUrl2
-                    "3" -> shopModel.shopProfileImageUrl3
-                    "4" -> shopModel.shopProfileImageUrl4
-                    "5" -> shopModel.shopProfileImageUrl5
-                    else -> shopModel.shopProfileImageUrl1
-                }
+                    when(it){
+                        "0" -> shopModel.shopProfileImageUrl1
+                        "1" -> shopModel.shopProfileImageUrl2
+                        "2" -> shopModel.shopProfileImageUrl3
+                        "3" -> shopModel.shopProfileImageUrl4
+                        "4" -> shopModel.shopProfileImageUrl5
+                        else -> shopModel.shopProfileImageUrl1
+                    }
                 Glide.with(itemView.context)
                     .load(if(it == "") R.drawable.icon else url)
                     .apply(RequestOptions().centerCrop())
                     .into(binding.shopProfileImageView)
             }
-            binding.shopNameTextView.text = shopModel.shopName
-            binding.addressTextView.text = shopModel.shopAddress
-            binding.telNumTextView.text = shopModel.shopTelNum
-            binding.descTextView.text = shopModel.shopItemKinds
+            with(binding){
+                shopNameTextView.text = shopModel.shopName
+                addressTextView.text = shopModel.shopAddress
+                telNumTextView.text = shopModel.shopTelNum
+                descTextView.text = shopModel.shopItemKinds
+            }
+//            binding.also{
+//                it.shopNameTextView.text = shopModel.shopName
+//                it.addressTextView.text = shopModel.shopAddress
+//                it.telNumTextView.text = shopModel.shopTelNum
+//                it.descTextView.text = shopModel.shopItemKinds
+//            }
         }
 
         fun setOnItemClickListener(listener: OnItemClickListener){

@@ -26,9 +26,7 @@ const val SIGNUP_TAG = "SignUpActivity"
 class SignUpActivity : BaseActivity(), View.OnClickListener, AnkoLogger, SignUpConstants.View {
     override val loggerTag: String get() = SIGNUP_TAG
     private var userType: Int = 0
-//    private var isIdChecked = false
-//    private var isSignedUp = false
-//    private var isEditPage :Boolean = false
+    private lateinit var userIdx: String
     private lateinit var userId: String
     private lateinit var userName: String
     private lateinit var userEmail: String
@@ -40,9 +38,7 @@ class SignUpActivity : BaseActivity(), View.OnClickListener, AnkoLogger, SignUpC
         setContentView(R.layout.activity_sign_up)
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN) // edittext에 포커스 생겼을때 키보드에 가려지지 않게
         presenter = SignUpPresenter(this, this, retrofitService)
-//        processIntent()
         presenter.processIntent(intent)
-//        setViewListener()
     }
 
     override fun setViewListener() {
@@ -53,32 +49,6 @@ class SignUpActivity : BaseActivity(), View.OnClickListener, AnkoLogger, SignUpC
         idEditText.addTextChangedListener(presenter.getIdWatcher())
         cpEditText.addTextChangedListener(presenter.getCpWatcher())
     }
-//    private val idWatcher = object : TextWatcher{
-//        override fun afterTextChanged(s: Editable?) { isIdChecked = false }
-//        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-//        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-//    }
-//    private val cpWatcher = object : TextWatcher{
-//        override fun afterTextChanged(s: Editable?) {
-//            if(s.toString().length > 11) {
-//                cpEditText.setText(s.toString().dropLast(1))
-//                cpEditText.setSelection(11) // todo : 수정?
-//            }
-//        }
-//        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-//        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-//    }
-
-//    private fun processIntent() {
-//        // 일반 / 업주 구분
-//        userType = intent.getIntExtra(TYPE_KEY, 0)
-//        when(userType){
-//            CLIENT_TYPE -> topTextView.text = getString(R.string.client_sign_up)
-//            OWNER_TYPE -> setOwnerView()
-//        }
-//
-//        setEditView()
-//    }
 
     /**
      * cpEditText watcher의 afterTextChanged 이벤트가 일어날때 실행되는 메소드
@@ -102,18 +72,22 @@ class SignUpActivity : BaseActivity(), View.OnClickListener, AnkoLogger, SignUpC
     override fun setEditView(){
         val userModel = intent.getParcelableExtra<UserInfoResult.UserModel>(USER_MODEL_KEY)
         userModel?.let{
-            presenter.run {
-                setIsIdChecked(true)
-                setIsEditPage(true)
+            userIdx = userModel.userIdx
+            runOnUiThread {
+                presenter.run {
+                    setIsIdChecked(true)
+                    setIsEditPage(true)
+                }
+                info("중복확인 : ${presenter.isIdChecked()}")
+                topTextView.text = getString(R.string.edit_info)
+                idEditText.run { isEnabled = false; background = null }
+                dupCheckButton.visibility = View.INVISIBLE
+                idEditText.setText(it.userId)
+                nameEditText.setText(it.userName)
+                cpEditText.setText(it.userCpNum.replace("-", ""))
+                emailEditText.setText(it.userEmail)
+                if (userType == CLIENT_TYPE) checkJobKinds(userModel)
             }
-            topTextView.text = getString(R.string.edit_info)
-            idEditText.run{ isEnabled = false; background = null }
-            dupCheckButton.visibility = View.INVISIBLE
-            idEditText.setText(it.userId)
-            nameEditText.setText(it.userName)
-            cpEditText.setText(it.userCpNum.replace("-", ""))
-            emailEditText.setText(it.userEmail)
-            if(userType == CLIENT_TYPE) checkJobKinds(userModel)
         }
     }
 
@@ -145,12 +119,6 @@ class SignUpActivity : BaseActivity(), View.OnClickListener, AnkoLogger, SignUpC
     }
 
     override fun onClick(v: View?) {
-        when(v){
-//            dupCheckButton -> checkId()
-//            completeButton -> isThereAnyBlanks()
-//            findButton -> startLoginActivity()
-//            backButton -> finish()
-        }
         presenter.onClick(v)
     }
 
@@ -158,6 +126,7 @@ class SignUpActivity : BaseActivity(), View.OnClickListener, AnkoLogger, SignUpC
      * 빈칸 체크
      */
     override fun isThereAnyBlanks(): Boolean {
+        info("중복확인 : ${presenter.isIdChecked()}")
         return when{
             idEditText.text.isEmpty() -> { toast(getString(R.string.toast_type_id)); true }
             pwEditText.text.isEmpty() -> { toast(getString(R.string.toast_type_pw)); true }
@@ -173,32 +142,17 @@ class SignUpActivity : BaseActivity(), View.OnClickListener, AnkoLogger, SignUpC
                     !etcCheckBox.isChecked && presenter.getUserType() == CLIENT_TYPE -> { toast(getString(R.string.toast_check_jobs)); true }
             !presenter.isIdChecked() -> { toast(getString(R.string.toast_check_dup)); true }
             else -> false
-            /*{
-                userId = idEditText.text.toString()
-                userName = nameEditText.text.toString()
-                userEmail = emailEditText.text.toString()
-                userCpNum = cpEditText.text.toString()
-                val map = HashMap<String, Any>().apply{
-                    this[FIELD_USER_ID] = userId
-                    this[FIELD_USER_PW] = pwEditText.text.toString()
-                    this[FIELD_USER_NAME] = userName
-                    this[FIELD_USER_EMAIL] = userEmail
-                    this[FIELD_USER_CP_NUM] = userCpNum
-                    this[FIELD_USER_JOB_KINDS] = getJobKinds()
-                }
-                if(isEditPage) postEditUserInfo(map) else postSignUp(map)
-            }*/
         }
     }
 
     override fun getJobKinds(): String{
         var s = ""
-        if(elecCheckBox.isChecked) s += elecCheckBox.text.toString()
-        if(fireCheckBox.isChecked) s += fireCheckBox.text.toString()
-        if(ironCheckBox.isChecked) s += ironCheckBox.text.toString()
-        if(plasCheckBox.isChecked) s += plasCheckBox.text.toString()
-        if(etcCheckBox.isChecked) s += etcCheckBox.text.toString()
-        return s
+        if(elecCheckBox.isChecked) s += "${elecCheckBox.text},"
+        if(fireCheckBox.isChecked) s += "${fireCheckBox.text},"
+        if(ironCheckBox.isChecked) s += "${ironCheckBox.text},"
+        if(plasCheckBox.isChecked) s += "${plasCheckBox.text},"
+        if(etcCheckBox.isChecked) s += "${etcCheckBox.text}"
+        return if(s.endsWith(',')) s.dropLast(1) else s
     }
 
     override fun getEditable(id: Int): Editable = findViewById<EditText>(id).text
@@ -222,7 +176,7 @@ class SignUpActivity : BaseActivity(), View.OnClickListener, AnkoLogger, SignUpC
         userCpNum = cpEditText.text.toString()
         setResult(Activity.RESULT_OK, Intent().apply{ putExtra(
             USER_MODEL_KEY, UserInfoResult.UserModel(
-                userId, userName, userEmail, userCpNum, getJobKinds()
+                userIdx, userId, userName, userEmail, userCpNum, getJobKinds()
             )) })
         finish()
     }
@@ -333,5 +287,31 @@ class SignUpActivity : BaseActivity(), View.OnClickListener, AnkoLogger, SignUpC
 //                }
 //            })
 //        }else toast(getString(R.string.toast_type_id))
+//    }
+//    private val idWatcher = object : TextWatcher{
+//        override fun afterTextChanged(s: Editable?) { isIdChecked = false }
+//        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+//        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+//    }
+//    private val cpWatcher = object : TextWatcher{
+//        override fun afterTextChanged(s: Editable?) {
+//            if(s.toString().length > 11) {
+//                cpEditText.setText(s.toString().dropLast(1))
+//                cpEditText.setSelection(11) // todo : 수정?
+//            }
+//        }
+//        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+//        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+//    }
+
+//    private fun processIntent() {
+//        // 일반 / 업주 구분
+//        userType = intent.getIntExtra(TYPE_KEY, 0)
+//        when(userType){
+//            CLIENT_TYPE -> topTextView.text = getString(R.string.client_sign_up)
+//            OWNER_TYPE -> setOwnerView()
+//        }
+//
+//        setEditView()
 //    }
 }

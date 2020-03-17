@@ -11,18 +11,13 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.dmon.rentalhere.R
 import com.dmon.rentalhere.databinding.FragmentImageBinding
-import com.dmon.rentalhere.model.BaseResult
-import com.dmon.rentalhere.retrofit.*
 import com.dmon.rentalhere.view.EditPicturesActivity
 import kotlinx.android.synthetic.main.fragment_image.view.*
 import org.jetbrains.anko.alert
 import org.jetbrains.anko.toast
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 const val PICK_FROM_ALBUM_AND_OVERRIDE_CODE = 303
-class EditImageRecyclerAdapter(private val activity: Activity, private val shopIdx: String, var mainPosition: String): RecyclerView.Adapter<EditImageRecyclerAdapter.ImageViewHolder>() {
+class EditImageRecyclerAdapter(private val activity: Activity, private val shopIdx: String, var mainPosition: Int): RecyclerView.Adapter<EditImageRecyclerAdapter.ImageViewHolder>() {
     private val uriList = ArrayList<String>()
     private lateinit var listener: OnItemClickListener
 
@@ -32,11 +27,14 @@ class EditImageRecyclerAdapter(private val activity: Activity, private val shopI
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.fragment_image, parent, false)
+//        Log.e("메인 위치", "$mainPosition")
         return ImageViewHolder(view, this, activity, shopIdx, mainPosition)
     }
 
     override fun onBindViewHolder(holder: ImageViewHolder, position: Int) {
         val uri = uriList[position]
+        holder.mainPosition = mainPosition
+        Log.e("메인 위치", "$mainPosition")
         holder.setItem(uri)
         holder.setOnItemClickListener(listener)
     }
@@ -53,7 +51,7 @@ class EditImageRecyclerAdapter(private val activity: Activity, private val shopI
         this.listener = listener
     }
 
-    class ImageViewHolder(itemView: View, val adapter: EditImageRecyclerAdapter, private var activity: Activity, private val shopIdx: String, private var mainPosition: String) : RecyclerView.ViewHolder(itemView){
+    class ImageViewHolder(itemView: View, val adapter: EditImageRecyclerAdapter, private var activity: Activity, private val shopIdx: String, var mainPosition: Int) : RecyclerView.ViewHolder(itemView){
         private lateinit var listener: OnItemClickListener
         private var binding = FragmentImageBinding.bind(itemView)
 
@@ -64,6 +62,7 @@ class EditImageRecyclerAdapter(private val activity: Activity, private val shopI
             }
             itemView.editButton.setOnClickListener{ editPicture() }
             itemView.deleteButton.setOnClickListener{ deletePicture() }
+            setIsRecyclable(false)
         }
 
         fun setItem(uri: String){
@@ -74,11 +73,10 @@ class EditImageRecyclerAdapter(private val activity: Activity, private val shopI
                     .into(binding.imageView)
                 binding.editButton.visibility = View.VISIBLE
                 binding.deleteButton.visibility = View.VISIBLE
-                Log.e(mainPosition, position.toString())
                 // todo 테스트
-                if(mainPosition.toInt() == position + 1){
+                if(mainPosition == position){
+                    Log.e("메인 : $mainPosition", "아이템 : $position")
                     binding.rootLayout.background = activity.getDrawable(R.drawable.fill_primary)
-//                    mainPosition = (-1).toString()
                 }
             }
         }
@@ -98,8 +96,9 @@ class EditImageRecyclerAdapter(private val activity: Activity, private val shopI
                     binding.rootLayout.background != null -> it.toast(it.getString(R.string.toast_cannot_remove_main))
                     else -> it.alert(it.getString(R.string.dialog_delete_picture)) {
                         positiveButton(it.getString(R.string.confirm)) {
-                            Log.d("포지션", position.inc().toString())
-                            (activity as EditPicturesActivity).deletePicture(position)
+                            Log.d("포지션", (position).toString())
+                            (activity as EditPicturesActivity).deletePicture(position, this@ImageViewHolder)
+//                            if(position < mainPosition) (activity as EditPicturesActivity).setAdapterMainPosition(this@ImageViewHolder, position)
                         }
                         negativeButton(it.getString(R.string.cancel)) {}
                     }.show()

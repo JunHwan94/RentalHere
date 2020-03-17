@@ -1,5 +1,6 @@
 package com.dmon.rentalhere.view
 
+import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.content.Context
 import android.content.Intent
@@ -9,8 +10,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityOptionsCompat
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -95,6 +98,7 @@ class ShopInfoFragment : Fragment(), AnkoLogger, View.OnClickListener {
                     override fun onItemClick(holder: ReviewRecyclerViewAdapter.ReviewViewHolder, view: View, position: Int) {}
                 })
             }
+
         binding.reviewRecyclerView.run{ adapter = reviewAdapter; layoutManager = LinearLayoutManager(context) }
         retrofitService = RetrofitClient.getRetrofitInstance()!!.create(RetrofitService::class.java)
     }
@@ -173,17 +177,13 @@ class ShopInfoFragment : Fragment(), AnkoLogger, View.OnClickListener {
     }
 
     private fun addAdapterItems(adapter: ListPagerAdapter){
-        GlobalScope.launch {
-            adapter.addItem(ImageFragment.newInstance(shopModel.shopProfileImageUrl1))
-            if(shopModel.shopProfileImageUrl2 != "") adapter.addItem(ImageFragment.newInstance(shopModel.shopProfileImageUrl2))
-            if(shopModel.shopProfileImageUrl3 != "") adapter.addItem(ImageFragment.newInstance(shopModel.shopProfileImageUrl3))
-            if(shopModel.shopProfileImageUrl4 != "") adapter.addItem(ImageFragment.newInstance(shopModel.shopProfileImageUrl4))
-            if(shopModel.shopProfileImageUrl5 != "") adapter.addItem(ImageFragment.newInstance(shopModel.shopProfileImageUrl5))
-
-            runOnUiThread {
-                adapter.notifyDataSetChanged()
-            }
-        }
+//        GlobalScope.launch {
+        adapter.addItem(ImageFragment.newInstance(shopModel.shopProfileImageUrl1))
+        if(shopModel.shopProfileImageUrl2 != "") adapter.addItem(ImageFragment.newInstance(shopModel.shopProfileImageUrl2))
+        if(shopModel.shopProfileImageUrl3 != "") adapter.addItem(ImageFragment.newInstance(shopModel.shopProfileImageUrl3))
+        if(shopModel.shopProfileImageUrl4 != "") adapter.addItem(ImageFragment.newInstance(shopModel.shopProfileImageUrl4))
+        if(shopModel.shopProfileImageUrl5 != "") adapter.addItem(ImageFragment.newInstance(shopModel.shopProfileImageUrl5))
+//        }
     }
 
     private fun setViewListener() {

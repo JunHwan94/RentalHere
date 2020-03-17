@@ -38,7 +38,7 @@ class SignUpPresenter(private val signUpView: SignUpConstants.View, private val 
     val getRequestBody: (String) -> RequestBody = { RequestBody.create(MediaType.parse("text/plain"), it) }
 
     fun processIntent(intent: Intent) {
-        GlobalScope.launch {
+//        GlobalScope.launch {
             // 일반 / 업주 구분
             signUpModel = SignUpModel(
                 intent.getIntExtra(TYPE_KEY, 0),
@@ -52,7 +52,7 @@ class SignUpPresenter(private val signUpView: SignUpConstants.View, private val 
                 setEditView()
                 setViewListener()
             }
-        }
+//        }
     }
 
     override fun onClick(v: View?) {

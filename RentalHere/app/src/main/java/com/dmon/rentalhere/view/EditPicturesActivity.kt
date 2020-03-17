@@ -33,7 +33,7 @@ import retrofit2.Response
 import java.io.*
 
 const val EDIT_PIC_TAG = "EditPicturesActivity"
-const val MIN_IMAGE_SIZE = 2500
+const val MIN_IMAGE_SIZE = 1000
 class EditPicturesActivity : BaseActivity(), View.OnClickListener, AnkoLogger {
     override val loggerTag: String get() = EDIT_PIC_TAG
     private lateinit var shopModel: ShopResult.ShopModel
@@ -48,12 +48,13 @@ class EditPicturesActivity : BaseActivity(), View.OnClickListener, AnkoLogger {
     private var isAppUpLoading = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_pictures)
 //        toast(getString(R.string.toast_main_has_border)).apply{ duration = Toast.LENGTH_LONG }
         processIntent()
         setViewListener()
-        Snackbar.make(completeButton, getString(R.string.toast_main_has_border) + "\n현재 메인 사진 : ${mainPosition}번째", Snackbar.LENGTH_INDEFINITE).run{
+        Snackbar.make(completeButton, getString(R.string.toast_main_has_border) + "\n현재 메인 사진 : ${mainPosition + 1}번째", Snackbar.LENGTH_INDEFINITE).run{
             setAction(getString(R.string.confirm)){ dismiss() }
             show()
         }
@@ -64,12 +65,11 @@ class EditPicturesActivity : BaseActivity(), View.OnClickListener, AnkoLogger {
         deleteList = ArrayList()
         shopModel = intent.getParcelableExtra(SHOP_MODEL_KEY)!!
         mainPosition = shopModel.mainPicNum.toInt()
-        adapter = EditImageRecyclerAdapter(this@EditPicturesActivity, shopModel.shopIdx, mainPosition.toString())
+        adapter = EditImageRecyclerAdapter(this@EditPicturesActivity, shopModel.shopIdx, mainPosition)
         adapter.run{
             setOnItemClickListener(object : EditImageRecyclerAdapter.OnItemClickListener {
                 override fun onItemClick(holder: EditImageRecyclerAdapter.ImageViewHolder, view: View, position: Int) {
                     processItemView(holder, position)
-                    mainPosition = position.toString()
                 }
             })
         }
@@ -91,14 +91,22 @@ class EditPicturesActivity : BaseActivity(), View.OnClickListener, AnkoLogger {
                     background = getDrawable(R.drawable.fill_primary)
                     isMainSelected = true
                     this@EditPicturesActivity.mainPosition = position
-                    adapter.mainPosition = position.toString()
+                    info("선택됨 : $position")
+                    setAdapterMainPosition(holder, position)
                 }
             }
         }
     }
 
+    fun setAdapterMainPosition(holder: EditImageRecyclerAdapter.ImageViewHolder, position: Int){
+        adapter.run{
+            mainPosition = position
+            onBindViewHolder(holder, position)
+        }
+    }
+
     private fun setAdapter(adapter: EditImageRecyclerAdapter) {
-        GlobalScope.launch{
+//        GlobalScope.launch{
             runBlocking {
                 recyclerView.run {
                     this.adapter = adapter
@@ -111,7 +119,7 @@ class EditPicturesActivity : BaseActivity(), View.OnClickListener, AnkoLogger {
             adapter.addItem(shopModel.shopProfileImageUrl4)
             adapter.addItem(shopModel.shopProfileImageUrl5)
             runOnUiThread { adapter.notifyDataSetChanged() }
-        }
+//        }
     }
 
     private fun setViewListener() {
@@ -139,7 +147,7 @@ class EditPicturesActivity : BaseActivity(), View.OnClickListener, AnkoLogger {
                     .forEach {
                         val map = HashMap<String, Any>().apply {
                             this[FIELD_SHOP_IDX] = shopModel.shopIdx
-                            this[FIELD_SHOP_PIC_NUM] = it.inc().toString()
+                            this[FIELD_SHOP_PIC_NUM] = (it + 1).toString()
                         }
                         retrofitService.postDeleteShopPicture(map)
                             .enqueue(object : Callback<BaseResult> {
@@ -193,9 +201,9 @@ class EditPicturesActivity : BaseActivity(), View.OnClickListener, AnkoLogger {
 //        info("메인 사진 변경 요청")
         val map = HashMap<String, Any>().apply{
             this[FIELD_SHOP_IDX] = shopModel.shopIdx
-            this[FIELD_SHOP_MAIN_PIC_NUM] = mainPosition + 1
+            this[FIELD_SHOP_MAIN_PIC_NUM] = mainPosition
         }
-//        info("메인 사진은 ${mainPosition}번째")
+        info("메인 사진은 ${mainPosition}번째")
         retrofitService.postEditShopMainPicture(map).enqueue(object : Callback<BaseResult>{
             override fun onResponse(call: Call<BaseResult>, response: Response<BaseResult>) {
                 if(response.body()!!.baseModel.result == "Y"){
@@ -271,6 +279,7 @@ class EditPicturesActivity : BaseActivity(), View.OnClickListener, AnkoLogger {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if(requestCode == PICK_FROM_ALBUM_CODE && resultCode == RESULT_OK && data != null){
+            info("메인 사진 : $mainPosition 번째")
             GlobalScope.launch {
                 val file = getResizedFile(this@EditPicturesActivity, getRealPathFromURI(data.data!!), MIN_IMAGE_SIZE)
 //            info("파일 크기 = ${file.length()}")
@@ -282,6 +291,7 @@ class EditPicturesActivity : BaseActivity(), View.OnClickListener, AnkoLogger {
             }
         }
         if(requestCode == PICK_FROM_ALBUM_AND_OVERRIDE_CODE && resultCode == Activity.RESULT_OK && data != null){
+            info("메인 사진 : $mainPosition 번째")
             GlobalScope.launch {
                 val file = getResizedFile(this@EditPicturesActivity, getRealPathFromURI(data.data!!), MIN_IMAGE_SIZE)
                 uploadFileMap[positionToEdit + 1] = file
@@ -307,7 +317,12 @@ class EditPicturesActivity : BaseActivity(), View.OnClickListener, AnkoLogger {
      * 업로드할 사진 목록 uploadFileMap에서 삭제
      * @param position 삭제할 사진 위치
      */
-    fun deletePicture(position: Int){
+    fun deletePicture(position: Int, holder: EditImageRecyclerAdapter.ImageViewHolder){
+        if(position < mainPosition) {
+            adapter.onBindViewHolder(holder, mainPosition)
+            mainPosition--
+            adapter.mainPosition--
+        }
         deleteList.add(position)
         adapter.run{
             removeItem(position)
@@ -321,6 +336,15 @@ class EditPicturesActivity : BaseActivity(), View.OnClickListener, AnkoLogger {
                 this[it - 1] = this[it]!!
             }
         }
+
+//        generateSequence(0){ it + 1 }.take(adapter.itemCount)
+//            .filter{ it == mainPosition }
+//            .forEach{
+//                info("인덱스 $it 변경됨")
+//                adapter.run{
+//                    onBindViewHolder(holder, it)
+//                }
+//            }
     }
 
     /**
