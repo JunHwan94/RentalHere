@@ -91,7 +91,6 @@ class RegisterShopActivity : BaseActivity(), AnkoLogger, View.OnClickListener {
         shopNameEditText.setText(shopModel.shopName)
         telEditText.setText(shopModel.shopTelNum.replace("-", ""))
         addressEditText.setText(shopModel.shopAddress)
-        // todo : 장비 종류 받아와서 미리 체크
         info(shopModel.shopItemKinds)
         GlobalScope.launch {
             shopModel.shopItemKinds.run {
@@ -252,24 +251,21 @@ class RegisterShopActivity : BaseActivity(), AnkoLogger, View.OnClickListener {
             while(imageAdapter.itemCount < 5){
                 imageAdapter.addItem("")
             }
-            var i = 0
-            do{
-                if(imageAdapter.getItem(i) != "") {
-                    info("uri " + imageAdapter.getItem(i))
-                    val realPath = getRealPathFromURI(Uri.parse(imageAdapter.getItem(i)))
-//                    info("실제경로 " + realPath)
-                    val file = getResizedFile(this@RegisterShopActivity, realPath, MIN_IMAGE_SIZE)
-                    val requestBody = RequestBody.create(MediaType.parse(""), file)
-                    info("file${i + 1}")
-                    val part = MultipartBody.Part.createFormData("file${i + 1}", file.name, requestBody)
-                    partList.add(part)
-                }else {
-                    info("uri is \"\" " + imageAdapter.getItem(i))
-                    partList.add(null)
+            sequence{ yieldAll(imageAdapter.getItems()) }
+                .forEachIndexed{ index, it ->
+                    if(it != ""){
+                        info("uri is $it")
+                        val realPath = getRealPathFromURI(Uri.parse(it))
+                        val file = getResizedFile(this@RegisterShopActivity, realPath, MIN_IMAGE_SIZE)
+                        val requestBody = RequestBody.create(MediaType.parse(""), file)
+                        info("file${index + 1} body 생성됨")
+                        val part = MultipartBody.Part.createFormData("file${index + 1}", file.name, requestBody)
+                        partList.add(part)
+                    }else{
+                        info("uri is \"\" | $it")
+                        partList.add(null)
+                    }
                 }
-                i++
-            }while(i < 5)
-
 
             retrofitService.postRegisterShop(userIdx, shopName, shopTelNum,
                 shopItemKinds, shopAddress, shopLatitude, shopLongitude,

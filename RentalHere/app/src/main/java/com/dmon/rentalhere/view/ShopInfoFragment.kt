@@ -1,19 +1,14 @@
 package com.dmon.rentalhere.view
 
-import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.transition.TransitionInflater
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityOptionsCompat
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -32,7 +27,6 @@ import com.dmon.rentalhere.presenter.OWNER_TYPE
 import com.dmon.rentalhere.presenter.TYPE_KEY
 import com.dmon.rentalhere.retrofit.FIELD_SHOP_IDX
 import com.dmon.rentalhere.retrofit.*
-import kotlinx.android.synthetic.main.fragment_shop_info.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.jetbrains.anko.AnkoLogger
@@ -159,6 +153,9 @@ class ShopInfoFragment : Fragment(), AnkoLogger, View.OnClickListener {
      */
     private fun setImagePagerAdapter() {
         val adapter = ListPagerAdapter(childFragmentManager)
+        val circleList = binding.run{
+            listOf(circleImageView1, circleImageView2, circleImageView3, circleImageView4, circleImageView5)
+        }
         binding.imagePager.run{
             this.adapter = adapter
             addOnPageChangeListener(object : ViewPager.OnPageChangeListener{
@@ -169,7 +166,15 @@ class ShopInfoFragment : Fragment(), AnkoLogger, View.OnClickListener {
                 }
 
                 override fun onPageSelected(position: Int) {
-                    // todo : 아래 점 위치 바꾸기
+                    generateSequence(position - 1){it + 1}.take(3)
+                        .filter{ it in 0..4}
+                        .forEach {
+                            Glide.with(context)
+                                .load(context.getDrawable(
+                                    if(it == position) R.drawable.ic_circle_primary
+                                    else R.drawable.ic_circle_light_light_gray)
+                                ).into(circleList[it])
+                        }
                 }
             })
         }
@@ -179,10 +184,22 @@ class ShopInfoFragment : Fragment(), AnkoLogger, View.OnClickListener {
     private fun addAdapterItems(adapter: ListPagerAdapter){
 //        GlobalScope.launch {
         adapter.addItem(ImageFragment.newInstance(shopModel.shopProfileImageUrl1))
-        if(shopModel.shopProfileImageUrl2 != "") adapter.addItem(ImageFragment.newInstance(shopModel.shopProfileImageUrl2))
-        if(shopModel.shopProfileImageUrl3 != "") adapter.addItem(ImageFragment.newInstance(shopModel.shopProfileImageUrl3))
-        if(shopModel.shopProfileImageUrl4 != "") adapter.addItem(ImageFragment.newInstance(shopModel.shopProfileImageUrl4))
-        if(shopModel.shopProfileImageUrl5 != "") adapter.addItem(ImageFragment.newInstance(shopModel.shopProfileImageUrl5))
+        if(shopModel.shopProfileImageUrl2 != "") {
+            adapter.addItem(ImageFragment.newInstance(shopModel.shopProfileImageUrl2))
+            binding.circleImageView2.visibility = View.VISIBLE
+        }
+        if(shopModel.shopProfileImageUrl3 != "") {
+            adapter.addItem(ImageFragment.newInstance(shopModel.shopProfileImageUrl3))
+            binding.circleImageView3.visibility = View.VISIBLE
+        }
+        if(shopModel.shopProfileImageUrl4 != ""){
+            adapter.addItem(ImageFragment.newInstance(shopModel.shopProfileImageUrl4))
+            binding.circleImageView4.visibility = View.VISIBLE
+        }
+        if(shopModel.shopProfileImageUrl5 != ""){
+            adapter.addItem(ImageFragment.newInstance(shopModel.shopProfileImageUrl5))
+            binding.circleImageView5.visibility = View.VISIBLE
+        }
 //        }
     }
 

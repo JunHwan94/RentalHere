@@ -73,7 +73,6 @@ class EditImageRecyclerAdapter(private val activity: Activity, private val shopI
                     .into(binding.imageView)
                 binding.editButton.visibility = View.VISIBLE
                 binding.deleteButton.visibility = View.VISIBLE
-                // todo 테스트
                 if(mainPosition == position){
                     Log.e("메인 : $mainPosition", "아이템 : $position")
                     binding.rootLayout.background = activity.getDrawable(R.drawable.fill_primary)

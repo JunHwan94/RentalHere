@@ -39,7 +39,7 @@ class EditPicturesActivity : BaseActivity(), View.OnClickListener, AnkoLogger {
     private lateinit var shopModel: ShopResult.ShopModel
     private lateinit var adapter: EditImageRecyclerAdapter
     private var isChanged = false
-    private var isMainSelected = true // todo 테스트
+    private var isMainSelected = true
     private var mainPosition = 0
     private var positionToEdit = 0
     private lateinit var uploadFileMap: HashMap<Int, File>
@@ -195,7 +195,6 @@ class EditPicturesActivity : BaseActivity(), View.OnClickListener, AnkoLogger {
      * 메인 사진으로 쓸 사진을 수정 요청하는 메소드
      */
     private fun postEditMainPicture() {
-        //todo : 테스트
         try{ adapter.getItem(mainPosition) }
         catch(e: Exception) { mainPosition-- }
 //        info("메인 사진 변경 요청")
@@ -242,30 +241,29 @@ class EditPicturesActivity : BaseActivity(), View.OnClickListener, AnkoLogger {
      * 사진 파일 업로드하는 메소드
      */
     private fun runUpload(){
-        uploadFileMap.run {
-            keys.forEach {
-//                info(it)
-                val file = uploadFileMap[it]!!
-                val requestBody = RequestBody.create(MediaType.parse(""), file)
-                val part = MultipartBody.Part.createFormData("file", file.name, requestBody)
-                retrofitService.postEditShopPicture(getRequestBody(shopModel.shopIdx), getRequestBody(it.toString()), part)
-                    .enqueue(object : Callback<BaseResult> {
-                        override fun onResponse(call: Call<BaseResult>, response: Response<BaseResult>) {
-                            info(response.body()!!.baseModel.toString())
-                            if (response.body()!!.baseModel.result == "Y") {
-                                uploadCnt++
-                                if(uploadCnt == uploadFileMap.size){
-                                    setResult(Activity.RESULT_OK)
-                                    finish()
-                                }
+        for((key, file) in uploadFileMap){
+            val requestBody = RequestBody.create(MediaType.parse(""), file)
+            val part = MultipartBody.Part.createFormData("file", file.name, requestBody)
+            retrofitService.postEditShopPicture(
+                getRequestBody(shopModel.shopIdx),
+                getRequestBody(key.toString()),
+                part)
+                .enqueue(object : Callback<BaseResult> {
+                    override fun onResponse(call: Call<BaseResult>, response: Response<BaseResult>) {
+                        info(response.body()!!.baseModel.toString())
+                        if (response.body()!!.baseModel.result == "Y") {
+                            uploadCnt++
+                            if(uploadCnt == uploadFileMap.size){
+                                setResult(Activity.RESULT_OK)
+                                finish()
                             }
                         }
+                    }
 
-                        override fun onFailure(call: Call<BaseResult>, t: Throwable) {
-                            error("요청 실패")
-                        }
-                    })
-            }
+                    override fun onFailure(call: Call<BaseResult>, t: Throwable) {
+                        error("요청 실패")
+                    }
+                })
         }
     }
 

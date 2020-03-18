@@ -171,7 +171,6 @@ class ClientMainActivity : BaseActivity(), View.OnClickListener, AnkoLogger, Nav
     /**
      *  내비게이션 뷰 아이템 이벤트
      */
-    //todo 바꾸기
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
             R.id.nav_edit_info -> {
