@@ -5,3 +5,13 @@
 >코틀린 (자바8 이상)  
 >안드로이드 스튜디오  
 >androidx
+
+## Reference
+>#### 비동기
+>Coroutines
+>#### 이미지
+>Glide
+>#### 통신
+>Retrofit2
+>#### 기타
+>Anko, TedPermission
