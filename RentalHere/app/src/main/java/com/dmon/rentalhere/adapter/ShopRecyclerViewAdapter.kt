@@ -53,9 +53,9 @@ class ShopRecyclerViewAdapter: RecyclerView.Adapter<ShopRecyclerViewAdapter.Shop
         }
 
         fun setItem(shopModel: ShopResult.ShopModel){
-            shopModel.mainPicNum.also{
+            shopModel.mainPicNum.run{
                 var url: String =
-                    when(it){
+                    when(this){
                         "0" -> shopModel.shopProfileImageUrl1
                         "1" -> shopModel.shopProfileImageUrl2
                         "2" -> shopModel.shopProfileImageUrl3
@@ -64,7 +64,7 @@ class ShopRecyclerViewAdapter: RecyclerView.Adapter<ShopRecyclerViewAdapter.Shop
                         else -> shopModel.shopProfileImageUrl1
                     }
                 Glide.with(itemView.context)
-                    .load(if(it == "") R.drawable.icon else url)
+                    .load(if(this == "") R.drawable.icon else url)
                     .apply(RequestOptions().centerCrop())
                     .into(binding.shopProfileImageView)
             }

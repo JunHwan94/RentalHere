@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -14,6 +15,7 @@ import com.dmon.rentalhere.databinding.FragmentImageBinding
 import com.dmon.rentalhere.view.EditPicturesActivity
 import kotlinx.android.synthetic.main.fragment_image.view.*
 import org.jetbrains.anko.alert
+import org.jetbrains.anko.margin
 import org.jetbrains.anko.toast
 
 const val PICK_FROM_ALBUM_AND_OVERRIDE_CODE = 303
@@ -71,11 +73,18 @@ class EditImageRecyclerAdapter(private val activity: Activity, private val shopI
                     .load(Uri.parse(uri))
                     .apply(RequestOptions().centerCrop())
                     .into(binding.imageView)
-                binding.editButton.visibility = View.VISIBLE
-                binding.deleteButton.visibility = View.VISIBLE
-                if(mainPosition == position){
-                    Log.e("메인 : $mainPosition", "아이템 : $position")
-                    binding.rootLayout.background = activity.getDrawable(R.drawable.fill_primary)
+                binding.run{
+                    editButton.visibility = View.VISIBLE
+                    deleteButton.visibility = View.VISIBLE
+
+                    val params = (imageView.layoutParams as ConstraintLayout.LayoutParams)
+                    params.margin = 5
+                    imageView.layoutParams = params
+
+                    if(mainPosition == position){
+                        Log.e("메인 : $mainPosition", "아이템 : $position")
+                        rootLayout.background = activity.getDrawable(R.drawable.fill_primary)
+                    }
                 }
             }
         }
@@ -89,17 +98,17 @@ class EditImageRecyclerAdapter(private val activity: Activity, private val shopI
         }
 
         fun deletePicture(){
-            activity.also{
+            activity.run{
                 when {
-                    adapter.itemCount == 1 -> it.toast(it.getString(R.string.toast_must_have_picture))
-                    binding.rootLayout.background != null -> it.toast(it.getString(R.string.toast_cannot_remove_main))
-                    else -> it.alert(it.getString(R.string.dialog_delete_picture)) {
-                        positiveButton(it.getString(R.string.confirm)) {
+                    adapter.itemCount == 1 -> toast(getString(R.string.toast_must_have_picture))
+                    binding.rootLayout.background != null -> toast(getString(R.string.toast_cannot_remove_main))
+                    else -> alert(getString(R.string.dialog_delete_picture)) {
+                        positiveButton(getString(R.string.confirm)) {
                             Log.d("포지션", (position).toString())
                             (activity as EditPicturesActivity).deletePicture(position, this@ImageViewHolder)
 //                            if(position < mainPosition) (activity as EditPicturesActivity).setAdapterMainPosition(this@ImageViewHolder, position)
                         }
-                        negativeButton(it.getString(R.string.cancel)) {}
+                        negativeButton(getString(R.string.cancel)) {}
                     }.show()
                 }
             }

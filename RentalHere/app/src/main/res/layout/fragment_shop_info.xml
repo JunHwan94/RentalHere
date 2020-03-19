@@ -36,46 +36,51 @@
 
                     <ImageView
                         android:id="@+id/circleImageView1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="10dp"
+                        android:layout_height="10dp"
                         android:layout_weight="1"
+                        android:stateListAnimator="@null"
                         app:srcCompat="@drawable/ic_circle_primary" />
 
                     <ImageView
                         android:id="@+id/circleImageView2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="10dp"
+                        android:layout_height="10dp"
                         android:layout_marginStart="5dp"
                         android:layout_weight="1"
                         android:visibility="gone"
-                        app:srcCompat="@drawable/ic_circle_light_light_gray" />
+                        app:srcCompat="@drawable/ic_circle_light_light_gray"
+                        tools:visibility="visible" />
 
                     <ImageView
                         android:id="@+id/circleImageView3"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="10dp"
+                        android:layout_height="10dp"
                         android:layout_marginStart="5dp"
                         android:layout_weight="1"
                         android:visibility="gone"
-                        app:srcCompat="@drawable/ic_circle_light_light_gray" />
+                        app:srcCompat="@drawable/ic_circle_light_light_gray"
+                        tools:visibility="visible" />
 
                     <ImageView
                         android:id="@+id/circleImageView4"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="10dp"
+                        android:layout_height="10dp"
                         android:layout_marginStart="5dp"
                         android:layout_weight="1"
                         android:visibility="gone"
-                        app:srcCompat="@drawable/ic_circle_light_light_gray" />
+                        app:srcCompat="@drawable/ic_circle_light_light_gray"
+                        tools:visibility="visible" />
 
                     <ImageView
                         android:id="@+id/circleImageView5"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="10dp"
+                        android:layout_height="10dp"
                         android:layout_marginStart="5dp"
                         android:layout_weight="1"
                         android:visibility="gone"
-                        app:srcCompat="@drawable/ic_circle_light_light_gray" />
+                        app:srcCompat="@drawable/ic_circle_light_light_gray"
+                        tools:visibility="visible" />
                 </LinearLayout>
 
                 <androidx.viewpager.widget.ViewPager
@@ -129,7 +134,7 @@
                     android:layout_marginTop="15dp"
                     app:layout_constraintStart_toStartOf="@+id/leftGuideline"
                     app:layout_constraintTop_toBottomOf="@+id/telNumTextView"
-                    app:srcCompat="@drawable/ic_filter_none" />
+                    app:srcCompat="@drawable/ic_settings_24dp" />
 
                 <TextView
                     android:id="@+id/descTextView"
@@ -142,7 +147,7 @@
                     android:textSize="18sp"
                     app:layout_constraintStart_toEndOf="@+id/imageView4"
                     app:layout_constraintTop_toTopOf="@+id/imageView4"
-                    tools:text="정보 / 소개글" />
+                    tools:text="장비 종류" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/reviewRecyclerView"

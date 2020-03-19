@@ -76,6 +76,11 @@ class EditPicturesActivity : BaseActivity(), View.OnClickListener, AnkoLogger {
         setAdapter(adapter)
     }
 
+    /**
+     * recyclerView의 아이템 클릭 이벤트를 처리하는 메소드
+     * @param holder 뷰홀더
+     * @param position 아이템 인덱스
+     */
     private fun processItemView(holder: EditImageRecyclerAdapter.ImageViewHolder, position: Int){
         holder.itemView.rootLayout.run {
             when (isMainSelected) {
@@ -92,19 +97,19 @@ class EditPicturesActivity : BaseActivity(), View.OnClickListener, AnkoLogger {
                     isMainSelected = true
                     this@EditPicturesActivity.mainPosition = position
                     info("선택됨 : $position")
-                    setAdapterMainPosition(holder, position)
+                    adapter.run{
+                        mainPosition = position
+                        onBindViewHolder(holder, position)
+                    }
                 }
             }
         }
     }
 
-    fun setAdapterMainPosition(holder: EditImageRecyclerAdapter.ImageViewHolder, position: Int){
-        adapter.run{
-            mainPosition = position
-            onBindViewHolder(holder, position)
-        }
-    }
-
+    /**
+     * 어댑터에 아이템을 추가하는 메소드
+     * @param adapter 아이템을 추가할 어댑터
+     */
     private fun setAdapter(adapter: EditImageRecyclerAdapter) {
 //        GlobalScope.launch{
             runBlocking {
@@ -301,6 +306,10 @@ class EditPicturesActivity : BaseActivity(), View.OnClickListener, AnkoLogger {
         }
     }
 
+    /**
+     * 사진 선택 액티비티 시작하는 메소드
+     * @param position 클릭한 아이템의 인덱스 (선택한 사진을 어디에 덮어쓸지 저장하기 위함)
+     */
     fun editPicture(position: Int){
         positionToEdit = position
         startActivityForResult(Intent(Intent.ACTION_PICK).apply{
@@ -347,6 +356,8 @@ class EditPicturesActivity : BaseActivity(), View.OnClickListener, AnkoLogger {
 
     /**
      * 실제 경로 얻기
+     * @param uri 사진을 선택해서 얻은 uri
+     * @return uri로 구한 실제 경로
      */
     private fun getRealPathFromURI(uri: Uri): String{
         var cursor: Cursor? = null

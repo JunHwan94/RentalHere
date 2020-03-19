@@ -20,7 +20,7 @@ class CustomDialog(context: Context, private val messageOrId: String) {
 
     // 아이디 중복 체크 Dialog
     fun showIdCheck(){
-        dialog.apply {
+        dialog.run {
             requestWindowFeature(Window.FEATURE_NO_TITLE)
             setContentView(R.layout.id_check_dialog)
 

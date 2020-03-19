@@ -76,11 +76,11 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener, AnkoLogger, Log
      */
     override fun showLoginDivide() {
         loginLayout.visibility = View.GONE
-        loginDivideLayout.apply{
+        loginDivideLayout.run{
             background = getDrawable(R.drawable.splash)
             fadeIn()
         }
-        topTextView.apply{
+        topTextView.run{
             fadeIn()
             setImageResource(R.drawable.logo_white)
             val params = (layoutParams as ConstraintLayout.LayoutParams)
@@ -124,14 +124,14 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener, AnkoLogger, Log
         loginDivideLayout.background = null
         clientLoginButton.visibility = View.INVISIBLE
         ownerLoginButton.visibility = View.INVISIBLE
-        topTextView.apply{
+        topTextView.run{
             fadeIn()
             setImageResource(R.drawable.logo_blue)
             val params = (layoutParams as ConstraintLayout.LayoutParams)
             params.bottomMargin = 700
             layoutParams = params
         }
-        loginLayout.apply { fadeIn(); visibility = View.VISIBLE }
+        loginLayout.run { fadeIn(); visibility = View.VISIBLE }
     }
 
     /**

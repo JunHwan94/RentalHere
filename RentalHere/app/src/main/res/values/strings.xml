@@ -68,8 +68,8 @@
     <string name="result">결과</string>
     <string name="your_id_is">회원님의 가입된 아이디는 다음과 같습니다.</string>
     <string name="delete_shop">업체삭제</string>
-    <string name="toast_delete_shop">업체을 삭제했습니다</string>
-    <string name="dialog_delete_shop">업체을 삭제합니다</string>
+    <string name="toast_delete_shop">업체를 삭제했습니다</string>
+    <string name="dialog_delete_shop">업체를 삭제합니다</string>
 
     <!--  AllReviewActivity  -->
     <string name="my">내</string>

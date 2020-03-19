@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
@@ -56,6 +57,7 @@ class ShopInfoFragment : Fragment(), AnkoLogger, View.OnClickListener {
     private lateinit var reviewAdapter: ReviewRecyclerViewAdapter
     private lateinit var reviewModelList: ArrayList<ReviewResult.ReviewModel>
     private var callback: OnFragmentInteractionListener? = null
+    private lateinit var indicatorList: List<ImageView>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -119,8 +121,10 @@ class ShopInfoFragment : Fragment(), AnkoLogger, View.OnClickListener {
                     }
                     binding.userReviewTextView.run { text = "${getString(R.string.user_review)}  ${reviewModelList.size}" }
                     binding.allReviewsButton.visibility = View.VISIBLE
-                }else  // 리뷰 없을 때
-                    binding.userReviewTextView.text = getString(R.string.no_review)
+                }else // 리뷰 없을 때
+                    activity?.let{ // 여기서 Fragment not attached to a context 에러나서 이렇게 해줌 todo: 계속 확인하기
+                        binding.userReviewTextView.text = getString(R.string.no_review)
+                    }
             }
 
             override fun onFailure(call: Call<ReviewResult>, t: Throwable) {
@@ -153,7 +157,7 @@ class ShopInfoFragment : Fragment(), AnkoLogger, View.OnClickListener {
      */
     private fun setImagePagerAdapter() {
         val adapter = ListPagerAdapter(childFragmentManager)
-        val circleList = binding.run{
+        indicatorList = binding.run{
             listOf(circleImageView1, circleImageView2, circleImageView3, circleImageView4, circleImageView5)
         }
         binding.imagePager.run{
@@ -173,7 +177,7 @@ class ShopInfoFragment : Fragment(), AnkoLogger, View.OnClickListener {
                                 .load(context.getDrawable(
                                     if(it == position) R.drawable.ic_circle_primary
                                     else R.drawable.ic_circle_light_light_gray)
-                                ).into(circleList[it])
+                                ).into(indicatorList[it])
                         }
                 }
             })
@@ -181,8 +185,11 @@ class ShopInfoFragment : Fragment(), AnkoLogger, View.OnClickListener {
         addAdapterItems(adapter)
     }
 
+    /**
+     * 어댑터에 ImageFragment 아이템 추가
+     * @param adapter 아이템을 추가할 어댑터
+     */
     private fun addAdapterItems(adapter: ListPagerAdapter){
-//        GlobalScope.launch {
         adapter.addItem(ImageFragment.newInstance(shopModel.shopProfileImageUrl1))
         if(shopModel.shopProfileImageUrl2 != "") {
             adapter.addItem(ImageFragment.newInstance(shopModel.shopProfileImageUrl2))
@@ -200,7 +207,6 @@ class ShopInfoFragment : Fragment(), AnkoLogger, View.OnClickListener {
             adapter.addItem(ImageFragment.newInstance(shopModel.shopProfileImageUrl5))
             binding.circleImageView5.visibility = View.VISIBLE
         }
-//        }
     }
 
     private fun setViewListener() {
@@ -289,16 +295,29 @@ class ShopInfoFragment : Fragment(), AnkoLogger, View.OnClickListener {
         }
         if(requestCode == EDIT_SHOP_CODE && resultCode == RESULT_OK && data != null){
             callback!!.setShopName(data.getStringExtra(FIELD_SHOP_NAME)!!)
-//            addressTextView.text = data.getStringExtra(FIELD_SHOP_ADDRESS)
-//            telNumTextView.text = data.getStringExtra(FIELD_SHOP_TEL_NUM)
-//            descTextView.text = data.getStringExtra(FIELD_SHOP_INFO)
             loadShop()
             callback!!.loadShops()
+            resetIndicator()
         }
         if(requestCode == EDIT_PIC_CODE && resultCode == RESULT_OK){
             loadShop()
             callback!!.loadShops()
+            resetIndicator()
         }
+    }
+
+    /**
+     * 뷰페이저의 인디케이터를 첫번째 표시로 초기화
+     */
+    private fun resetIndicator(){
+        sequence{ yieldAll(indicatorList) }
+            .forEachIndexed{ index, it ->
+                Glide.with(this)
+                    .load(
+                        if(index == 0) context!!.getDrawable(R.drawable.ic_circle_primary)
+                        else context!!.getDrawable(R.drawable.ic_circle_light_light_gray))
+                    .into(it)
+            }
     }
 
     private fun loadShop() {

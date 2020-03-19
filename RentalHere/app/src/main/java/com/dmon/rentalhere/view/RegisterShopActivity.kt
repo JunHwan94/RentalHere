@@ -139,6 +139,7 @@ class RegisterShopActivity : BaseActivity(), AnkoLogger, View.OnClickListener {
             !checkBox1.isChecked && !checkBox2.isChecked && !checkBox3.isChecked -> toast(getString(R.string.toast_check_items))
 //            descEditText.text.isEmpty() -> toast(getString(R.string.toast_type_info))
             else -> {
+                setViewWhenUploading()
                 hideKeyBoard()
                 setAdapterEmptyListener()
                 when(shopModel){
@@ -167,8 +168,14 @@ class RegisterShopActivity : BaseActivity(), AnkoLogger, View.OnClickListener {
      */
     private fun checkImageBlank(){
         when{
-            imageAdapter.getRealSize() == 0 -> toast(getString(R.string.toast_select_image))
-            !isBcPicked -> toast(getString(R.string.toast_select_bcImage))
+            imageAdapter.getRealSize() == 0 -> {
+                setViewWhenNotCanceled()
+                toast(getString(R.string.toast_select_image))
+            }
+            !isBcPicked -> {
+                setViewWhenNotCanceled()
+                toast(getString(R.string.toast_select_bcImage))
+            }
             else -> requestApproval()
         }
     }
@@ -181,7 +188,6 @@ class RegisterShopActivity : BaseActivity(), AnkoLogger, View.OnClickListener {
      * 업체 정보 수정
      */
     private fun requestEdit() {
-        setViewWhenUploading()
         val shopIdx = getRequestBody(shopModel!!.shopIdx)
         val shopName = getRequestBody(shopNameEditText.text.toString())
         val shopTelNum = getRequestBody(telEditText.text.toString())
@@ -222,6 +228,19 @@ class RegisterShopActivity : BaseActivity(), AnkoLogger, View.OnClickListener {
 //        descEditText.isEnabled = false
         imageRecyclerView.isEnabled = false
         requestButton.isEnabled = false
+    }
+
+    private fun setViewWhenNotCanceled(){
+        isAppUpLoading = false
+        shopNameEditText.isEnabled = true
+        telEditText.isEnabled = true
+        addressEditText.isEnabled = true
+        checkBox1.isEnabled = true
+        checkBox2.isEnabled = true
+        checkBox3.isEnabled = true
+//        descEditText.isEnabled = true
+        imageRecyclerView.isEnabled = true
+        requestButton.isEnabled = true
     }
 
     /**

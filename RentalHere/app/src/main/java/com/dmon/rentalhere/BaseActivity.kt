@@ -146,7 +146,8 @@ abstract class BaseActivity : AppCompatActivity(){
             val bitmapByteArray = bmpStream.toByteArray()
             streamLength = bitmapByteArray.size
             quality -= 5
-        }while(streamLength >= MAX_IMAGE_SIZE)
+        }
+        while(streamLength >= MAX_IMAGE_SIZE)
 
         return bitmap
     }

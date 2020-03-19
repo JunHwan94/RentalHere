@@ -267,12 +267,12 @@ class ClientMainActivity : BaseActivity(), View.OnClickListener, AnkoLogger, Nav
      * frameLayout container2에 ShopInfoFragment 적용
      */
     override fun showShopInfoFragmentInContainer2(fragment: Fragment, shopName: String) {
-        fragment.arguments?.apply{
+        fragment.arguments?.run{
             putString(FIELD_USER_IDX, userModel.userIdx)
         }
         supportFragmentManager.beginTransaction().setCustomAnimations(R.anim.fade_in, R.anim.fade_out).replace(R.id.container2, fragment).commit()
         this.shopInfoFragment = fragment as ShopInfoFragment
-        shopTextView.apply{ visibility = View.VISIBLE; text = shopName}
+        shopTextView.run{ visibility = View.VISIBLE; text = shopName}
         hideMain()
         container2.visibility = View.VISIBLE
     }
@@ -285,7 +285,7 @@ class ClientMainActivity : BaseActivity(), View.OnClickListener, AnkoLogger, Nav
         supportFragmentManager.beginTransaction().setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
             .replace(R.id.container3, searchFragment).commit()
         hideMain()
-        shopTextView.apply{ visibility = View.VISIBLE; text = getString(R.string.search_location) }
+        shopTextView.run{ visibility = View.VISIBLE; text = getString(R.string.search_location) }
         container3.visibility = View.VISIBLE
     }
 
@@ -303,12 +303,12 @@ class ClientMainActivity : BaseActivity(), View.OnClickListener, AnkoLogger, Nav
      * container3에 ShopInfoFragment 적용
      */
     override fun showShopInfoFragmentInContainer3(fragment: Fragment, shopName: String) {
-        fragment.arguments?.apply{
+        fragment.arguments?.run{
             putString(FIELD_USER_IDX, userModel.userIdx)
         }
         supportFragmentManager.beginTransaction().setCustomAnimations(R.anim.fade_in, R.anim.fade_out).add(R.id.container3, fragment).commit()
         this.shopInfoFragment = fragment as ShopInfoFragment
-        shopTextView.apply{ visibility = View.VISIBLE; text = shopName}
+        shopTextView.run{ visibility = View.VISIBLE; text = shopName}
         topImageView.visibility = View.GONE
 //        container3.visibility = View.GONE
 //        container4.visibility = View.VISIBLE
