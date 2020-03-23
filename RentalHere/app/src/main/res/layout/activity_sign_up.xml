@@ -36,8 +36,10 @@
         android:layout_marginTop="25dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/topTextView">
+        app:layout_constraintTop_toBottomOf="@+id/topTextView"
+        app:layout_constraintVertical_bias="0.0">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -80,7 +82,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/elecCheckBox" />
+                app:layout_constraintTop_toBottomOf="@+id/plasCheckBox" />
 
             <TextView
                 android:id="@+id/textView8"
@@ -221,54 +223,53 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
+                android:text="@string/electric"
                 android:textSize="18sp"
                 app:layout_constraintStart_toStartOf="@+id/jobKindsTextView"
-                app:layout_constraintTop_toBottomOf="@+id/jobKindsTextView"
-                android:text="@string/electric" />
+                app:layout_constraintTop_toBottomOf="@+id/jobKindsTextView" />
 
             <CheckBox
                 android:id="@+id/fireCheckBox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
+                android:layout_marginStart="20dp"
                 android:layout_marginTop="5dp"
+                android:text="@string/fireFighting"
                 android:textSize="18sp"
+                app:layout_constraintEnd_toStartOf="@+id/ironCheckBox"
                 app:layout_constraintStart_toEndOf="@+id/elecCheckBox"
-                app:layout_constraintTop_toBottomOf="@+id/jobKindsTextView"
-                android:text="@string/fireFighting" />
+                app:layout_constraintTop_toBottomOf="@+id/jobKindsTextView" />
 
             <CheckBox
                 android:id="@+id/ironCheckBox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
+                android:layout_marginStart="20dp"
                 android:layout_marginTop="5dp"
+                android:text="@string/iron"
                 android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/fireCheckBox"
-                app:layout_constraintTop_toBottomOf="@+id/jobKindsTextView"
-                android:text="@string/iron" />
+                app:layout_constraintTop_toBottomOf="@+id/jobKindsTextView" />
 
             <CheckBox
                 android:id="@+id/plasCheckBox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="5dp"
+                android:text="@string/plastere"
                 android:textSize="18sp"
-                app:layout_constraintStart_toEndOf="@+id/ironCheckBox"
-                app:layout_constraintTop_toBottomOf="@+id/jobKindsTextView"
-                android:text="@string/plastere" />
+                app:layout_constraintStart_toStartOf="@id/elecCheckBox"
+                app:layout_constraintTop_toBottomOf="@+id/elecCheckBox" />
 
             <CheckBox
                 android:id="@+id/etcCheckBox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="5dp"
+                android:text="@string/etc"
                 android:textSize="18sp"
-                app:layout_constraintStart_toEndOf="@+id/plasCheckBox"
-                app:layout_constraintTop_toBottomOf="@+id/jobKindsTextView"
-                android:text="@string/etc" />
+                app:layout_constraintEnd_toEndOf="@+id/fireCheckBox"
+                app:layout_constraintStart_toStartOf="@+id/fireCheckBox"
+                app:layout_constraintTop_toTopOf="@+id/plasCheckBox" />
 
             <TextView
                 android:id="@+id/jobKindsTextView"

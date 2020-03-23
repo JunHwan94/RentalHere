@@ -20,20 +20,18 @@ import com.dmon.rentalhere.retrofit.FIELD_USER_ID
 import com.dmon.rentalhere.retrofit.FIELD_USER_IDX
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_owner_main.*
-import kotlinx.android.synthetic.main.activity_owner_main.backButton
-import kotlinx.android.synthetic.main.activity_owner_main.container
-import kotlinx.android.synthetic.main.activity_owner_main.drawer
-import kotlinx.android.synthetic.main.activity_owner_main.menuButton
-import kotlinx.android.synthetic.main.activity_owner_main.navigationView
-import kotlinx.android.synthetic.main.activity_owner_main.shopTextView
 import kotlinx.android.synthetic.main.nav_header_user_info.view.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.error
 import org.jetbrains.anko.info
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.util.HashMap
+import java.util.*
 
 const val OWNER_MAIN_TAG = "OwnerMainActivity"
 const val REGISTER_SHOP_CODE = 102
@@ -61,14 +59,24 @@ class OwnerMainActivity : BaseActivity(), NavigationView.OnNavigationItemSelecte
      * 어댑터, 리사이클러뷰 설정
      */
     private fun setAdapter() {
-        shopAdapter = ShopRecyclerViewAdapter().apply { setOnItemClickListener(object : ShopRecyclerViewAdapter.OnItemClickListener{
-            override fun onItemClick(holder: ShopRecyclerViewAdapter.ShopViewHolder, view: View, position: Int) {
-                setFragment(getItem(position))
+        GlobalScope.launch {
+            shopAdapter = withContext(Dispatchers.Default) {
+                ShopRecyclerViewAdapter().apply {
+                    setOnItemClickListener(object : ShopRecyclerViewAdapter.OnItemClickListener {
+                        override fun onItemClick(
+                            holder: ShopRecyclerViewAdapter.ShopViewHolder,
+                            view: View,
+                            position: Int
+                        ) {
+                            setFragment(getItem(position))
+                        }
+                    })
+                }
             }
-        }) }
-        recyclerView.run{
-            adapter = shopAdapter
-            layoutManager = LinearLayoutManager(this@OwnerMainActivity)
+            recyclerView.run {
+                adapter = shopAdapter
+                layoutManager = LinearLayoutManager(this@OwnerMainActivity)
+            }
         }
     }
 
@@ -76,9 +84,11 @@ class OwnerMainActivity : BaseActivity(), NavigationView.OnNavigationItemSelecte
      * 업체 정보 화면
      */
     fun setFragment(shopModel: ShopResult.ShopModel){
-        shopTextView.text = shopModel.shopName
-        backButton.visibility = View.VISIBLE
-        container.visibility = View.VISIBLE
+        runOnUiThread {
+            shopTextView.text = shopModel.shopName
+            backButton.visibility = View.VISIBLE
+            container.visibility = View.VISIBLE
+        }
         shopInfoFragment = ShopInfoFragment.newInstance(shopModel, OWNER_TYPE)
         supportFragmentManager.beginTransaction().replace(R.id.container, shopInfoFragment).commit()
     }

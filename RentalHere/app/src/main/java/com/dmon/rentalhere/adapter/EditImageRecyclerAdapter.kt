@@ -18,7 +18,7 @@ import org.jetbrains.anko.alert
 import org.jetbrains.anko.margin
 import org.jetbrains.anko.toast
 
-const val PICK_FROM_ALBUM_AND_OVERRIDE_CODE = 303
+const val PICK_FROM_ALBUM_AND_OVERWRITE_CODE = 303
 class EditImageRecyclerAdapter(private val activity: Activity, private val shopIdx: String, var mainPosition: Int): RecyclerView.Adapter<EditImageRecyclerAdapter.ImageViewHolder>() {
     private val uriList = ArrayList<String>()
     private lateinit var listener: OnItemClickListener

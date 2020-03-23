@@ -11,6 +11,7 @@ import com.dmon.rentalhere.presenter.ID_KEY
 import com.dmon.rentalhere.presenter.PREF_KEY
 import com.dmon.rentalhere.presenter.TYPE_KEY
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -25,21 +26,21 @@ class SplashActivity : AppCompatActivity() {
 
         GlobalScope.launch{
             delay(2500)
+            val flag = Intent.FLAG_ACTIVITY_NO_ANIMATION or
+                        Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
+
             // 자동로그인 체크
             when {
                 id == "" -> startActivity(Intent(applicationContext, LoginActivity::class.java).apply {
-                    flags = Intent.FLAG_ACTIVITY_NO_ANIMATION or
-                            Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
+                    flags = flag
                 })
                 userType == CLIENT_TYPE -> startActivity(Intent(applicationContext, ClientMainActivity::class.java).apply {
                     putExtra(ID_KEY, id)
-                    flags = Intent.FLAG_ACTIVITY_NO_ANIMATION or
-                            Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
+                    flags = flag
                 })
                 else -> startActivity(Intent(applicationContext, OwnerMainActivity::class.java).apply {
                     putExtra(ID_KEY, id)
-                    flags = Intent.FLAG_ACTIVITY_NO_ANIMATION or
-                            Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
+                    flags = flag
                 })
             }
             finish()

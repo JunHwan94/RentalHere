@@ -6,9 +6,11 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import com.dmon.rentalhere.R
 import com.dmon.rentalhere.constants.SignUpConstants
 import com.dmon.rentalhere.model.BaseResult
+import com.dmon.rentalhere.model.CustomDialog
 import com.dmon.rentalhere.model.SignUpModel
 import com.dmon.rentalhere.retrofit.*
 import com.dmon.rentalhere.view.LoginActivity
@@ -133,9 +135,9 @@ class SignUpPresenter(private val signUpView: SignUpConstants.View, private val 
                 override fun onResponse(call: Call<BaseResult>, response: Response<BaseResult>) {
                     val responseResult: BaseResult = response.body()!!
                     val result = responseResult.baseModel.result
-//                    info(result)
+                    Log.i("요청 결과",result)
                     when (result) {
-                        "N" -> context.getString(R.string.id_is_exist)
+                        "N" -> signUpView.showDialog(context.getString(R.string.id_is_exist))
                         else -> {
                             signUpView.showDialog(editable.toString())
                             signUpModel.isIdChecked = true

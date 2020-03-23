@@ -2,6 +2,7 @@ package com.dmon.rentalhere.presenter
 
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import android.view.View
 import com.dmon.rentalhere.R
 import com.dmon.rentalhere.constants.LoginConstants
@@ -94,10 +95,13 @@ class LoginPresenter(private val loginView: LoginConstants.View, private val con
                         if (loginView.autoLoginEnabled()) setAutoLogin()
                     }
                     result.result == "N" ->{
-                        when(result.message){
-                            context.getString(R.string.login_failed) ->
-                                context.toast(context.getString(R.string.toast_check_id_pw))
-                            else -> context.toast(result.message)
+                        context.run {
+                            Log.d("받은 값", result.message)
+                            when (result.message) {
+                                getString(R.string.login_failed) ->
+                                    toast(getString(R.string.toast_check_id_pw))
+                                else -> toast(result.message)
+                            }
                         }
                     }
                 }

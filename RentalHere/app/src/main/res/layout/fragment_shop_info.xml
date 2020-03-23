@@ -137,7 +137,7 @@
                     app:srcCompat="@drawable/ic_settings_24dp" />
 
                 <TextView
-                    android:id="@+id/descTextView"
+                    android:id="@+id/itemKindsTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
@@ -148,6 +148,19 @@
                     app:layout_constraintStart_toEndOf="@+id/imageView4"
                     app:layout_constraintTop_toTopOf="@+id/imageView4"
                     tools:text="장비 종류" />
+
+                <TextView
+                    android:id="@+id/bcTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:drawablePadding="10dp"
+                    android:gravity="top"
+                    android:textAlignment="gravity"
+                    android:textSize="18sp"
+                    app:layout_constraintStart_toStartOf="@+id/leftGuideline"
+                    app:layout_constraintTop_toBottomOf="@+id/imageView4"
+                    android:text="@string/business_card" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/reviewRecyclerView"
@@ -301,9 +314,9 @@
                     android:id="@+id/bcImageView"
                     android:layout_width="280dp"
                     android:layout_height="180dp"
-                    android:layout_marginTop="15dp"
+                    android:layout_marginTop="5dp"
                     app:layout_constraintStart_toStartOf="@+id/leftGuideline"
-                    app:layout_constraintTop_toBottomOf="@+id/imageView4"
+                    app:layout_constraintTop_toBottomOf="@+id/bcTextView"
                     tools:srcCompat="@tools:sample/avatars" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>

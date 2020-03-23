@@ -28,8 +28,7 @@ import com.dmon.rentalhere.presenter.OWNER_TYPE
 import com.dmon.rentalhere.presenter.TYPE_KEY
 import com.dmon.rentalhere.retrofit.FIELD_SHOP_IDX
 import com.dmon.rentalhere.retrofit.*
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.error
 import org.jetbrains.anko.info
@@ -44,7 +43,6 @@ const val SHOP_INFO_TAG = "ShopInfoFragment"
 const val REVIEW_LIST_KEY = "reviewListKey"
 const val SHOP_IDX_KEY = "shopIdxKey"
 const val WRITE_REVIEW_CODE = 100
-const val EDIT_TYPE = 10
 const val EDIT_SHOP_CODE = 300
 const val EDIT_PIC_CODE = 301
 const val SHOP_MODEL_KEY = "shopModelKey"
@@ -65,14 +63,13 @@ class ShopInfoFragment : Fragment(), AnkoLogger, View.OnClickListener {
             shopModel = it.getParcelable(SHOP_MODEL_KEY)!!
             userType = it.getInt(TYPE_KEY)
         }
-//        sharedElementEnterTransition = TransitionInflater.from(context).inflateTransition(android.R.transition.move)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_shop_info, container, false)
         init()
         setView()
-        loadReview()
+        activity?.let { loadReview() }
         setViewListener()
         return binding.root
     }
@@ -122,9 +119,8 @@ class ShopInfoFragment : Fragment(), AnkoLogger, View.OnClickListener {
                     binding.userReviewTextView.run { text = "${getString(R.string.user_review)}  ${reviewModelList.size}" }
                     binding.allReviewsButton.visibility = View.VISIBLE
                 }else // 리뷰 없을 때
-                    activity?.let{ // 여기서 Fragment not attached to a context 에러나서 이렇게 해줌 todo: 계속 확인하기
-                        binding.userReviewTextView.text = getString(R.string.no_review)
-                    }
+                    binding.userReviewTextView.text = getString(R.string.no_review)
+
             }
 
             override fun onFailure(call: Call<ReviewResult>, t: Throwable) {
@@ -139,7 +135,7 @@ class ShopInfoFragment : Fragment(), AnkoLogger, View.OnClickListener {
     private fun setView(){
         binding.addressTextView.text = shopModel.shopAddress
         binding.telNumTextView.text = shopModel.shopTelNum
-        binding.descTextView.text = shopModel.shopItemKinds
+        binding.itemKindsTextView.text = shopModel.shopItemKinds
         Glide.with(context!!)
             .load(shopModel.shopBcImageUrl)
             .apply(RequestOptions().centerCrop())
@@ -194,18 +190,26 @@ class ShopInfoFragment : Fragment(), AnkoLogger, View.OnClickListener {
         if(shopModel.shopProfileImageUrl2 != "") {
             adapter.addItem(ImageFragment.newInstance(shopModel.shopProfileImageUrl2))
             binding.circleImageView2.visibility = View.VISIBLE
+        }else{
+            binding.circleImageView2.visibility = View.GONE
         }
         if(shopModel.shopProfileImageUrl3 != "") {
             adapter.addItem(ImageFragment.newInstance(shopModel.shopProfileImageUrl3))
             binding.circleImageView3.visibility = View.VISIBLE
+        }else{
+            binding.circleImageView3.visibility = View.GONE
         }
         if(shopModel.shopProfileImageUrl4 != ""){
             adapter.addItem(ImageFragment.newInstance(shopModel.shopProfileImageUrl4))
             binding.circleImageView4.visibility = View.VISIBLE
+        }else{
+            binding.circleImageView4.visibility = View.GONE
         }
         if(shopModel.shopProfileImageUrl5 != ""){
             adapter.addItem(ImageFragment.newInstance(shopModel.shopProfileImageUrl5))
             binding.circleImageView5.visibility = View.VISIBLE
+        }else{
+            binding.circleImageView5.visibility = View.GONE
         }
     }
 
@@ -318,6 +322,11 @@ class ShopInfoFragment : Fragment(), AnkoLogger, View.OnClickListener {
                         else context!!.getDrawable(R.drawable.ic_circle_light_light_gray))
                     .into(it)
             }
+
+//        sequence{ yieldAll(indicatorList.takeLast(5 - pagerAdapter.count)) }
+//            .forEach {
+//                it.visibility = View.GONE
+//            }
     }
 
     private fun loadShop() {

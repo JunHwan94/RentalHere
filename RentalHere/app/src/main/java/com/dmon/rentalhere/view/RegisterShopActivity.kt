@@ -169,11 +169,11 @@ class RegisterShopActivity : BaseActivity(), AnkoLogger, View.OnClickListener {
     private fun checkImageBlank(){
         when{
             imageAdapter.getRealSize() == 0 -> {
-                setViewWhenNotCanceled()
+                setViewWhenCanceled()
                 toast(getString(R.string.toast_select_image))
             }
             !isBcPicked -> {
-                setViewWhenNotCanceled()
+                setViewWhenCanceled()
                 toast(getString(R.string.toast_select_bcImage))
             }
             else -> requestApproval()
@@ -188,33 +188,36 @@ class RegisterShopActivity : BaseActivity(), AnkoLogger, View.OnClickListener {
      * 업체 정보 수정
      */
     private fun requestEdit() {
-        val shopIdx = getRequestBody(shopModel!!.shopIdx)
-        val shopName = getRequestBody(shopNameEditText.text.toString())
-        val shopTelNum = getRequestBody(telEditText.text.toString())
-        val shopItemKinds = getRequestBody(getItemKinds())
-//        val shopInfo = descEditText.text.toString()
-        val shopAddress = getRequestBody(addressEditText.text.toString())
-        val shopLatitude = getRequestBody(getGeoCode().first.toString())
-        val shopLongitude = getRequestBody(getGeoCode().second.toString())
-
         progressLayout.visibility = View.VISIBLE
-        retrofitService.postEditShop(shopIdx, shopName, shopTelNum, shopItemKinds, shopAddress, shopLatitude, shopLongitude, bcPart, shopItemKinds)
-            .enqueue(object : Callback<BaseResult>{
-                override fun onResponse(call: Call<BaseResult>, response: Response<BaseResult>) {
-                    if(response.body()!!.baseModel.result == "Y"){
-                        toast(getString(R.string.toast_request_edit_complete))
-                        setResult(RESULT_OK, Intent().apply{
-                            putExtra(FIELD_SHOP_NAME, shopNameEditText.text.toString())
-                        })
-                        finish()
-                    }else toast(getString(R.string.toast_request_failed))
-                }
+        GlobalScope.launch {
+            val shopIdx = getRequestBody(shopModel!!.shopIdx)
+            val shopName = getRequestBody(shopNameEditText.text.toString())
+            val shopTelNum = getRequestBody(telEditText.text.toString())
+            val shopItemKinds = getRequestBody(getItemKinds())
+//        val shopInfo = descEditText.text.toString()
+            val shopAddress = getRequestBody(addressEditText.text.toString())
+            val shopLatitude = getRequestBody(getGeoCode().first.toString())
+            val shopLongitude = getRequestBody(getGeoCode().second.toString())
 
-                override fun onFailure(call: Call<BaseResult>, t: Throwable) {
-                    error("요청 실패")
-                    t.printStackTrace()
-                }
-            })
+            retrofitService.postEditShop(shopIdx, shopName, shopTelNum, shopItemKinds,
+                shopAddress, shopLatitude, shopLongitude, bcPart, shopItemKinds)
+                .enqueue(object : Callback<BaseResult> {
+                    override fun onResponse(call: Call<BaseResult>, response: Response<BaseResult>) {
+                        if (response.body()!!.baseModel.result == "Y") {
+                            runOnUiThread { toast(getString(R.string.toast_request_edit_complete)) }
+                            setResult(RESULT_OK, Intent().apply {
+                                putExtra(FIELD_SHOP_NAME, shopNameEditText.text.toString())
+                            })
+                            finish()
+                        } else runOnUiThread { toast(getString(R.string.toast_request_failed)) }
+                    }
+
+                    override fun onFailure(call: Call<BaseResult>, t: Throwable) {
+                        error("요청 실패")
+                        t.printStackTrace()
+                    }
+                })
+        }
     }
 
     private fun setViewWhenUploading(){
@@ -230,7 +233,7 @@ class RegisterShopActivity : BaseActivity(), AnkoLogger, View.OnClickListener {
         requestButton.isEnabled = false
     }
 
-    private fun setViewWhenNotCanceled(){
+    private fun setViewWhenCanceled(){
         isAppUpLoading = false
         shopNameEditText.isEnabled = true
         telEditText.isEnabled = true
@@ -248,25 +251,26 @@ class RegisterShopActivity : BaseActivity(), AnkoLogger, View.OnClickListener {
      */
     private fun requestApproval() {
         setViewWhenUploading()
-        info("requestApproval실행됨")
-        val userIdx = getRequestBody(userIdx)
-        val shopName = getRequestBody(shopNameEditText.text.toString())
-        val shopTelNum = getRequestBody(telEditText.text.toString())
-        val shopItemKinds = getRequestBody(getItemKinds())
-//        val shopInfo = getRequestBody(descEditText.text.toString())
-        val shopAddress = getRequestBody(addressEditText.text.toString())
-        val shopLatitude = getRequestBody(getGeoCode().first ?: "0")
-        val shopLongitude = getRequestBody(getGeoCode().second ?: "0")
-        val partList = ArrayList<MultipartBody.Part?>(5)
-        info(this.userIdx)
-        info(shopNameEditText.text.toString())
-        info(telEditText.text.toString())
-        info(shopItemKinds)
-        info(addressEditText.text.toString())
         progressLayout.visibility = View.VISIBLE
-        // 사진 파일 처리, 업체 등록 요청
         GlobalScope.launch {
             info("Coroutine 실행됨")
+            info("requestApproval실행됨")
+            val userIdx = getRequestBody(userIdx)
+            val shopName = getRequestBody(shopNameEditText.text.toString())
+            val shopTelNum = getRequestBody(telEditText.text.toString())
+            val shopItemKinds = getRequestBody(getItemKinds())
+    //        val shopInfo = getRequestBody(descEditText.text.toString())
+            val shopAddress = getRequestBody(addressEditText.text.toString())
+            val shopLatitude = getRequestBody(getGeoCode().first ?: "0")
+            val shopLongitude = getRequestBody(getGeoCode().second ?: "0")
+            val partList = ArrayList<MultipartBody.Part?>(5)
+            info(userIdx)
+            info(shopNameEditText.text.toString())
+            info(telEditText.text.toString())
+            info(shopItemKinds)
+            info(addressEditText.text.toString())
+
+            // 사진 파일 처리, 업체 등록 요청
             while(imageAdapter.itemCount < 5){
                 imageAdapter.addItem("")
             }
@@ -297,7 +301,7 @@ class RegisterShopActivity : BaseActivity(), AnkoLogger, View.OnClickListener {
                             setResult(RESULT_OK)
                             finish()
                         }else toast(getString(R.string.toast_request_failed))
-//                        info(response.body()!!.error.error)
+    //                        info(response.body()!!.error.error)
                     }
 
                     override fun onFailure(call: Call<BaseResult>, t: Throwable) {
@@ -464,16 +468,4 @@ class RegisterShopActivity : BaseActivity(), AnkoLogger, View.OnClickListener {
             cursor?.let{ it.close() }
         }
     }
-
-//    private fun setDescEditText() {
-//        descEditText.setOnTouchListener{ view, event ->
-//            if (view == descEditText) {
-//                view.parent.requestDisallowInterceptTouchEvent(true)
-//                when (event.action and MotionEvent.ACTION_MASK) {
-//                    MotionEvent.ACTION_UP -> view.parent.requestDisallowInterceptTouchEvent(false)
-//                }
-//            }
-//            false
-//        }
-//    }
 }

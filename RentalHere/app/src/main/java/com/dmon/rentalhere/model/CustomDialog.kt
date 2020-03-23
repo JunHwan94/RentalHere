@@ -18,6 +18,12 @@ import org.jetbrains.anko.runOnUiThread
 class CustomDialog(context: Context, private val messageOrId: String) {
     private val dialog: Dialog = Dialog(context)
 
+    init{
+        dialog.run{
+
+        }
+    }
+
     // 아이디 중복 체크 Dialog
     fun showIdCheck(){
         dialog.run {
@@ -53,6 +59,5 @@ class CustomDialog(context: Context, private val messageOrId: String) {
             show()
         }
     }
-
 
 }

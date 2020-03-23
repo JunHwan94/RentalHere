@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.dmon.rentalhere.BaseActivity
 import com.dmon.rentalhere.R
 import com.dmon.rentalhere.adapter.EditImageRecyclerAdapter
-import com.dmon.rentalhere.adapter.PICK_FROM_ALBUM_AND_OVERRIDE_CODE
+import com.dmon.rentalhere.adapter.PICK_FROM_ALBUM_AND_OVERWRITE_CODE
 import com.dmon.rentalhere.model.BaseResult
 import com.dmon.rentalhere.model.ShopResult
 import com.dmon.rentalhere.retrofit.FIELD_SHOP_IDX
@@ -100,10 +100,20 @@ class EditPicturesActivity : BaseActivity(), View.OnClickListener, AnkoLogger {
                     adapter.run{
                         mainPosition = position
                         onBindViewHolder(holder, position)
+                        setImageBackground(position)
                     }
                 }
             }
         }
+    }
+
+    private fun setImageBackground(position: Int){
+        generateSequence(0){ it + 1 }
+            .take(5)
+            .filter{ it != position }
+            .forEach {
+                recyclerView.layoutManager?.findViewByPosition(it)?.rootView?.background = null
+            }
     }
 
     /**
@@ -286,6 +296,7 @@ class EditPicturesActivity : BaseActivity(), View.OnClickListener, AnkoLogger {
             GlobalScope.launch {
                 val file = getResizedFile(this@EditPicturesActivity, getRealPathFromURI(data.data!!), MIN_IMAGE_SIZE)
 //            info("파일 크기 = ${file.length()}")
+                info(adapter.itemCount + 1)
                 uploadFileMap[adapter.itemCount + 1] = file
                 adapter.run {
                     addItem(data.data.toString())
@@ -293,10 +304,11 @@ class EditPicturesActivity : BaseActivity(), View.OnClickListener, AnkoLogger {
                 }
             }
         }
-        if(requestCode == PICK_FROM_ALBUM_AND_OVERRIDE_CODE && resultCode == Activity.RESULT_OK && data != null){
+        if(requestCode == PICK_FROM_ALBUM_AND_OVERWRITE_CODE && resultCode == Activity.RESULT_OK && data != null){
             info("메인 사진 : $mainPosition 번째")
             GlobalScope.launch {
                 val file = getResizedFile(this@EditPicturesActivity, getRealPathFromURI(data.data!!), MIN_IMAGE_SIZE)
+                info(positionToEdit + 1)
                 uploadFileMap[positionToEdit + 1] = file
                 adapter.run {
                     replaceItem(positionToEdit, data.data.toString())
@@ -315,7 +327,7 @@ class EditPicturesActivity : BaseActivity(), View.OnClickListener, AnkoLogger {
         startActivityForResult(Intent(Intent.ACTION_PICK).apply{
             type = MediaStore.Images.Media.CONTENT_TYPE
             flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
-        }, PICK_FROM_ALBUM_AND_OVERRIDE_CODE)
+        }, PICK_FROM_ALBUM_AND_OVERWRITE_CODE)
     }
 
     /**
@@ -343,15 +355,7 @@ class EditPicturesActivity : BaseActivity(), View.OnClickListener, AnkoLogger {
                 this[it - 1] = this[it]!!
             }
         }
-
-//        generateSequence(0){ it + 1 }.take(adapter.itemCount)
-//            .filter{ it == mainPosition }
-//            .forEach{
-//                info("인덱스 $it 변경됨")
-//                adapter.run{
-//                    onBindViewHolder(holder, it)
-//                }
-//            }
+        setImageBackground(mainPosition)
     }
 
     /**
@@ -373,30 +377,4 @@ class EditPicturesActivity : BaseActivity(), View.OnClickListener, AnkoLogger {
             cursor?.let{ it.close() }
         }
     }
-
-//    fun addOrReplacePicture(requestCode: Int, data: Intent, position: Int){
-//        val file = File(getRealPathFromURI(data.data!!))
-//        val requestBody = RequestBody.create(MediaType.parse(""), file)
-//        val part = MultipartBody.Part.createFormData("file", file.name, requestBody)
-//        retrofitService.postEditShopPicture(getRequestBody(shopModel.shopIdx), getRequestBody((position+1).toString()), part)
-//            .enqueue(object : Callback<BaseResult>{
-//                override fun onResponse(call: Call<BaseResult>, response: Response<BaseResult>) {
-//                    info(response.body()!!.baseModel.toString())
-//                    if(response.body()!!.baseModel.result == "Y"){
-//                        adapter.run{
-//                            when(requestCode){
-//                                PICK_FROM_ALBUM_CODE -> addItem(data.data.toString())
-//                                PICK_FROM_ALBUM_AND_OVERRIDE_CODE -> replaceItem(position, data.data.toString())
-//                            }
-//                            notifyDataSetChanged()
-//                            isChanged = true
-//                        }
-//                    }
-//                }
-//
-//                override fun onFailure(call: Call<BaseResult>, t: Throwable) {
-//
-//                }
-//            })
-//    }
 }

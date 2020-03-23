@@ -13,7 +13,7 @@
     <string name="toast_check_id_pw">로그인 실패\n아이디 / 비밀번호를 확인하세요</string>
     <string name="find_id">아이디 찾기</string>
     <string name="find_pw">비밀번호 찾기</string>
-    <string name="login_failed">로그인 실패</string>
+    <string name="login_failed">로그인실패</string>
 
     <!--  TermsActivity  -->
     <string name="terms_and_policy">약관 및 정책</string>
@@ -134,4 +134,5 @@
     <string name="plastere">미장</string>
     <string name="iron">철근</string>
     <string name="fireFighting">소방</string>
+    <string name="toast_you_are_an_owner">업주 회원입니다</string>
 </resources>
