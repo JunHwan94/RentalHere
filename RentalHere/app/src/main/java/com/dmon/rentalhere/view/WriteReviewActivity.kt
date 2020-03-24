@@ -1,7 +1,6 @@
 package com.dmon.rentalhere.view
 
 import android.app.Activity
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import com.dmon.rentalhere.BaseActivity
@@ -10,6 +9,7 @@ import com.dmon.rentalhere.model.BaseResult
 import com.dmon.rentalhere.retrofit.*
 import kotlinx.android.synthetic.main.activity_write_review.*
 import org.jetbrains.anko.AnkoLogger
+import org.jetbrains.anko.error
 import org.jetbrains.anko.toast
 import retrofit2.Call
 import retrofit2.Callback
@@ -64,6 +64,7 @@ class WriteReviewActivity : BaseActivity(), View.OnClickListener, AnkoLogger {
 
             override fun onFailure(call: Call<BaseResult>, t: Throwable) {
                 error("요청 실패")
+                toast(getString(R.string.toast_request_failed))
             }
         })
     }

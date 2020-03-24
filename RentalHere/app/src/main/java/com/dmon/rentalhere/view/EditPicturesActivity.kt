@@ -48,7 +48,6 @@ class EditPicturesActivity : BaseActivity(), View.OnClickListener, AnkoLogger {
     private var isAppUpLoading = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_pictures)
 //        toast(getString(R.string.toast_main_has_border)).apply{ duration = Toast.LENGTH_LONG }
@@ -67,11 +66,9 @@ class EditPicturesActivity : BaseActivity(), View.OnClickListener, AnkoLogger {
         mainPosition = shopModel.mainPicNum.toInt()
         adapter = EditImageRecyclerAdapter(this@EditPicturesActivity, shopModel.shopIdx, mainPosition)
         adapter.run{
-            setOnItemClickListener(object : EditImageRecyclerAdapter.OnItemClickListener {
-                override fun onItemClick(holder: EditImageRecyclerAdapter.ImageViewHolder, view: View, position: Int) {
-                    processItemView(holder, position)
-                }
-            })
+            setOnItemClickListener{ holder, _, position ->
+                processItemView(holder, position) // todo: fun interface 로 바꿈. 작동 확인하기
+            }
         }
         setAdapter(adapter)
     }
@@ -171,7 +168,10 @@ class EditPicturesActivity : BaseActivity(), View.OnClickListener, AnkoLogger {
                                 }
 
                                 override fun onFailure(call: Call<BaseResult>, t: Throwable) {
-
+                                    runOnUiThread {
+                                        toast(getString(R.string.toast_request_failed))
+                                        setViewWhenCanceled()
+                                    }
                                 }
                             })
                     }
@@ -190,6 +190,18 @@ class EditPicturesActivity : BaseActivity(), View.OnClickListener, AnkoLogger {
         recyclerView.isEnabled = false
         addButton.isEnabled = false
         completeButton.isEnabled = false
+    }
+
+    /**
+     * 뷰를 다시 쓸 수 있게하는 메소드
+     */
+    private fun setViewWhenCanceled(){
+        isAppUpLoading = false
+        progressLayout.visibility = View.GONE
+        backButton.isEnabled = true
+        recyclerView.isEnabled = true
+        addButton.isEnabled = true
+        completeButton.isEnabled = true
     }
 
     /**
@@ -228,7 +240,10 @@ class EditPicturesActivity : BaseActivity(), View.OnClickListener, AnkoLogger {
             }
 
             override fun onFailure(call: Call<BaseResult>, t: Throwable) {
-
+                runOnUiThread {
+                    toast(getString(R.string.toast_request_failed))
+                    setViewWhenCanceled()
+                }
             }
         })
     }
@@ -277,6 +292,10 @@ class EditPicturesActivity : BaseActivity(), View.OnClickListener, AnkoLogger {
 
                     override fun onFailure(call: Call<BaseResult>, t: Throwable) {
                         error("요청 실패")
+                        runOnUiThread {
+                            toast(getString(R.string.toast_request_failed))
+                            setViewWhenCanceled()
+                        }
                     }
                 })
         }

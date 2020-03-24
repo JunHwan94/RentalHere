@@ -28,6 +28,7 @@ import kotlinx.coroutines.withContext
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.error
 import org.jetbrains.anko.info
+import org.jetbrains.anko.toast
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -63,11 +64,7 @@ class OwnerMainActivity : BaseActivity(), NavigationView.OnNavigationItemSelecte
             shopAdapter = withContext(Dispatchers.Default) {
                 ShopRecyclerViewAdapter().apply {
                     setOnItemClickListener(object : ShopRecyclerViewAdapter.OnItemClickListener {
-                        override fun onItemClick(
-                            holder: ShopRecyclerViewAdapter.ShopViewHolder,
-                            view: View,
-                            position: Int
-                        ) {
+                        override fun onItemClick(holder: ShopRecyclerViewAdapter.ShopViewHolder, view: View, position: Int) {
                             setFragment(getItem(position))
                         }
                     })
@@ -111,6 +108,7 @@ class OwnerMainActivity : BaseActivity(), NavigationView.OnNavigationItemSelecte
 
             override fun onFailure(call: Call<UserInfoResult>, t: Throwable) {
                 error( "요청 실패")
+                toast(getString(R.string.toast_request_failed))
             }
         })
     }
@@ -149,6 +147,7 @@ class OwnerMainActivity : BaseActivity(), NavigationView.OnNavigationItemSelecte
 
             override fun onFailure(call: Call<MyShopsResult>, t: Throwable) {
                 error("실패")
+                toast(getString(R.string.toast_request_failed))
             }
         })
     }

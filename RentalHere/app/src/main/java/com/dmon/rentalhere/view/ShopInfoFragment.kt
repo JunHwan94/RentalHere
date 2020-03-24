@@ -87,9 +87,7 @@ class ShopInfoFragment : Fragment(), AnkoLogger, View.OnClickListener {
     private fun init(){
         reviewAdapter = ReviewRecyclerViewAdapter(EVERY_REVIEW_TYPE, context!!)
             .apply{
-                setOnItemClickListener(object : ReviewRecyclerViewAdapter.OnItemClickListener{
-                    override fun onItemClick(holder: ReviewRecyclerViewAdapter.ReviewViewHolder, view: View, position: Int) {}
-                })
+                setOnItemClickListener(ReviewRecyclerViewAdapter.OnItemClickListener { _, _, _ -> })
             }
 
         binding.reviewRecyclerView.run{ adapter = reviewAdapter; layoutManager = LinearLayoutManager(context) }
@@ -125,6 +123,7 @@ class ShopInfoFragment : Fragment(), AnkoLogger, View.OnClickListener {
 
             override fun onFailure(call: Call<ReviewResult>, t: Throwable) {
                 error("요청 실패", t)
+                toast(getString(R.string.toast_request_failed))
             }
         })
     }
@@ -261,6 +260,7 @@ class ShopInfoFragment : Fragment(), AnkoLogger, View.OnClickListener {
 
                     override fun onFailure(call: Call<BaseResult>, t: Throwable) {
                         error("요청 실패")
+                        toast(getString(R.string.toast_request_failed))
                     }
                 })
             }
@@ -344,6 +344,7 @@ class ShopInfoFragment : Fragment(), AnkoLogger, View.OnClickListener {
 
             override fun onFailure(call: Call<ShopResult>, t: Throwable) {
                 error("요청 실패")
+                toast(getString(R.string.toast_request_failed))
             }
         })
     }

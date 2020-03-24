@@ -108,6 +108,9 @@ class LoginPresenter(private val loginView: LoginConstants.View, private val con
             }
 
             override fun onFailure(call: Call<BaseResult>, t: Throwable) {
+                context.run{
+                    toast(getString(R.string.toast_request_failed))
+                }
                 error("실패")
             }
         })

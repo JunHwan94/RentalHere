@@ -30,7 +30,7 @@ class ReviewRecyclerViewAdapter(val type: Int, val context: Context): RecyclerVi
     lateinit var holder: ReviewViewHolder
     private var position: Int = -1
 
-    interface OnItemClickListener{
+    fun interface OnItemClickListener{
         fun onItemClick(holder: ReviewViewHolder, view: View, position: Int)
     }
     interface OnClickListener{
@@ -129,6 +129,9 @@ class ReviewRecyclerViewAdapter(val type: Int, val context: Context): RecyclerVi
                 }
 
                 override fun onFailure(call: Call<BaseResult>, t: Throwable) {
+                    context.run{
+                        toast(getString(R.string.toast_request_failed))
+                    }
                 }
             })
         }

@@ -23,7 +23,7 @@ class EditImageRecyclerAdapter(private val activity: Activity, private val shopI
     private val uriList = ArrayList<String>()
     private lateinit var listener: OnItemClickListener
 
-    interface OnItemClickListener{
+    fun interface OnItemClickListener{
         fun onItemClick(holder: ImageViewHolder, view: View, position: Int)
     }
 

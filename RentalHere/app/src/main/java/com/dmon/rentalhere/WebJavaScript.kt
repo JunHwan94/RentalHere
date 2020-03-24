@@ -11,6 +11,7 @@ import com.dmon.rentalhere.retrofit.FIELD_SHOP_IDX
 import com.dmon.rentalhere.view.SEARCH_TYPE
 import com.dmon.rentalhere.view.ShopInfoFragment
 import com.dmon.rentalhere.view.WebViewFragment
+import org.jetbrains.anko.toast
 
 class WebJavaScript(private var retrofitService: RetrofitService, private var callback: WebViewFragment.OnFragmentInteractionListener, private var fragmentType: Int){
     @JavascriptInterface
@@ -31,7 +32,9 @@ class WebJavaScript(private var retrofitService: RetrofitService, private var ca
                 }
             }
 
-            override fun onFailure(call: Call<ShopResult>, t: Throwable) {}
+            override fun onFailure(call: Call<ShopResult>, t: Throwable) {
+                callback.showFailedToast()
+            }
         })
     }
 }

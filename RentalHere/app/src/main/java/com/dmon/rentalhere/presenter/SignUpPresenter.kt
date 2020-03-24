@@ -19,6 +19,8 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import okhttp3.MediaType
 import okhttp3.RequestBody
+import org.jetbrains.anko.runOnUiThread
+import org.jetbrains.anko.toast
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -94,7 +96,10 @@ class SignUpPresenter(private val signUpView: SignUpConstants.View, private val 
             }
 
             override fun onFailure(call: Call<BaseResult>, t: Throwable) {
-                error("실패")
+                Log.e("가입요청", "실패")
+                context.run{
+                    runOnUiThread { toast(getString(R.string.toast_request_failed)) }
+                }
             }
         }
         retrofitService.postSignUp(map).enqueue(signUpCallback)
@@ -114,6 +119,9 @@ class SignUpPresenter(private val signUpView: SignUpConstants.View, private val 
 
             override fun onFailure(call: Call<BaseResult>, t: Throwable) {
                 Log.e(SIGNUP_TAG,"실패")
+                context.run{
+                    runOnUiThread { toast(getString(R.string.toast_request_failed)) }
+                }
             }
         }
         retrofitService.postEditUserInfo(map).enqueue(editUserCallback)
@@ -147,6 +155,9 @@ class SignUpPresenter(private val signUpView: SignUpConstants.View, private val 
 
                 override fun onFailure(call: Call<BaseResult>, t: Throwable) {
                     Log.e(SIGNUP_TAG, "실패")
+                    context.run{
+                        runOnUiThread { toast(getString(R.string.toast_request_failed)) }
+                    }
                 }
             }
             if (editable.isNotEmpty()) retrofitService.postCheckIdDup(idBody).enqueue(

@@ -152,6 +152,7 @@ class ClientMainActivity : BaseActivity(), View.OnClickListener, AnkoLogger, Nav
 
             override fun onFailure(call: Call<UserInfoResult>, t: Throwable) {
                 error("요청 실패")
+                toast(getString(R.string.toast_request_failed))
             }
 
         })
@@ -214,7 +215,7 @@ class ClientMainActivity : BaseActivity(), View.OnClickListener, AnkoLogger, Nav
             }
 
             override fun onFailure(call: Call<ReviewResult>, t: Throwable) {
-
+                toast(getString(R.string.toast_request_failed))
             }
         })
     }
@@ -310,8 +311,10 @@ class ClientMainActivity : BaseActivity(), View.OnClickListener, AnkoLogger, Nav
         this.shopInfoFragment = fragment as ShopInfoFragment
         shopTextView.run{ visibility = View.VISIBLE; text = shopName}
         topImageView.visibility = View.GONE
-//        container3.visibility = View.GONE
-//        container4.visibility = View.VISIBLE
+    }
+
+    override fun showFailedToast() {
+        toast(getString(R.string.toast_request_failed))
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

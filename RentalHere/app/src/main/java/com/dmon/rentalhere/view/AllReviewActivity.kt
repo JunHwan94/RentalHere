@@ -50,11 +50,7 @@ class AllReviewActivity : BaseActivity(), View.OnClickListener, AnkoLogger {
             layoutManager = LinearLayoutManager(this@AllReviewActivity)
         }
 
-        adapter.setOnItemClickListener(object : ReviewRecyclerViewAdapter.OnItemClickListener{
-            override fun onItemClick(holder: ReviewRecyclerViewAdapter.ReviewViewHolder, view: View, position: Int) {
-
-            }
-        })
+        adapter.setOnItemClickListener(ReviewRecyclerViewAdapter.OnItemClickListener { _, _, _ -> })
 
         adapter.runAdapterWatchRoutine()
     }

@@ -21,16 +21,14 @@ import com.dmon.rentalhere.R
 import com.dmon.rentalhere.adapter.ImageRecyclerAdapter
 import com.dmon.rentalhere.model.BaseResult
 import com.dmon.rentalhere.model.ShopResult
-import com.dmon.rentalhere.retrofit.*
+import com.dmon.rentalhere.retrofit.FIELD_SHOP_BC_PIC
+import com.dmon.rentalhere.retrofit.FIELD_SHOP_NAME
+import com.dmon.rentalhere.retrofit.FIELD_USER_IDX
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.TedPermission
 import kotlinx.android.synthetic.main.activity_register_shop.*
-import kotlinx.android.synthetic.main.activity_register_shop.backButton
-import kotlinx.android.synthetic.main.activity_register_shop.progressLayout
-import kotlinx.android.synthetic.main.activity_register_shop.topTextView
 import kotlinx.android.synthetic.main.item_image.view.*
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -42,7 +40,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.io.File
-import kotlin.collections.ArrayList
+import java.io.IOException
 
 const val PICK_FROM_ALBUM_CODE = 200
 const val BC_PICK_FROM_ALBUM_CODE = 201
@@ -209,10 +207,16 @@ class RegisterShopActivity : BaseActivity(), AnkoLogger, View.OnClickListener {
                                 putExtra(FIELD_SHOP_NAME, shopNameEditText.text.toString())
                             })
                             finish()
-                        } else runOnUiThread { toast(getString(R.string.toast_request_failed)) }
+                        } else runOnUiThread {
+                            toast(getString(R.string.toast_request_failed))
+                            setViewWhenCanceled()
+                        }
                     }
 
                     override fun onFailure(call: Call<BaseResult>, t: Throwable) {
+                        runOnUiThread { toast(getString(R.string.toast_request_failed)) }
+                        setViewWhenCanceled()
+                        isAppUpLoading = false
                         error("요청 실패")
                         t.printStackTrace()
                     }
@@ -228,22 +232,23 @@ class RegisterShopActivity : BaseActivity(), AnkoLogger, View.OnClickListener {
         checkBox1.isEnabled = false
         checkBox2.isEnabled = false
         checkBox3.isEnabled = false
-//        descEditText.isEnabled = false
         imageRecyclerView.isEnabled = false
         requestButton.isEnabled = false
     }
 
     private fun setViewWhenCanceled(){
-        isAppUpLoading = false
-        shopNameEditText.isEnabled = true
-        telEditText.isEnabled = true
-        addressEditText.isEnabled = true
-        checkBox1.isEnabled = true
-        checkBox2.isEnabled = true
-        checkBox3.isEnabled = true
-//        descEditText.isEnabled = true
-        imageRecyclerView.isEnabled = true
-        requestButton.isEnabled = true
+        runOnUiThread {
+            progressLayout.visibility = View.GONE
+            isAppUpLoading = false
+            shopNameEditText.isEnabled = true
+            telEditText.isEnabled = true
+            addressEditText.isEnabled = true
+            checkBox1.isEnabled = true
+            checkBox2.isEnabled = true
+            checkBox3.isEnabled = true
+            imageRecyclerView.isEnabled = true
+            requestButton.isEnabled = true
+        }
     }
 
     /**
@@ -263,32 +268,12 @@ class RegisterShopActivity : BaseActivity(), AnkoLogger, View.OnClickListener {
             val shopAddress = getRequestBody(addressEditText.text.toString())
             val shopLatitude = getRequestBody(getGeoCode().first ?: "0")
             val shopLongitude = getRequestBody(getGeoCode().second ?: "0")
-            val partList = ArrayList<MultipartBody.Part?>(5)
-            info(userIdx)
-            info(shopNameEditText.text.toString())
-            info(telEditText.text.toString())
-            info(shopItemKinds)
-            info(addressEditText.text.toString())
+            val partList = withContext(Dispatchers.Default){ createPartList() }
 
             // 사진 파일 처리, 업체 등록 요청
             while(imageAdapter.itemCount < 5){
                 imageAdapter.addItem("")
             }
-            sequence{ yieldAll(imageAdapter.getItems()) }
-                .forEachIndexed{ index, it ->
-                    if(it != ""){
-                        info("uri is $it")
-                        val realPath = getRealPathFromURI(Uri.parse(it))
-                        val file = getResizedFile(this@RegisterShopActivity, realPath, MIN_IMAGE_SIZE)
-                        val requestBody = RequestBody.create(MediaType.parse(""), file)
-                        info("file${index + 1} body 생성됨")
-                        val part = MultipartBody.Part.createFormData("file${index + 1}", file.name, requestBody)
-                        partList.add(part)
-                    }else{
-                        info("uri is \"\" | $it")
-                        partList.add(null)
-                    }
-                }
 
             retrofitService.postRegisterShop(userIdx, shopName, shopTelNum,
                 shopItemKinds, shopAddress, shopLatitude, shopLongitude,
@@ -297,20 +282,48 @@ class RegisterShopActivity : BaseActivity(), AnkoLogger, View.OnClickListener {
                     override fun onResponse(call: Call<BaseResult>, response: Response<BaseResult>) {
                         if(response.body()!!.baseModel.result == "Y") {
                             info(response.body()!!.baseModel)
-                            toast(getString(R.string.toast_request_approval_complete))
+                            runOnUiThread { toast(getString(R.string.toast_request_approval_complete)) }
                             setResult(RESULT_OK)
                             finish()
-                        }else toast(getString(R.string.toast_request_failed))
+                        }else runOnUiThread {
+                            toast(getString(R.string.toast_request_failed))
+                            setViewWhenCanceled()
+                        }
     //                        info(response.body()!!.error.error)
                     }
 
                     override fun onFailure(call: Call<BaseResult>, t: Throwable) {
                         error("요청 실패")
-                        finish()
+                        runOnUiThread { toast(getString(R.string.toast_request_failed)) }
+                        setViewWhenCanceled()
+                        isAppUpLoading = false
+//                        finish()
                         t.printStackTrace()
                     }
                 })
         }
+    }
+
+    private fun createPartList(): ArrayList<MultipartBody.Part?> {
+        return ArrayList<MultipartBody.Part?>(5)
+            .apply {
+                sequence { yieldAll(imageAdapter.getItems()) }
+                    .forEachIndexed { index, it ->
+                        if (it != "") {
+                            info("uri is $it")
+                            val realPath = getRealPathFromURI(Uri.parse(it))
+                            val file =
+                                getResizedFile(this@RegisterShopActivity, realPath, MIN_IMAGE_SIZE)
+                            val requestBody = RequestBody.create(MediaType.parse(""), file)
+                            info("file${index + 1} body 생성됨")
+                            val part = MultipartBody.Part.createFormData("file${index + 1}", file.name, requestBody)
+                            add(part)
+                        } else {
+                            info("uri is \"\" | $it")
+                            add(null)
+                        }
+                    }
+            }
     }
 
     private fun getItemKinds(): String{
@@ -325,14 +338,18 @@ class RegisterShopActivity : BaseActivity(), AnkoLogger, View.OnClickListener {
      * 위도, 경도 구하기
      */
     private fun getGeoCode(): Pair<String?, String?> {
-        val geocoder = Geocoder(this)
-        val addresses = geocoder.getFromLocationName(addressEditText.text.toString(), 1)
-        if (addresses != null && addresses.size > 0) {
-            val address = addresses[0]
-            return Pair(
-                address.latitude.toString(), // 위도
-                address.longitude.toString() // 경도
-            )
+        try {
+            val geocoder = Geocoder(this)
+            val addresses = geocoder.getFromLocationName(addressEditText.text.toString(), 1)
+            if (addresses != null && addresses.size > 0) {
+                val address = addresses[0]
+                return Pair(
+                    address.latitude.toString(), // 위도
+                    address.longitude.toString() // 경도
+                )
+            }
+        }catch(e: IOException){
+            e.printStackTrace()
         }
 
         return Pair(null, null)
@@ -365,8 +382,8 @@ class RegisterShopActivity : BaseActivity(), AnkoLogger, View.OnClickListener {
             .setPermissionListener(object : PermissionListener{
                 override fun onPermissionGranted() {
                     when(picType) {
-                        GENERAL_PIC_TYPE -> pickFromAlbum()
-                        BC_PIC_TYPE -> pickBcFromAlbum()
+                        GENERAL_PIC_TYPE -> pickFromAlbum(PICK_FROM_ALBUM_CODE)
+                        BC_PIC_TYPE -> pickFromAlbum(BC_PICK_FROM_ALBUM_CODE)
                     }
                 }
 
@@ -378,20 +395,20 @@ class RegisterShopActivity : BaseActivity(), AnkoLogger, View.OnClickListener {
             .check()
     }
 
-    private fun pickBcFromAlbum() {
-        startActivityForResult(
-            Intent(Intent.ACTION_PICK).apply{
-                type = MediaStore.Images.Media.CONTENT_TYPE
-                flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
-            }, BC_PICK_FROM_ALBUM_CODE)
-    }
+//    private fun pickBcFromAlbum() {
+//        startActivityForResult(
+//            Intent(Intent.ACTION_PICK).apply{
+//                type = MediaStore.Images.Media.CONTENT_TYPE
+//                flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
+//            }, BC_PICK_FROM_ALBUM_CODE)
+//    }
 
-    private fun pickFromAlbum(){
+    private fun pickFromAlbum(code: Int){
         startActivityForResult(
             Intent(Intent.ACTION_PICK).apply {
                 type = MediaStore.Images.Media.CONTENT_TYPE
                 flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
-            }, PICK_FROM_ALBUM_CODE
+            }, code
         )
     }
 

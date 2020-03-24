@@ -19,14 +19,7 @@ class TermsActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListene
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_terms)
         processIntent()
-        checkCheckBoxes()
         setViewListener()
-    }
-
-    private fun checkCheckBoxes() {
-        GlobalScope.launch{
-
-        }
     }
 
     private fun setViewListener() {

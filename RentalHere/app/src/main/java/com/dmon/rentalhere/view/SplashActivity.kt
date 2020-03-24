@@ -2,7 +2,6 @@ package com.dmon.rentalhere.view
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.dmon.rentalhere.R
@@ -11,7 +10,6 @@ import com.dmon.rentalhere.presenter.ID_KEY
 import com.dmon.rentalhere.presenter.PREF_KEY
 import com.dmon.rentalhere.presenter.TYPE_KEY
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 

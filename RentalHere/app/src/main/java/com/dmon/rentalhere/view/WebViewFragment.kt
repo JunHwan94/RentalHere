@@ -74,6 +74,7 @@ class WebViewFragment : Fragment() {
     interface OnFragmentInteractionListener {
         fun showShopInfoFragmentInContainer2(fragment: Fragment, shopName: String)
         fun showShopInfoFragmentInContainer3(fragment: Fragment, shopName: String)
+        fun showFailedToast()
     }
 
     companion object {

@@ -137,7 +137,7 @@ class FindUserActivity : BaseActivity(), View.OnClickListener {
             }
 
             override fun onFailure(call: Call<UserInfoResult>, t: Throwable) {
-
+                toast(getString(R.string.toast_request_failed))
             }
         })
     }
@@ -161,7 +161,7 @@ class FindUserActivity : BaseActivity(), View.OnClickListener {
             }
 
             override fun onFailure(call: Call<UserInfoResult>, t: Throwable) {
-
+                toast(getString(R.string.toast_request_failed))
             }
         })
     }
