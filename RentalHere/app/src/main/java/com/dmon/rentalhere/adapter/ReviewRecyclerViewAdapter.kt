@@ -33,9 +33,6 @@ class ReviewRecyclerViewAdapter(val type: Int, val context: Context): RecyclerVi
     fun interface OnItemClickListener{
         fun onItemClick(holder: ReviewViewHolder, view: View, position: Int)
     }
-    interface OnClickListener{
-        fun onClick(holder: ReviewViewHolder, view: View, position: Int)
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReviewViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_review, parent, false)

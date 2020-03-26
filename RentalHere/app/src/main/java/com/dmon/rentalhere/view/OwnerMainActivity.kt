@@ -63,11 +63,7 @@ class OwnerMainActivity : BaseActivity(), NavigationView.OnNavigationItemSelecte
         GlobalScope.launch {
             shopAdapter = withContext(Dispatchers.Default) {
                 ShopRecyclerViewAdapter().apply {
-                    setOnItemClickListener(object : ShopRecyclerViewAdapter.OnItemClickListener {
-                        override fun onItemClick(holder: ShopRecyclerViewAdapter.ShopViewHolder, view: View, position: Int) {
-                            setFragment(getItem(position))
-                        }
-                    })
+                    setOnItemClickListener(ShopRecyclerViewAdapter.OnItemClickListener { _, _, position -> setFragment(getItem(position)) })
                 }
             }
             recyclerView.run {

@@ -41,7 +41,6 @@ import retrofit2.Response
 
 const val SHOP_INFO_TAG = "ShopInfoFragment"
 const val REVIEW_LIST_KEY = "reviewListKey"
-const val SHOP_IDX_KEY = "shopIdxKey"
 const val WRITE_REVIEW_CODE = 100
 const val EDIT_SHOP_CODE = 300
 const val EDIT_PIC_CODE = 301

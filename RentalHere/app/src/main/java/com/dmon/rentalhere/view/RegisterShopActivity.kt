@@ -156,9 +156,7 @@ class RegisterShopActivity : BaseActivity(), AnkoLogger, View.OnClickListener {
      * ImageRecyclerAdapter 클릭 이벤트 없애는 메소드
      */
     private fun setAdapterEmptyListener(){
-        imageAdapter.setOnItemClickListener(object : ImageRecyclerAdapter.OnItemClickListener{
-            override fun onItemClick(holder: ImageRecyclerAdapter.ImageViewHolder, view: View, position: Int) {}
-        })
+        imageAdapter.setOnItemClickListener(ImageRecyclerAdapter.OnItemClickListener { _, _, _ -> })
     }
 
     /**
@@ -361,12 +359,10 @@ class RegisterShopActivity : BaseActivity(), AnkoLogger, View.OnClickListener {
     private fun setAdapter() {
         imageAdapter = ImageRecyclerAdapter().apply{
             addItem("")
-            setOnItemClickListener(object : ImageRecyclerAdapter.OnItemClickListener{
-                override fun onItemClick(holder: ImageRecyclerAdapter.ImageViewHolder, view: View, position: Int) {
-                    when{
-                        imageAdapter.getRealSize() == 5 -> toast(getString(R.string.toast_photo_limit))
-                        position == 0 -> setPermission(GENERAL_PIC_TYPE)
-                    }
+            setOnItemClickListener(ImageRecyclerAdapter.OnItemClickListener { _, _, position ->
+                when{
+                    imageAdapter.getRealSize() == 5 -> toast(getString(R.string.toast_photo_limit))
+                    position == 0 -> setPermission(GENERAL_PIC_TYPE)
                 }
             })
         }

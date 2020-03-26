@@ -14,7 +14,7 @@ class ShopRecyclerViewAdapter: RecyclerView.Adapter<ShopRecyclerViewAdapter.Shop
     private val shopModelList = ArrayList<ShopResult.ShopModel>()
     private lateinit var listener: OnItemClickListener
 
-    interface OnItemClickListener{
+    fun interface OnItemClickListener{
         fun onItemClick(holder: ShopViewHolder, view: View, position: Int)
     }
 
