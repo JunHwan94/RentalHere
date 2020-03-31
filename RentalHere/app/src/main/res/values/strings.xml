@@ -2,8 +2,8 @@
     <string name="app_name">여기렌탈</string>
 
     <!--  LoginActivity  -->
-    <string name="client_login">일반 로그인</string>
-    <string name="owner_login">업주 로그인</string>
+    <string name="client_login">일반 사용자</string>
+    <string name="owner_login">업주 사용자</string>
     <string name="id">아이디</string>
     <string name="id_id">아이디 (ID)</string>
     <string name="password">비밀번호</string>
@@ -14,6 +14,7 @@
     <string name="find_id">아이디 찾기</string>
     <string name="find_pw">비밀번호 찾기</string>
     <string name="login_failed">로그인실패</string>
+    <string name="login_or_not">로그인 후 이용하시겠습니까?</string>
 
     <!--  TermsActivity  -->
     <string name="terms_and_policy">약관 및 정책</string>
@@ -57,6 +58,7 @@
     <string name="logout">로그아웃</string>
     <string name="denied_gps">위치 정보 접근 권한을 거부하시면 앱을 사용할 수 없습니다</string>
     <string name="edit_complete">정보 수정 완료</string>
+    <string name="need_login">로그인이 필요합니다</string>
 
     <!--  ShopInfoFragment  -->
     <string name="write_review">리뷰 작성</string>
@@ -135,4 +137,5 @@
     <string name="iron">철근</string>
     <string name="fireFighting">소방</string>
     <string name="toast_you_are_an_owner">업주 회원입니다</string>
+    <string name="use_without_login">로그인 없이 사용</string>
 </resources>

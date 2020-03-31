@@ -2,6 +2,7 @@ package com.dmon.rentalhere.model
 
 import android.app.Dialog
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.text.Spannable
 import android.text.SpannableStringBuilder
@@ -10,12 +11,17 @@ import android.view.View
 import android.view.Window
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.dmon.rentalhere.R
+import com.dmon.rentalhere.view.ClientMainActivity
+import com.dmon.rentalhere.view.LoginActivity
 import kotlinx.android.synthetic.main.id_check_dialog.*
+import kotlinx.android.synthetic.main.id_check_dialog.bottomTextView
+import kotlinx.android.synthetic.main.login_or_not_dialog.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import org.jetbrains.anko.activityManager
 import org.jetbrains.anko.runOnUiThread
 
-class CustomDialog(context: Context, private val messageOrId: String) {
+class CustomDialog(context: Context, private val messageOrId: String? = null) {
     private val dialog: Dialog = Dialog(context)
 
     init{
@@ -60,4 +66,24 @@ class CustomDialog(context: Context, private val messageOrId: String) {
         }
     }
 
+    fun showLoginOrNot(block: () -> Unit, block1: () -> Unit): Dialog{
+        return dialog.run {
+            requestWindowFeature(Window.FEATURE_NO_TITLE)
+            setContentView(R.layout.login_or_not_dialog)
+
+            val params = dialog.window!!.attributes
+            params.width = ConstraintLayout.LayoutParams.MATCH_PARENT
+
+            withoutLoginButton.setOnClickListener {
+                dismiss()
+                block1()
+            }
+            confirmButton.setOnClickListener {
+                block()
+                dismiss()
+            }
+            show()
+            this
+        }
+    }
 }

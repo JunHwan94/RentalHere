@@ -268,7 +268,8 @@ class ShopInfoFragment : Fragment(), AnkoLogger, View.OnClickListener {
     }
 
     private fun startWriteReviewActivity(){
-        startActivityForResult(Intent(context, WriteReviewActivity::class.java).apply{
+        if(arguments!!.getString(FIELD_USER_IDX) == "-1") toast(getString(R.string.need_login))
+        else startActivityForResult(Intent(context, WriteReviewActivity::class.java).apply{
             putExtra(FIELD_SHOP_IDX, shopModel.shopIdx)
             putExtra(FIELD_USER_IDX, arguments!!.getString(FIELD_USER_IDX))
             flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP

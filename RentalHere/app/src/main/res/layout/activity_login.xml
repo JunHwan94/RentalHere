@@ -80,7 +80,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/topTextView">
+            app:layout_constraintTop_toBottomOf="@+id/topTextView"
+            tools:visibility="visible">
 
             <EditText
                 android:id="@+id/idEditText"
@@ -123,7 +124,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/pwEditText" />
 
             <Button
-                android:id="@+id/findButton"
+                android:id="@+id/loginButton"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="50dp"
@@ -178,7 +179,7 @@
                 android:textSize="24sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/findButton" />
+                app:layout_constraintTop_toBottomOf="@+id/loginButton" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

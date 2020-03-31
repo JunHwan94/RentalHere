@@ -95,9 +95,9 @@ class OwnerMainActivity : BaseActivity(), NavigationView.OnNavigationItemSelecte
         retrofitService.postGetUser(map).enqueue(object : Callback<UserInfoResult> {
             override fun onResponse(call: Call<UserInfoResult>, response: Response<UserInfoResult>) {
                 userModel = response.body()!!.userModel
-                if(userModel.result == "Y"){
-                    info("userIdx : ${userModel.userIdx}")
-                    setNavigationView(userModel.userId)
+                if(userModel!!.result == "Y"){
+                    info("userIdx : ${userModel!!.userIdx}")
+                    setNavigationView(userModel!!.userId)
                     loadMyShops()
                 }
             }
@@ -122,8 +122,8 @@ class OwnerMainActivity : BaseActivity(), NavigationView.OnNavigationItemSelecte
      */
     private fun loadMyShops() {
         info("loadMyShops called")
-        info("userIdx : ${userModel.userIdx}")
-        val map = HashMap<String, Any>().apply{ this[FIELD_USER_IDX] = userModel.userIdx }
+        info("userIdx : ${userModel!!.userIdx}")
+        val map = HashMap<String, Any>().apply{ this[FIELD_USER_IDX] = userModel!!.userIdx }
         retrofitService.postGetMyShops(map).enqueue(object : Callback<MyShopsResult>{
             override fun onResponse(call: Call<MyShopsResult>, response: Response<MyShopsResult>) {
                 val shopResultItem = response.body()!!.myShopsResultItem
@@ -135,7 +135,7 @@ class OwnerMainActivity : BaseActivity(), NavigationView.OnNavigationItemSelecte
                     }
                     addShopButton.visibility = View.GONE
                 }else{
-                    info(userModel.userIdx)
+                    info(userModel!!.userIdx)
                     info("${shopResultItem.message} addShopButton 보이게함")
                     addShopButton.visibility = View.VISIBLE
                 }
@@ -154,7 +154,7 @@ class OwnerMainActivity : BaseActivity(), NavigationView.OnNavigationItemSelecte
     private fun startRegisterShopActivity() {
         info("startRegisterShopActivity called")
         startActivityForResult(Intent(this, RegisterShopActivity::class.java).apply{
-            putExtra(FIELD_USER_IDX, userModel.userIdx)
+            putExtra(FIELD_USER_IDX, userModel!!.userIdx)
         }, REGISTER_SHOP_CODE)
     }
 
@@ -164,7 +164,7 @@ class OwnerMainActivity : BaseActivity(), NavigationView.OnNavigationItemSelecte
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
             R.id.nav_edit_info -> {
-                editUser(userModel, OWNER_TYPE)
+                editUser(userModel!!, OWNER_TYPE)
             }
             R.id.nav_register_shop -> {
                 startRegisterShopActivity()

@@ -3,11 +3,13 @@ package com.dmon.rentalhere.view
 import android.Manifest
 import android.app.Activity
 import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.core.view.GravityCompat
+import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import com.dmon.rentalhere.BaseActivity
 import com.dmon.rentalhere.R
@@ -15,6 +17,7 @@ import com.dmon.rentalhere.model.ReviewResult
 import com.dmon.rentalhere.model.UserInfoResult
 import com.dmon.rentalhere.presenter.CLIENT_TYPE
 import com.dmon.rentalhere.presenter.ID_KEY
+import com.dmon.rentalhere.presenter.TYPE_KEY
 import com.dmon.rentalhere.retrofit.FIELD_USER_ID
 import com.dmon.rentalhere.retrofit.FIELD_USER_IDX
 import com.google.android.material.navigation.NavigationView
@@ -124,7 +127,11 @@ class ClientMainActivity : BaseActivity(), View.OnClickListener, AnkoLogger, Nav
                     info("위치 권한 허용")
 //                    setViewPager()
                     setTabs()
-                    loadUserInfo()
+                    when{
+                        intent.getStringExtra(ID_KEY) ?: "" == "" -> setNavigationViewWithoutLogin()
+                        else -> loadUserInfo()
+                    }
+//                    intent.getStringExtra(ID_KEY)?.let{ loadUserInfo() }
                 }
 
                 override fun onPermissionDenied(deniedPermissions: ArrayList<String>) {
@@ -137,6 +144,38 @@ class ClientMainActivity : BaseActivity(), View.OnClickListener, AnkoLogger, Nav
             .check()
     }
 
+    private fun setNavigationViewWithoutLogin() {
+        userModel = null
+        navigationView.run{
+            getHeaderView(0).idOrShopTextView.text = getString(R.string.need_login)
+            menu.run {
+                getItem(0).run {
+                    title = "회원가입"
+                    icon = getDrawable(R.drawable.ic_enroll)
+                }
+                getItem(1).run{
+                    title = "로그인"
+                    icon = getDrawable(R.drawable.ic_person_outline_black_24dp)
+                }
+                getItem(2).isVisible = false
+            }
+            setNavigationItemSelectedListener{item ->
+                when(item.itemId){
+                    R.id.nav_edit_info -> startActivity(Intent(this@ClientMainActivity, TermsActivity::class.java).apply{
+                        flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
+                    })
+                    R.id.nav_review -> startActivity(Intent(this@ClientMainActivity, LoginActivity::class.java).apply{
+                        flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        putExtra(TYPE_KEY, CLIENT_TYPE)
+                    }).also{
+                        finish()
+                    }
+                }
+                true
+            }
+        }
+    }
+
     /**
      * 사용자 정보 요청
      */
@@ -145,8 +184,8 @@ class ClientMainActivity : BaseActivity(), View.OnClickListener, AnkoLogger, Nav
         retrofitService.postGetUser(map).enqueue(object : Callback<UserInfoResult> {
             override fun onResponse(call: Call<UserInfoResult>,response: Response<UserInfoResult>) {
                 userModel = response.body()!!.userModel
-                if(userModel.result == "Y"){
-                    setNavigationView(userModel.userId)
+                if(userModel!!.result == "Y"){
+                    setNavigationView(userModel!!.userId)
                 }
             }
 
@@ -175,7 +214,7 @@ class ClientMainActivity : BaseActivity(), View.OnClickListener, AnkoLogger, Nav
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
             R.id.nav_edit_info -> {
-                editUser(userModel, CLIENT_TYPE)
+                editUser(userModel!!, CLIENT_TYPE)
             }
             R.id.nav_review -> {
                 showAllReview()
@@ -191,7 +230,7 @@ class ClientMainActivity : BaseActivity(), View.OnClickListener, AnkoLogger, Nav
      * 내 리뷰 보기 (AllReviewActivity 실행)
      */
     private fun showAllReview() {
-        val map = HashMap<String, Any>().apply{ this[FIELD_USER_IDX] = userModel.userIdx }
+        val map = HashMap<String, Any>().apply{ this[FIELD_USER_IDX] = userModel!!.userIdx }
         retrofitService.postGetMyReview(map).enqueue(object : Callback<ReviewResult>{
             override fun onResponse(call: Call<ReviewResult>, response: Response<ReviewResult>) {
                 val reviewResultItem = response.body()!!.reviewResultItem
@@ -269,7 +308,9 @@ class ClientMainActivity : BaseActivity(), View.OnClickListener, AnkoLogger, Nav
      */
     override fun showShopInfoFragmentInContainer2(fragment: Fragment, shopName: String) {
         fragment.arguments?.run{
-            putString(FIELD_USER_IDX, userModel.userIdx)
+//            userModel?.let{
+                putString(FIELD_USER_IDX, userModel?.userIdx ?: "-1")
+//            }
         }
         supportFragmentManager.beginTransaction().setCustomAnimations(R.anim.fade_in, R.anim.fade_out).replace(R.id.container2, fragment).commit()
         this.shopInfoFragment = fragment as ShopInfoFragment
@@ -305,7 +346,9 @@ class ClientMainActivity : BaseActivity(), View.OnClickListener, AnkoLogger, Nav
      */
     override fun showShopInfoFragmentInContainer3(fragment: Fragment, shopName: String) {
         fragment.arguments?.run{
-            putString(FIELD_USER_IDX, userModel.userIdx)
+//            userModel?.let {
+                putString(FIELD_USER_IDX, userModel?.userIdx ?: "-1")
+//            }
         }
         supportFragmentManager.beginTransaction().setCustomAnimations(R.anim.fade_in, R.anim.fade_out).add(R.id.container3, fragment).commit()
         this.shopInfoFragment = fragment as ShopInfoFragment

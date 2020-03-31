@@ -9,6 +9,7 @@ import com.dmon.rentalhere.R
 import com.dmon.rentalhere.presenter.TYPE_KEY
 import kotlinx.android.synthetic.main.activity_terms.*
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.jetbrains.anko.toast
 
@@ -52,7 +53,12 @@ class TermsActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListene
                 agreePolicyCheckBox.isChecked && agreeTermsCheckBox.isChecked ->
                     startActivity(Intent(this, SignUpActivity::class.java).apply {
                         putExtra(TYPE_KEY, userType)
-                    })
+                    }).also {
+                        GlobalScope.launch{
+                            delay(20000)
+                            finish()
+                        }
+                    }
                 else -> toast(getString(R.string.toast_agree))
             }
             backButton -> finish()

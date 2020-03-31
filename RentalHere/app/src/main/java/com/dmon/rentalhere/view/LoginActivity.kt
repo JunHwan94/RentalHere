@@ -9,6 +9,8 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.dmon.rentalhere.constants.LoginConstants
 import com.dmon.rentalhere.presenter.LoginPresenter
 import com.dmon.rentalhere.R
+import com.dmon.rentalhere.presenter.SIGNED_UP_KEY
+import com.dmon.rentalhere.presenter.TYPE_KEY
 import kotlinx.android.synthetic.main.activity_login.* /** Kotlin Extensions : 바인딩이 자동으로 되어 뭔가 할 필요가 없음 */
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.debug
@@ -24,14 +26,19 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener, AnkoLogger, Log
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
         debug("onCreate called")
-        loginPresenter = LoginPresenter(this, this)
+        loginPresenter =
+            when{
+                intent.getBooleanExtra(SIGNED_UP_KEY, false) -> LoginPresenter(this, this, intent)
+                intent.getIntExtra(TYPE_KEY, -1) != -1 -> LoginPresenter(this, this, intent)
+                else -> LoginPresenter(this, this)
+            }
     }
 
     override fun setButtons() {
         clientLoginButton.setOnClickListener(this)
         ownerLoginButton.setOnClickListener(this)
         signUpButton.setOnClickListener(this)
-        findButton.setOnClickListener(this)
+        loginButton.setOnClickListener(this)
         findIdButton.setOnClickListener(this)
         findPwButton.setOnClickListener(this)
     }
@@ -162,8 +169,8 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener, AnkoLogger, Log
     }
 
     override fun onBackPressed() {
-        if(loginLayout.visibility == View.GONE)
-            super.onBackPressed()
+        if(loginLayout.visibility == View.GONE) finish()
+//            super.onBackPressed()
         else {
             removeValues()
             loginPresenter.onBackPressed()

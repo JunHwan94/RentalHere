@@ -25,6 +25,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
+const val SIGNED_UP_KEY = "signedUpKey"
 class SignUpPresenter(private val signUpView: SignUpConstants.View, private val context: Context, private val retrofitService: RetrofitService): SignUpConstants.Presenter, View.OnClickListener{
     private lateinit var signUpModel: SignUpModel
     private val idWatcher = object : TextWatcher {
@@ -63,7 +64,7 @@ class SignUpPresenter(private val signUpView: SignUpConstants.View, private val 
         when(v!!.id){
             R.id.dupCheckButton -> checkId()
             R.id.completeButton -> if(!signUpView.isThereAnyBlanks()) divideFun()
-            R.id.findButton -> startLoginActivity()
+            R.id.loginButton -> startLoginActivity()
             R.id.backButton -> signUpView.finishActivity()
         }
     }
@@ -130,10 +131,14 @@ class SignUpPresenter(private val signUpView: SignUpConstants.View, private val 
     fun startLoginActivity() =
         context.startActivity(Intent(context, LoginActivity::class.java).apply{
             flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
-        })
+            putExtra(SIGNED_UP_KEY, true)
+            putExtra(TYPE_KEY, getUserType())
+        }).also{
+            signUpView.finishActivity()
+        }
 
     /**
-     * 아이디 중복 체크 요철
+     * 아이디 중복 체크 요청
      */
     private fun checkId() {
         GlobalScope.launch {

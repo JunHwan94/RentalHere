@@ -45,7 +45,7 @@ class SignUpActivity : BaseActivity(), View.OnClickListener, AnkoLogger, SignUpC
         dupCheckButton.setOnClickListener(this)
         completeButton.setOnClickListener(this)
         backButton.setOnClickListener(this)
-        findButton.setOnClickListener(this)
+        loginButton.setOnClickListener(this)
         idEditText.addTextChangedListener(presenter.getIdWatcher())
         cpEditText.addTextChangedListener(presenter.getCpWatcher())
     }
@@ -163,7 +163,7 @@ class SignUpActivity : BaseActivity(), View.OnClickListener, AnkoLogger, SignUpC
     override fun setViewWhenComplete(){
         runOnUiThread {
             congTextView.visibility = View.VISIBLE
-            findButton.visibility = View.VISIBLE
+            loginButton.visibility = View.VISIBLE
             scrollView.visibility = View.INVISIBLE
             backButton.setOnClickListener { presenter.startLoginActivity() }
         }

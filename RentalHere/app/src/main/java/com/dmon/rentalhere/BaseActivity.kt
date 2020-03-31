@@ -26,7 +26,7 @@ const val MAX_IMAGE_SIZE = 768 * 768
 abstract class BaseActivity : AppCompatActivity(){
     lateinit var imm: InputMethodManager
     lateinit var retrofitService: RetrofitService
-    lateinit var userModel: UserInfoResult.UserModel
+    var userModel: UserInfoResult.UserModel? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

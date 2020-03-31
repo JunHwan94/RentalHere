@@ -29,7 +29,6 @@ import kotlinx.android.synthetic.main.activity_find_user.emailEditText
 import kotlinx.android.synthetic.main.activity_find_user.findButton
 import kotlinx.android.synthetic.main.activity_find_user.nameEditText
 import kotlinx.android.synthetic.main.activity_find_user.topTextView
-import kotlinx.android.synthetic.main.activity_sign_up.*
 
 class FindUserActivity : BaseActivity(), View.OnClickListener {
     private var findType: Int = 0

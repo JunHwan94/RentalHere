@@ -7,6 +7,7 @@ import android.view.View
 import com.dmon.rentalhere.R
 import com.dmon.rentalhere.constants.LoginConstants
 import com.dmon.rentalhere.model.BaseResult
+import com.dmon.rentalhere.model.CustomDialog
 import com.dmon.rentalhere.model.LoginModel
 import com.dmon.rentalhere.retrofit.FIELD_USER_ID
 import com.dmon.rentalhere.retrofit.FIELD_USER_PW
@@ -33,14 +34,20 @@ const val ID_TYPE = 0
 const val PW_TYPE = 1
 const val ID_KEY = "idKey"
 const val PREF_KEY = "prefKey"
-class LoginPresenter(private val loginView: LoginConstants.View, private val context: Context): LoginConstants.Presenter, AnkoLogger {
+class LoginPresenter(private val loginView: LoginConstants.View, private val context: Context, private val intent: Intent? = null): LoginConstants.Presenter, AnkoLogger {
     override val loggerTag: String get() = "LoginPresenter"
     private val loginModel: LoginModel = LoginModel()
     private var retrofitService: RetrofitService
 
     init {
         loginView.setButtons()
-        loginView.startLoginDivideFadeInAnim()
+        when{
+            intent != null -> {
+                loginView.showLoginLayout()
+                loginModel.userType = intent.getIntExtra(TYPE_KEY, 0)
+            }
+            else -> loginView.startLoginDivideFadeInAnim()
+        }
         retrofitService = RetrofitClient.getRetrofitInstance()!!.create(RetrofitService::class.java)
     }
 
@@ -48,16 +55,27 @@ class LoginPresenter(private val loginView: LoginConstants.View, private val con
         when(v.id){
             R.id.clientLoginButton -> {
                 loginModel.userType = CLIENT_TYPE
-                loginView.startLoginDivideFadeOutAnim()
+                context.run{
+                    CustomDialog(this, getString(R.string.login_or_not)).showLoginOrNot(
+                        { loginView.startLoginDivideFadeOutAnim() }
+                    ){
+                        startActivity(Intent(this, ClientMainActivity::class.java).apply{
+                            flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        })
+                        loginView.finish()
+                    }
+                }
             }
             R.id.ownerLoginButton -> {
                 loginModel.userType = OWNER_TYPE
-                loginView.startLoginDivideFadeOutAnim()
+                loginView.run{
+                    startLoginDivideFadeOutAnim()
+                }
             }
             R.id.signUpButton -> {
                 context.startActivity(Intent(context, TermsActivity::class.java).apply { putExtra(TYPE_KEY, loginModel.userType) })
             }
-            R.id.findButton -> if(loginView.checkBlank()) postLogin()
+            R.id.loginButton -> if(loginView.checkBlank()) postLogin()
             R.id.findIdButton -> startFindActivity(ID_TYPE)
             R.id.findPwButton -> startFindActivity(PW_TYPE)
         }
@@ -120,7 +138,10 @@ class LoginPresenter(private val loginView: LoginConstants.View, private val con
      * 메인 액티비티 실행
      */
     private fun <T> startMainActivity(java: Class<T>) {
-        context.startActivity(Intent(context, java).apply { putExtra(ID_KEY, loginView.userId()) })
+        context.startActivity(Intent(context, java).apply {
+            flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            putExtra(ID_KEY, loginView.userId())
+        })
         loginView.finish()
     }
 
