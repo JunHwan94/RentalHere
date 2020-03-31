@@ -77,6 +77,16 @@ class ClientMainActivity : BaseActivity(), View.OnClickListener, AnkoLogger, Nav
         super.onStop()
     }
 
+    override fun onRestart() {
+        super.onRestart()
+        info("onRestart called")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        info("onResume called")
+    }
+
     /**
      *  탭레이아웃 설정
      */

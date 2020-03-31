@@ -139,8 +139,11 @@ class LoginPresenter(private val loginView: LoginConstants.View, private val con
      */
     private fun <T> startMainActivity(java: Class<T>) {
         context.startActivity(Intent(context, java).apply {
-            flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
-            putExtra(ID_KEY, loginView.userId())
+            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or
+                    Intent.FLAG_ACTIVITY_NEW_TASK
+            val userId = loginView.userId()
+            info(userId)
+            putExtra(ID_KEY, userId)
         })
         loginView.finish()
     }
