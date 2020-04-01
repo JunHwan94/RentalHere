@@ -12,6 +12,7 @@ import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import com.dmon.rentalhere.model.UserInfoResult
+import com.dmon.rentalhere.presenter.CLIENT_TYPE
 import com.dmon.rentalhere.presenter.PREF_KEY
 import com.dmon.rentalhere.presenter.TYPE_KEY
 import com.dmon.rentalhere.retrofit.RetrofitClient
@@ -74,10 +75,15 @@ abstract class BaseActivity : AppCompatActivity(){
             clear()
             commit()
         }
-        startActivity(Intent(this, LoginActivity::class.java).apply{
-            flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
-        })
-        finish()
+//        startActivity(Intent(this, ClientMainActivity::class.java).apply{
+//            flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP or
+//                    Intent.FLAG_ACTIVITY_NEW_TASK
+//        })
+//        startActivity(Intent(this, LoginActivity::class.java).apply{
+//            flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
+//            putExtra(TYPE_KEY, CLIENT_TYPE)
+//        })
+//        finish()
     }
 
     /**

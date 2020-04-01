@@ -13,7 +13,7 @@ import com.dmon.rentalhere.presenter.SIGNED_UP_KEY
 import com.dmon.rentalhere.presenter.TYPE_KEY
 import kotlinx.android.synthetic.main.activity_login.* /** Kotlin Extensions : 바인딩이 자동으로 되어 뭔가 할 필요가 없음 */
 import org.jetbrains.anko.AnkoLogger
-import org.jetbrains.anko.debug
+import org.jetbrains.anko.info
 import org.jetbrains.anko.toast
 
 class LoginActivity : AppCompatActivity(), View.OnClickListener, AnkoLogger, LoginConstants.View {
@@ -25,7 +25,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener, AnkoLogger, Log
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-        debug("onCreate called")
+        info("onCreate called")
         loginPresenter =
             when{
                 intent.getBooleanExtra(SIGNED_UP_KEY, false) -> LoginPresenter(this, this, intent)
@@ -35,8 +35,8 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener, AnkoLogger, Log
     }
 
     override fun setButtons() {
-        clientLoginButton.setOnClickListener(this)
-        ownerLoginButton.setOnClickListener(this)
+//        clientLoginButton.setOnClickListener(this)
+//        ownerLoginButton.setOnClickListener(this)
         signUpButton.setOnClickListener(this)
         loginButton.setOnClickListener(this)
         findIdButton.setOnClickListener(this)
@@ -53,75 +53,75 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener, AnkoLogger, Log
         startAnimation(anim)
     }
 
-    private val showLoginLayoutListener = object: Animation.AnimationListener{
-        override fun onAnimationRepeat(animation: Animation?) {
-        }
+//    private val showLoginLayoutListener = object: Animation.AnimationListener{
+//        override fun onAnimationRepeat(animation: Animation?) {
+//        }
+//
+//        override fun onAnimationEnd(animation: Animation?) {
+//            showLoginLayout()
+//        }
+//
+//        override fun onAnimationStart(animation: Animation?) {
+//        }
+//    }
 
-        override fun onAnimationEnd(animation: Animation?) {
-            showLoginLayout()
-        }
-
-        override fun onAnimationStart(animation: Animation?) {
-        }
-    }
-
-    private val showLoginDivideListener = object: Animation.AnimationListener{
-        override fun onAnimationRepeat(animation: Animation?) {
-        }
-
-        override fun onAnimationEnd(animation: Animation?) {
-            showLoginDivide()
-        }
-
-        override fun onAnimationStart(animation: Animation?) {
-        }
-    }
+//    private val showLoginDivideListener = object: Animation.AnimationListener{
+//        override fun onAnimationRepeat(animation: Animation?) {
+//        }
+//
+//        override fun onAnimationEnd(animation: Animation?) {
+//            showLoginDivide()
+//        }
+//
+//        override fun onAnimationStart(animation: Animation?) {
+//        }
+//    }
 
     /**
      * 로그인 뷰 (입력 등) 없애고
      * 일반, 업주 로그인 뷰 보이게
      */
-    override fun showLoginDivide() {
-        loginLayout.visibility = View.GONE
-        loginDivideLayout.run{
-            background = getDrawable(R.drawable.splash)
-            fadeIn()
-        }
-        topTextView.run{
-            fadeIn()
-            setImageResource(R.drawable.logo_white)
-            val params = (layoutParams as ConstraintLayout.LayoutParams)
-            params.bottomMargin = 0
-            layoutParams = params
-        }
-        startLoginDivideFadeInAnim()
-        clientLoginButton.visibility = View.VISIBLE
-        ownerLoginButton.visibility = View.VISIBLE
-    }
+//    override fun showLoginDivide() {
+//        loginLayout.visibility = View.GONE
+//        loginDivideLayout.run{
+//            background = getDrawable(R.drawable.splash)
+//            fadeIn()
+//        }
+//        topTextView.run{
+//            fadeIn()
+//            setImageResource(R.drawable.logo_white)
+//            val params = (layoutParams as ConstraintLayout.LayoutParams)
+//            params.bottomMargin = 0
+//            layoutParams = params
+//        }
+////        startLoginDivideFadeInAnim()
+////        clientLoginButton.visibility = View.VISIBLE
+////        ownerLoginButton.visibility = View.VISIBLE
+//    }
 
     /**
      * 일반, 업주 로그인 뷰 fade in 애니메이션
      */
-    override fun startLoginDivideFadeInAnim() {
-        topTextView.fadeIn()
-        clientLoginButton.fadeIn()
-        ownerLoginButton.fadeIn()
-    }
+//    override fun startLoginDivideFadeInAnim() {
+//        topTextView.fadeIn()
+////        clientLoginButton.fadeIn()
+////        ownerLoginButton.fadeIn()
+//    }
 
     /**
      * 일반, 업주 로그인 뷰 fade out 애니메이션
      */
-    override fun startLoginDivideFadeOutAnim() {
-        loginDivideLayout.fadeOut(showLoginLayoutListener)
-    }
+//    override fun startLoginDivideFadeOutAnim() {
+//        loginDivideLayout.fadeOut(showLoginLayoutListener)
+//    }
 
     /**
      * 로그인 뷰 (입력 등) fade out 애니메이션
      */
-    override fun startLoginLayoutFadeOutAnim() {
-        topTextView.fadeOut(null)
-        loginLayout.fadeOut(showLoginDivideListener)
-    }
+//    override fun startLoginLayoutFadeOutAnim() {
+//        topTextView.fadeOut(null)
+//        loginLayout.fadeOut(showLoginDivideListener)
+//    }
 
     /**
      * 일반, 업주 로그인 뷰 없애고
@@ -129,8 +129,8 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener, AnkoLogger, Log
      */
     override fun showLoginLayout(){
         loginDivideLayout.background = null
-        clientLoginButton.visibility = View.INVISIBLE
-        ownerLoginButton.visibility = View.INVISIBLE
+//        clientLoginButton.visibility = View.INVISIBLE
+//        ownerLoginButton.visibility = View.INVISIBLE
         topTextView.run{
             fadeIn()
             setImageResource(R.drawable.logo_blue)
@@ -169,12 +169,12 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener, AnkoLogger, Log
     }
 
     override fun onBackPressed() {
-        if(loginLayout.visibility == View.GONE) finish()
-//            super.onBackPressed()
-        else {
-            removeValues()
-            loginPresenter.onBackPressed()
-        }
+//        if(loginLayout.visibility == View.GONE) finish()
+        super.onBackPressed()
+//        else {
+//            removeValues()
+//            loginPresenter.onBackPressed()
+//        }
     }
 
     override fun finish(){

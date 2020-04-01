@@ -11,7 +11,6 @@
         android:id="@+id/loginDivideLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/login"
         android:paddingStart="40dp"
         android:paddingEnd="40dp">
 
@@ -29,59 +28,58 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.23000002"
-            app:srcCompat="@drawable/logo_white" />
+            app:srcCompat="@drawable/logo_blue" />
 
-        <Button
-            android:id="@+id/clientLoginButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="180dp"
-            android:background="@drawable/fill_primary_round_corner"
-            android:paddingStart="50dp"
-            android:paddingTop="10dp"
-            android:paddingEnd="50dp"
-            android:paddingBottom="10dp"
-            android:stateListAnimator="@null"
-            android:text="@string/client_login"
-            android:textColor="@color/white"
-            android:textSize="30sp"
-            app:layout_constraintBottom_toTopOf="@+id/ownerLoginButton"
-            app:layout_constraintEnd_toEndOf="@id/loginDivideLayout"
-            app:layout_constraintHorizontal_bias="0.503"
-            app:layout_constraintStart_toStartOf="@id/loginDivideLayout"
-            app:layout_constraintTop_toBottomOf="@+id/topTextView"
-            app:layout_constraintVertical_bias="0.98" />
+<!--        <Button-->
+<!--            android:id="@+id/clientLoginButton"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="180dp"-->
+<!--            android:background="@drawable/fill_primary_round_corner"-->
+<!--            android:paddingStart="50dp"-->
+<!--            android:paddingTop="10dp"-->
+<!--            android:paddingEnd="50dp"-->
+<!--            android:paddingBottom="10dp"-->
+<!--            android:stateListAnimator="@null"-->
+<!--            android:text="@string/client_login"-->
+<!--            android:textColor="@color/white"-->
+<!--            android:textSize="30sp"-->
+<!--            app:layout_constraintBottom_toTopOf="@+id/ownerLoginButton"-->
+<!--            app:layout_constraintEnd_toEndOf="@id/loginDivideLayout"-->
+<!--            app:layout_constraintHorizontal_bias="0.503"-->
+<!--            app:layout_constraintStart_toStartOf="@id/loginDivideLayout"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/topTextView"-->
+<!--            app:layout_constraintVertical_bias="0.98" />-->
 
-        <Button
-            android:id="@+id/ownerLoginButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/no_border"
-            android:paddingStart="50dp"
-            android:paddingTop="10dp"
-            android:paddingEnd="50dp"
-            android:paddingBottom="10dp"
-            android:stateListAnimator="@null"
-            android:text="@string/owner_login"
-            android:textColor="@color/colorPrimary"
-            android:textSize="30sp"
-            app:layout_constraintEnd_toEndOf="@id/loginDivideLayout"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="@id/loginDivideLayout"
-            app:layout_constraintTop_toBottomOf="@+id/clientLoginButton" />
+<!--        <Button-->
+<!--            android:id="@+id/ownerLoginButton"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="20dp"-->
+<!--            android:background="@drawable/no_border"-->
+<!--            android:paddingStart="50dp"-->
+<!--            android:paddingTop="10dp"-->
+<!--            android:paddingEnd="50dp"-->
+<!--            android:paddingBottom="10dp"-->
+<!--            android:stateListAnimator="@null"-->
+<!--            android:text="@string/owner_login"-->
+<!--            android:textColor="@color/colorPrimary"-->
+<!--            android:textSize="30sp"-->
+<!--            app:layout_constraintEnd_toEndOf="@id/loginDivideLayout"-->
+<!--            app:layout_constraintHorizontal_bias="0.5"-->
+<!--            app:layout_constraintStart_toStartOf="@id/loginDivideLayout"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/clientLoginButton" />-->
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/loginLayout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="60dp"
-            android:visibility="gone"
+            android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/topTextView"
-            tools:visibility="visible">
+            app:layout_constraintTop_toBottomOf="@+id/topTextView">
 
             <EditText
                 android:id="@+id/idEditText"

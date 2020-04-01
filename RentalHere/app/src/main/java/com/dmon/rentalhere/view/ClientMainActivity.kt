@@ -35,9 +35,7 @@ import kotlinx.android.synthetic.main.activity_client_main.shopTextView
 import kotlinx.android.synthetic.main.activity_client_main.topImageView
 import kotlinx.android.synthetic.main.activity_owner_main.*
 import kotlinx.android.synthetic.main.nav_header_user_info.view.*
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.error
 import org.jetbrains.anko.info
@@ -178,7 +176,7 @@ class ClientMainActivity : BaseActivity(), View.OnClickListener, AnkoLogger, Nav
                         flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
                         putExtra(TYPE_KEY, CLIENT_TYPE)
                     }).also{
-                        finish()
+//                        finish()
                     }
                 }
                 true
@@ -230,7 +228,17 @@ class ClientMainActivity : BaseActivity(), View.OnClickListener, AnkoLogger, Nav
                 showAllReview()
             }
             R.id.nav_log_out -> {
-                logOut()
+                GlobalScope.launch{
+                    withContext(Dispatchers.Default){
+                        drawer.closeDrawer(GravityCompat.END)
+                    }
+                    logOut()
+                    runOnUiThread {
+                        showMain()
+                        toast("로그아웃됨")
+                        setNavigationViewWithoutLogin()
+                    }
+                }
             }
         }
         return true

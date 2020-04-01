@@ -29,9 +29,11 @@ class SplashActivity : AppCompatActivity() {
 
             // 자동로그인 체크
             when {
-                id == "" -> startActivity(Intent(applicationContext, LoginActivity::class.java).apply {
-                    flags = flag
-                })
+                id == "" ->
+//                    startActivity(Intent(applicationContext, LoginActivity::class.java).apply {
+                    startActivity(Intent(applicationContext, ClientMainActivity::class.java).apply{
+                        flags = flag
+                    })
                 userType == CLIENT_TYPE -> startActivity(Intent(applicationContext, ClientMainActivity::class.java).apply {
                     putExtra(ID_KEY, id)
                     flags = flag

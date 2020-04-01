@@ -13,11 +13,11 @@ import com.dmon.rentalhere.R
 interface LoginConstants {
     interface View{
         fun setButtons()
-        fun startLoginDivideFadeInAnim()
-        fun startLoginDivideFadeOutAnim()
-        fun startLoginLayoutFadeOutAnim()
+//        fun startLoginDivideFadeInAnim()
+//        fun startLoginDivideFadeOutAnim()
+//        fun startLoginLayoutFadeOutAnim()
         fun showLoginLayout()
-        fun showLoginDivide()
+//        fun showLoginDivide()
         fun checkBlank(): Boolean
         fun finish()
 
@@ -30,7 +30,7 @@ interface LoginConstants {
 
     interface Presenter{
         fun onClick(v: android.view.View)
-        fun onBackPressed()
+//        fun onBackPressed()
 
         fun postLogin()
     }

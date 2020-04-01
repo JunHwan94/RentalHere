@@ -44,34 +44,35 @@ class LoginPresenter(private val loginView: LoginConstants.View, private val con
         when{
             intent != null -> {
                 loginView.showLoginLayout()
-                loginModel.userType = intent.getIntExtra(TYPE_KEY, 0)
+                loginModel.userType = intent.getIntExtra(TYPE_KEY, -1)
+//                loginModel.userType = CLIENT_TYPE
             }
-            else -> loginView.startLoginDivideFadeInAnim()
+//            else -> loginView.startLoginDivideFadeInAnim()
         }
         retrofitService = RetrofitClient.getRetrofitInstance()!!.create(RetrofitService::class.java)
     }
 
     override fun onClick(v: View) {
         when(v.id){
-            R.id.clientLoginButton -> {
-                loginModel.userType = CLIENT_TYPE
-                context.run{
-                    CustomDialog(this, getString(R.string.login_or_not)).showLoginOrNot(
-                        { loginView.startLoginDivideFadeOutAnim() }
-                    ){
-                        startActivity(Intent(this, ClientMainActivity::class.java).apply{
-                            flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
-                        })
-                        loginView.finish()
-                    }
-                }
-            }
-            R.id.ownerLoginButton -> {
-                loginModel.userType = OWNER_TYPE
-                loginView.run{
-                    startLoginDivideFadeOutAnim()
-                }
-            }
+//            R.id.clientLoginButton -> {
+//                loginModel.userType = CLIENT_TYPE
+//                context.run{
+//                    CustomDialog(this, getString(R.string.login_or_not)).showLoginOrNot(
+//                        { loginView.startLoginDivideFadeOutAnim() }
+//                    ){
+//                        startActivity(Intent(this, ClientMainActivity::class.java).apply{
+//                            flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
+//                        })
+//                        loginView.finish()
+//                    }
+//                }
+//            }
+//            R.id.ownerLoginButton -> {
+//                loginModel.userType = OWNER_TYPE
+//                loginView.run{
+//                    startLoginDivideFadeOutAnim()
+//                }
+//            }
             R.id.signUpButton -> {
                 context.startActivity(Intent(context, TermsActivity::class.java).apply { putExtra(TYPE_KEY, loginModel.userType) })
             }
@@ -90,6 +91,7 @@ class LoginPresenter(private val loginView: LoginConstants.View, private val con
      * 로그인 요청 구분
      */
     override fun postLogin() {
+        info("postLogin called")
         val map = HashMap<String, Any>().apply{
             this[FIELD_USER_ID] = loginView.userId()
             this[FIELD_USER_PW] = loginView.userPw()
@@ -97,6 +99,7 @@ class LoginPresenter(private val loginView: LoginConstants.View, private val con
         when(loginModel.userType) {
             CLIENT_TYPE -> requestLogin(retrofitService.postClientLogin(map), ClientMainActivity::class.java)
             OWNER_TYPE -> requestLogin(retrofitService.postOwnerLogin(map), OwnerMainActivity::class.java)
+            else -> info("else called")
         }
     }
 
@@ -139,8 +142,9 @@ class LoginPresenter(private val loginView: LoginConstants.View, private val con
      */
     private fun <T> startMainActivity(java: Class<T>) {
         context.startActivity(Intent(context, java).apply {
-            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or
-                    Intent.FLAG_ACTIVITY_NEW_TASK
+            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+            //or Intent.FLAG_ACTIVITY_NEW_TASK
+//            flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
             val userId = loginView.userId()
             info(userId)
             putExtra(ID_KEY, userId)
@@ -160,7 +164,7 @@ class LoginPresenter(private val loginView: LoginConstants.View, private val con
         }
     }
 
-    override fun onBackPressed() {
-        loginView.startLoginLayoutFadeOutAnim()
-    }
+//    override fun onBackPressed() {
+//        loginView.startLoginLayoutFadeOutAnim()
+//    }
 }
