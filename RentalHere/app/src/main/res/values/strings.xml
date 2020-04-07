@@ -138,4 +138,20 @@
     <string name="fireFighting">소방</string>
     <string name="toast_you_are_an_owner">업주 회원입니다</string>
     <string name="use_without_login">로그인 없이 사용</string>
+
+    <string name="company_address">경기도 고양시 덕양구 지도로124번길 14–15, 나동 207호 (토당동, 호일맨션)</string>
+    <string name="ceo">대표</string>
+    <string name="ceo_name">경기태</string>
+    <string name="phone">전화</string>
+    <string name="company_phone_number">01081313653</string>
+    <string name="fax">팩스</string>
+    <string name="company_fax_number">0504–141–3653</string>
+    <string name="business">사업자 번호</string>
+    <string name="business_number">666–36–00681</string>
+    <string name="company_email">gtsolution@naver.com</string>
+    <string name="inquiries">문의전화</string>
+    <string name="inquiries_number">031–815–3659</string>
+    <string name="account">계좌</string>
+    <string name="company_account_number">(우리) 1005–803–913059</string>
+    <string name="kinds">종류별</string>
 </resources>

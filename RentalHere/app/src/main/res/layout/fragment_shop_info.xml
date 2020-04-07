@@ -3,323 +3,324 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:animateLayoutChanges="true">
+<!--    <FrameLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:animateLayoutChanges="true">-->
 
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:animateLayoutChanges="true"
             android:background="@color/white"
-            android:nestedScrollingEnabled="true">
+            android:nestedScrollingEnabled="true"
+            android:overScrollMode="never">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:animateLayoutChanges="true"
-                android:background="@color/white"
-                tools:context=".view.ShopInfoFragment">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:animateLayoutChanges="true"
+        android:background="@color/white"
+        tools:context=".view.ShopInfoFragment">
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="15dp"
-                    android:elevation="1dp"
-                    android:gravity="center"
-                    android:orientation="horizontal"
-                    android:padding="5dp"
-                    app:layout_constraintBottom_toBottomOf="@+id/imagePager"
-                    app:layout_constraintEnd_toStartOf="@+id/rightGuideline"
-                    app:layout_constraintStart_toStartOf="@+id/leftGuideline">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:elevation="1dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:padding="5dp"
+            app:layout_constraintBottom_toBottomOf="@+id/imagePager"
+            app:layout_constraintEnd_toStartOf="@+id/rightGuideline"
+            app:layout_constraintStart_toStartOf="@+id/leftGuideline">
 
-                    <ImageView
-                        android:id="@+id/circleImageView1"
-                        android:layout_width="10dp"
-                        android:layout_height="10dp"
-                        android:layout_weight="1"
-                        android:stateListAnimator="@null"
-                        app:srcCompat="@drawable/ic_circle_primary" />
+            <ImageView
+                android:id="@+id/circleImageView1"
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:layout_weight="1"
+                android:stateListAnimator="@null"
+                app:srcCompat="@drawable/ic_circle_primary" />
 
-                    <ImageView
-                        android:id="@+id/circleImageView2"
-                        android:layout_width="10dp"
-                        android:layout_height="10dp"
-                        android:layout_marginStart="5dp"
-                        android:layout_weight="1"
-                        android:visibility="gone"
-                        app:srcCompat="@drawable/ic_circle_light_light_gray"
-                        tools:visibility="visible" />
+            <ImageView
+                android:id="@+id/circleImageView2"
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:layout_marginStart="5dp"
+                android:layout_weight="1"
+                android:visibility="gone"
+                app:srcCompat="@drawable/ic_circle_light_light_gray"
+                tools:visibility="visible" />
 
-                    <ImageView
-                        android:id="@+id/circleImageView3"
-                        android:layout_width="10dp"
-                        android:layout_height="10dp"
-                        android:layout_marginStart="5dp"
-                        android:layout_weight="1"
-                        android:visibility="gone"
-                        app:srcCompat="@drawable/ic_circle_light_light_gray"
-                        tools:visibility="visible" />
+            <ImageView
+                android:id="@+id/circleImageView3"
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:layout_marginStart="5dp"
+                android:layout_weight="1"
+                android:visibility="gone"
+                app:srcCompat="@drawable/ic_circle_light_light_gray"
+                tools:visibility="visible" />
 
-                    <ImageView
-                        android:id="@+id/circleImageView4"
-                        android:layout_width="10dp"
-                        android:layout_height="10dp"
-                        android:layout_marginStart="5dp"
-                        android:layout_weight="1"
-                        android:visibility="gone"
-                        app:srcCompat="@drawable/ic_circle_light_light_gray"
-                        tools:visibility="visible" />
+            <ImageView
+                android:id="@+id/circleImageView4"
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:layout_marginStart="5dp"
+                android:layout_weight="1"
+                android:visibility="gone"
+                app:srcCompat="@drawable/ic_circle_light_light_gray"
+                tools:visibility="visible" />
 
-                    <ImageView
-                        android:id="@+id/circleImageView5"
-                        android:layout_width="10dp"
-                        android:layout_height="10dp"
-                        android:layout_marginStart="5dp"
-                        android:layout_weight="1"
-                        android:visibility="gone"
-                        app:srcCompat="@drawable/ic_circle_light_light_gray"
-                        tools:visibility="visible" />
-                </LinearLayout>
+            <ImageView
+                android:id="@+id/circleImageView5"
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:layout_marginStart="5dp"
+                android:layout_weight="1"
+                android:visibility="gone"
+                app:srcCompat="@drawable/ic_circle_light_light_gray"
+                tools:visibility="visible" />
+        </LinearLayout>
 
-                <androidx.viewpager.widget.ViewPager
-                    android:id="@+id/imagePager"
-                    android:layout_width="match_parent"
-                    android:layout_height="280dp"
-                    android:animateLayoutChanges="true"
-                    android:orientation="horizontal"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/imagePager"
+            android:layout_width="match_parent"
+            android:layout_height="280dp"
+            android:animateLayoutChanges="true"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-                <!--                <ImageView-->
-                <!--                    android:id="@+id/shopProfileImageView"-->
-                <!--                    android:layout_width="wrap_content"-->
-                <!--                    android:layout_height="300dp"-->
-                <!--                    android:layout_marginTop="15dp"-->
-                <!--                    app:layout_constraintEnd_toEndOf="@id/rightGuideline"-->
-                <!--                    app:layout_constraintStart_toStartOf="@id/leftGuideline"-->
-                <!--                    app:layout_constraintTop_toTopOf="parent"-->
-                <!--                    tools:src="@tools:sample/backgrounds/scenic[1]" />-->
+        <!--                <ImageView-->
+        <!--                    android:id="@+id/shopProfileImageView"-->
+        <!--                    android:layout_width="wrap_content"-->
+        <!--                    android:layout_height="300dp"-->
+        <!--                    android:layout_marginTop="15dp"-->
+        <!--                    app:layout_constraintEnd_toEndOf="@id/rightGuideline"-->
+        <!--                    app:layout_constraintStart_toStartOf="@id/leftGuideline"-->
+        <!--                    app:layout_constraintTop_toTopOf="parent"-->
+        <!--                    tools:src="@tools:sample/backgrounds/scenic[1]" />-->
 
-                <TextView
-                    android:id="@+id/addressTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
-                    android:drawableStart="@drawable/ic_location_on"
-                    android:drawablePadding="10dp"
-                    android:textSize="18sp"
-                    app:layout_constraintStart_toStartOf="@+id/leftGuideline"
-                    app:layout_constraintTop_toBottomOf="@+id/imagePager"
-                    tools:text="주소" />
+        <TextView
+            android:id="@+id/addressTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:drawableStart="@drawable/ic_location_on"
+            android:drawablePadding="10dp"
+            android:textSize="18sp"
+            app:layout_constraintStart_toStartOf="@+id/leftGuideline"
+            app:layout_constraintTop_toBottomOf="@+id/imagePager"
+            tools:text="주소" />
 
-                <TextView
-                    android:id="@+id/telNumTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
-                    android:drawableStart="@drawable/ic_call"
-                    android:drawablePadding="10dp"
-                    android:textSize="18sp"
-                    app:layout_constraintStart_toStartOf="@+id/leftGuideline"
-                    app:layout_constraintTop_toBottomOf="@+id/addressTextView"
-                    tools:text="전화번호" />
+        <TextView
+            android:id="@+id/telNumTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:drawableStart="@drawable/ic_call"
+            android:drawablePadding="10dp"
+            android:textSize="18sp"
+            app:layout_constraintStart_toStartOf="@+id/leftGuideline"
+            app:layout_constraintTop_toBottomOf="@+id/addressTextView"
+            tools:text="전화번호" />
 
-                <ImageView
-                    android:id="@+id/imageView4"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
-                    app:layout_constraintStart_toStartOf="@+id/leftGuideline"
-                    app:layout_constraintTop_toBottomOf="@+id/telNumTextView"
-                    app:srcCompat="@drawable/ic_settings_24dp" />
+        <ImageView
+            android:id="@+id/imageView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            app:layout_constraintStart_toStartOf="@+id/leftGuideline"
+            app:layout_constraintTop_toBottomOf="@+id/telNumTextView"
+            app:srcCompat="@drawable/ic_settings_24dp" />
 
-                <TextView
-                    android:id="@+id/itemKindsTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:drawablePadding="10dp"
-                    android:gravity="top"
-                    android:textAlignment="gravity"
-                    android:textSize="18sp"
-                    app:layout_constraintStart_toEndOf="@+id/imageView4"
-                    app:layout_constraintTop_toTopOf="@+id/imageView4"
-                    tools:text="장비 종류" />
+        <TextView
+            android:id="@+id/itemKindsTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:drawablePadding="10dp"
+            android:gravity="top"
+            android:textAlignment="gravity"
+            android:textSize="18sp"
+            app:layout_constraintStart_toEndOf="@+id/imageView4"
+            app:layout_constraintTop_toTopOf="@+id/imageView4"
+            tools:text="장비 종류" />
 
-                <TextView
-                    android:id="@+id/bcTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
-                    android:drawablePadding="10dp"
-                    android:gravity="top"
-                    android:textAlignment="gravity"
-                    android:textSize="18sp"
-                    app:layout_constraintStart_toStartOf="@+id/leftGuideline"
-                    app:layout_constraintTop_toBottomOf="@+id/imageView4"
-                    android:text="@string/business_card" />
+        <TextView
+            android:id="@+id/bcTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:drawablePadding="10dp"
+            android:gravity="top"
+            android:text="@string/business_card"
+            android:textAlignment="gravity"
+            android:textSize="18sp"
+            app:layout_constraintStart_toStartOf="@+id/leftGuideline"
+            app:layout_constraintTop_toBottomOf="@+id/imageView4" />
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/reviewRecyclerView"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginEnd="5dp"
-                    android:layout_marginBottom="10dp"
-                    android:overScrollMode="never"
-                    app:layout_constraintBottom_toTopOf="@+id/bottomButton"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/cardView"
-                    app:spanCount="2"
-                    tools:itemCount="5" />
+        <!--                <androidx.recyclerview.widget.RecyclerView-->
+        <!--                    android:id="@+id/reviewRecyclerView"-->
+        <!--                    android:layout_width="0dp"-->
+        <!--                    android:layout_height="wrap_content"-->
+        <!--                    android:layout_marginStart="5dp"-->
+        <!--                    android:layout_marginEnd="5dp"-->
+        <!--                    android:layout_marginBottom="10dp"-->
+        <!--                    android:overScrollMode="never"-->
+        <!--                    app:layout_constraintBottom_toTopOf="@+id/bottomButton"-->
+        <!--                    app:layout_constraintEnd_toEndOf="parent"-->
+        <!--                    app:layout_constraintStart_toStartOf="parent"-->
+        <!--                    app:layout_constraintTop_toBottomOf="@+id/cardView"-->
+        <!--                    app:spanCount="2"-->
+        <!--                    tools:itemCount="5" />-->
 
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cardView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:animateLayoutChanges="true"
-                    app:cardBackgroundColor="@color/lightGray"
-                    app:cardElevation="0dp"
-                    app:layout_constraintBottom_toTopOf="@+id/reviewRecyclerView"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/space">
+        <!--                <androidx.cardview.widget.CardView-->
+        <!--                    android:id="@+id/cardView"-->
+        <!--                    android:layout_width="match_parent"-->
+        <!--                    android:layout_height="wrap_content"-->
+        <!--                    android:animateLayoutChanges="true"-->
+        <!--                    app:cardBackgroundColor="@color/lightGray"-->
+        <!--                    app:cardElevation="0dp"-->
+        <!--                    app:layout_constraintBottom_toTopOf="@+id/reviewRecyclerView"-->
+        <!--                    app:layout_constraintEnd_toEndOf="parent"-->
+        <!--                    app:layout_constraintHorizontal_bias="0.0"-->
+        <!--                    app:layout_constraintStart_toStartOf="parent"-->
+        <!--                    app:layout_constraintTop_toBottomOf="@+id/space">-->
 
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="15dp"
-                        android:background="@color/white"
-                        android:paddingStart="10dp"
-                        android:paddingTop="10dp"
-                        android:paddingEnd="10dp">
+        <!--                    <androidx.constraintlayout.widget.ConstraintLayout-->
+        <!--                        android:layout_width="match_parent"-->
+        <!--                        android:layout_height="wrap_content"-->
+        <!--                        android:layout_marginTop="15dp"-->
+        <!--                        android:background="@color/white"-->
+        <!--                        android:paddingStart="10dp"-->
+        <!--                        android:paddingTop="10dp"-->
+        <!--                        android:paddingEnd="10dp">-->
 
-                        <TextView
-                            android:id="@+id/userReviewTextView"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="8dp"
-                            android:text="@string/user_review"
-                            android:textSize="18sp"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintStart_toEndOf="@+id/imageView"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintVertical_bias="0.512"
-                            tools:text="사용자 리뷰" />
+        <!--                        <TextView-->
+        <!--                            android:id="@+id/userReviewTextView"-->
+        <!--                            android:layout_width="wrap_content"-->
+        <!--                            android:layout_height="wrap_content"-->
+        <!--                            android:layout_marginStart="8dp"-->
+        <!--                            android:text="@string/user_review"-->
+        <!--                            android:textSize="18sp"-->
+        <!--                            app:layout_constraintBottom_toBottomOf="parent"-->
+        <!--                            app:layout_constraintStart_toEndOf="@+id/imageView"-->
+        <!--                            app:layout_constraintTop_toTopOf="parent"-->
+        <!--                            app:layout_constraintVertical_bias="0.512"-->
+        <!--                            tools:text="사용자 리뷰" />-->
 
-                        <ImageView
-                            android:id="@+id/imageView"
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:layout_marginStart="5dp"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:srcCompat="@drawable/ic_review" />
+        <!--                        <ImageView-->
+        <!--                            android:id="@+id/imageView"-->
+        <!--                            android:layout_width="30dp"-->
+        <!--                            android:layout_height="30dp"-->
+        <!--                            android:layout_marginStart="5dp"-->
+        <!--                            app:layout_constraintBottom_toBottomOf="parent"-->
+        <!--                            app:layout_constraintStart_toStartOf="parent"-->
+        <!--                            app:layout_constraintTop_toTopOf="parent"-->
+        <!--                            app:srcCompat="@drawable/ic_review" />-->
 
-                        <ImageButton
-                            android:id="@+id/allReviewsButton"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:background="@null"
-                            android:paddingStart="40dp"
-                            android:visibility="gone"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:srcCompat="@drawable/ic_chevron_right" />
+        <!--                        <ImageButton-->
+        <!--                            android:id="@+id/allReviewsButton"-->
+        <!--                            android:layout_width="wrap_content"-->
+        <!--                            android:layout_height="wrap_content"-->
+        <!--                            android:background="@null"-->
+        <!--                            android:paddingStart="40dp"-->
+        <!--                            android:visibility="gone"-->
+        <!--                            app:layout_constraintBottom_toBottomOf="parent"-->
+        <!--                            app:layout_constraintEnd_toEndOf="parent"-->
+        <!--                            app:layout_constraintTop_toTopOf="parent"-->
+        <!--                            app:srcCompat="@drawable/ic_chevron_right" />-->
 
-                    </androidx.constraintlayout.widget.ConstraintLayout>
+        <!--                    </androidx.constraintlayout.widget.ConstraintLayout>-->
 
-                </androidx.cardview.widget.CardView>
+        <!--                </androidx.cardview.widget.CardView>-->
 
-                <androidx.constraintlayout.widget.Guideline
-                    android:id="@+id/leftGuideline"
-                    android:layout_width="wrap_content"
-                    android:layout_height="0dp"
-                    android:orientation="vertical"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintGuide_begin="15dp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/leftGuideline"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintGuide_begin="15dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-                <androidx.constraintlayout.widget.Guideline
-                    android:id="@+id/rightGuideline"
-                    android:layout_width="wrap_content"
-                    android:layout_height="0dp"
-                    android:orientation="vertical"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintGuide_end="15dp"
-                    app:layout_constraintTop_toTopOf="parent" />
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/rightGuideline"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintGuide_end="15dp"
+            app:layout_constraintTop_toTopOf="parent" />
 
-                <Space
-                    android:id="@+id/space"
-                    android:layout_width="wrap_content"
-                    android:layout_height="20dp"
-                    app:layout_constraintTop_toBottomOf="@+id/bcImageView"
-                    tools:layout_editor_absoluteX="178dp" />
+        <Space
+            android:id="@+id/space"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            app:layout_constraintTop_toBottomOf="@+id/bcImageView"
+            tools:layout_editor_absoluteX="178dp" />
 
-                <Button
-                    android:id="@+id/bottomButton"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:background="@drawable/fill_primary_round_corner"
-                    android:stateListAnimator="@null"
-                    android:text="@string/write_review"
-                    android:textColor="@color/white"
-                    android:textSize="18sp"
-                    app:layout_constraintBottom_toTopOf="@id/deleteButton"
-                    app:layout_constraintEnd_toStartOf="@+id/rightGuideline"
-                    app:layout_constraintStart_toStartOf="@+id/leftGuideline"
-                    app:layout_constraintTop_toBottomOf="@id/reviewRecyclerView" />
+        <!--                <Button-->
+        <!--                    android:id="@+id/bottomButton"-->
+        <!--                    android:layout_width="0dp"-->
+        <!--                    android:layout_height="wrap_content"-->
+        <!--                    android:layout_marginBottom="10dp"-->
+        <!--                    android:background="@drawable/fill_primary_round_corner"-->
+        <!--                    android:stateListAnimator="@null"-->
+        <!--                    android:text="@string/write_review"-->
+        <!--                    android:textColor="@color/white"-->
+        <!--                    android:textSize="18sp"-->
+        <!--                    app:layout_constraintBottom_toTopOf="@id/deleteButton"-->
+        <!--                    app:layout_constraintEnd_toStartOf="@+id/rightGuideline"-->
+        <!--                    app:layout_constraintStart_toStartOf="@+id/leftGuideline"-->
+        <!--                    app:layout_constraintTop_toBottomOf="@id/reviewRecyclerView" />-->
 
-                <Button
-                    android:id="@+id/deleteButton"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="15dp"
-                    android:background="@drawable/fill_primary_round_corner"
-                    android:stateListAnimator="@null"
-                    android:text="@string/delete_shop"
-                    android:textColor="@color/white"
-                    android:textSize="18sp"
-                    android:visibility="gone"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/rightGuideline"
-                    app:layout_constraintStart_toStartOf="@+id/leftGuideline"
-                    app:layout_constraintTop_toBottomOf="@+id/bottomButton" />
+<!--        <Button-->
+<!--            android:id="@+id/deleteButton"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginBottom="15dp"-->
+<!--            android:background="@drawable/fill_primary_round_corner"-->
+<!--            android:stateListAnimator="@null"-->
+<!--            android:text="@string/delete_shop"-->
+<!--            android:textColor="@color/white"-->
+<!--            android:textSize="18sp"-->
+<!--            android:visibility="gone"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintEnd_toStartOf="@+id/rightGuideline"-->
+<!--            app:layout_constraintStart_toStartOf="@+id/leftGuideline"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/bottomButton" />-->
 
-                <Button
-                    android:id="@+id/editPicturesButton"
-                    android:layout_width="65dp"
-                    android:layout_height="30dp"
-                    android:layout_marginEnd="5dp"
-                    android:layout_marginBottom="5dp"
-                    android:background="@drawable/fill_primary_round_corner"
-                    android:text="@string/edit_pictures"
-                    android:textColor="@color/white"
-                    android:textSize="14sp"
-                    android:visibility="gone"
-                    app:layout_constraintBottom_toBottomOf="@+id/imagePager"
-                    app:layout_constraintEnd_toEndOf="parent" />
+        <Button
+            android:id="@+id/editPicturesButton"
+            android:layout_width="65dp"
+            android:layout_height="30dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="5dp"
+            android:background="@drawable/fill_primary_round_corner"
+            android:text="@string/edit_pictures"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/imagePager"
+            app:layout_constraintEnd_toEndOf="parent" />
 
-                <ImageView
-                    android:id="@+id/bcImageView"
-                    android:layout_width="280dp"
-                    android:layout_height="180dp"
-                    android:layout_marginTop="5dp"
-                    app:layout_constraintStart_toStartOf="@+id/leftGuideline"
-                    app:layout_constraintTop_toBottomOf="@+id/bcTextView"
-                    tools:srcCompat="@tools:sample/avatars" />
+        <ImageView
+            android:id="@+id/bcImageView"
+            android:layout_width="280dp"
+            android:layout_height="180dp"
+            android:layout_marginTop="5dp"
+            app:layout_constraintStart_toStartOf="@+id/leftGuideline"
+            app:layout_constraintTop_toBottomOf="@+id/bcTextView"
+            tools:srcCompat="@tools:sample/avatars" />
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>
-    </FrameLayout>
+<!--    </FrameLayout>-->
 </layout>

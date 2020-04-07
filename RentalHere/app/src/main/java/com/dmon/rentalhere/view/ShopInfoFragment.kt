@@ -68,7 +68,7 @@ class ShopInfoFragment : Fragment(), AnkoLogger, View.OnClickListener {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_shop_info, container, false)
         init()
         setView()
-        activity?.let { loadReview() }
+//        activity?.let { loadReview() }
         setViewListener()
         return binding.root
     }
@@ -89,7 +89,7 @@ class ShopInfoFragment : Fragment(), AnkoLogger, View.OnClickListener {
                 setOnItemClickListener(ReviewRecyclerViewAdapter.OnItemClickListener { _, _, _ -> })
             }
 
-        binding.reviewRecyclerView.run{ adapter = reviewAdapter; layoutManager = LinearLayoutManager(context) }
+//        binding.reviewRecyclerView.run{ adapter = reviewAdapter; layoutManager = LinearLayoutManager(context) }
         retrofitService = RetrofitClient.getRetrofitInstance()!!.create(RetrofitService::class.java)
     }
 
@@ -113,11 +113,11 @@ class ShopInfoFragment : Fragment(), AnkoLogger, View.OnClickListener {
                                 runOnUiThread { reviewAdapter.notifyDataSetChanged() }
                             }
                     }
-                    binding.userReviewTextView.run { text = "${getString(R.string.user_review)}  ${reviewModelList.size}" }
-                    binding.allReviewsButton.visibility = View.VISIBLE
-                }else // 리뷰 없을 때
-                    binding.userReviewTextView.text = getString(R.string.no_review)
-
+//                    binding.userReviewTextView.run { text = "${getString(R.string.user_review)}  ${reviewModelList.size}" }
+//                    binding.allReviewsButton.visibility = View.VISIBLE
+                }
+//                else // 리뷰 없을 때
+//                    binding.userReviewTextView.text = getString(R.string.no_review)
             }
 
             override fun onFailure(call: Call<ReviewResult>, t: Throwable) {
@@ -140,8 +140,8 @@ class ShopInfoFragment : Fragment(), AnkoLogger, View.OnClickListener {
             .into(binding.bcImageView)
         if(userType == OWNER_TYPE) {
             binding.editPicturesButton.visibility = View.VISIBLE
-            binding.bottomButton.text = getString(R.string.edit_shop_info)
-            binding.deleteButton.visibility = View.VISIBLE
+//            binding.bottomButton.text = getString(R.string.edit_shop_info)
+//            binding.deleteButton.visibility = View.VISIBLE
         }
         setImagePagerAdapter()
     }
@@ -212,24 +212,24 @@ class ShopInfoFragment : Fragment(), AnkoLogger, View.OnClickListener {
     }
 
     private fun setViewListener() {
-        binding.bottomButton.setOnClickListener(this)
-        binding.allReviewsButton.setOnClickListener(this)
-        binding.deleteButton.setOnClickListener(this)
+//        binding.bottomButton.setOnClickListener(this)
+//        binding.allReviewsButton.setOnClickListener(this)
+//        binding.deleteButton.setOnClickListener(this)
         binding.editPicturesButton.setOnClickListener(this)
     }
 
     override fun onClick(v: View?) {
         when(v){
             // 리뷰 쓰기
-            binding.bottomButton -> {
-                when(userType){
-                    CLIENT_TYPE -> startWriteReviewActivity() // 리뷰 쓰기
-                    OWNER_TYPE -> startEditShopActivity()// 업체 정보 수정
-                }
-            }
+//            binding.bottomButton -> {
+//                when(userType){
+//                    CLIENT_TYPE -> startWriteReviewActivity() // 리뷰 쓰기
+//                    OWNER_TYPE -> startEditShopActivity()// 업체 정보 수정
+//                }
+//            }
             // 리뷰 목록
-            binding.allReviewsButton -> startAllReviewActivity()
-            binding.deleteButton -> deleteShop()
+//            binding.allReviewsButton -> startAllReviewActivity()
+//            binding.deleteButton -> deleteShop()
             binding.editPicturesButton -> startEditPicturesActivity()
         }
     }
@@ -294,9 +294,9 @@ class ShopInfoFragment : Fragment(), AnkoLogger, View.OnClickListener {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if(requestCode == WRITE_REVIEW_CODE && resultCode == RESULT_OK){
-            loadReview()
-        }
+//        if(requestCode == WRITE_REVIEW_CODE && resultCode == RESULT_OK){
+//            loadReview()
+//        }
         if(requestCode == EDIT_SHOP_CODE && resultCode == RESULT_OK && data != null){
             callback!!.setShopName(data.getStringExtra(FIELD_SHOP_NAME)!!)
             loadShop()

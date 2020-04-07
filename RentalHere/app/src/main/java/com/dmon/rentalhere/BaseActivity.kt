@@ -198,7 +198,7 @@ abstract class BaseActivity : AppCompatActivity(){
         try {
             tempFile.createNewFile()
             fos = FileOutputStream(tempFile)
-            bitmap!!.compress(Bitmap.CompressFormat.JPEG, 50, fos)
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 50, fos)
         } catch (e: FileNotFoundException) {
             e.printStackTrace()
         } catch (e: IOException) {

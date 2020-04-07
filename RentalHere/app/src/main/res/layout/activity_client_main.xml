@@ -113,7 +113,7 @@
                 <com.google.android.material.tabs.TabItem
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/keyword" />
+                    android:text="@string/kinds" />
             </com.google.android.material.tabs.TabLayout>
 
         </com.google.android.material.appbar.AppBarLayout>
@@ -174,14 +174,15 @@
 
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/navigationView"
-        android:layout_width="280dp"
+        android:layout_width="300dp"
         android:layout_height="match_parent"
         android:layout_gravity="end"
+        android:background="#FFFFFF"
         android:fitsSystemWindows="true"
+        android:overScrollMode="never"
         android:padding="20dp"
         android:visibility="invisible"
         app:headerLayout="@layout/nav_header_user_info"
-        app:menu="@menu/activity_main_client_info_drawer"
         tools:visibility="invisible">
 
     </com.google.android.material.navigation.NavigationView>

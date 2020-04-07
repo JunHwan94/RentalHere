@@ -61,13 +61,17 @@ class ClientMainActivity : BaseActivity(), View.OnClickListener, AnkoLogger, Nav
     private lateinit var distOrderFragment: WebViewFragment
     private lateinit var searchFragment: WebViewFragment
     private var backPressedTime = 0L
+    private lateinit var toast: Toast
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_client_main)
 
+        toast = Toast.makeText(this, getString(R.string.toast_finish_on_twice_pressed), Toast.LENGTH_SHORT)
         setPermission()
         setViewListener()
+        // todo : 내비게이션 뷰 헤더에 회사 설명 넣는 메소드 추가
+        setNavigationView("")
     }
 
     override fun onStop() {
@@ -122,7 +126,11 @@ class ClientMainActivity : BaseActivity(), View.OnClickListener, AnkoLogger, Nav
      */
     private fun setNavigationView(id: String) {
         val header = navigationView.getHeaderView(0)
-        header.idOrShopTextView.text = "${id}님 안녕하세요."
+//        header.idOrShopTextView.text = "${id}님 안녕하세요."
+//        header.idOrShopTextView.text = "회사 소개"
+        navigationView.menu.run{
+
+        }
     }
 
     /**
@@ -153,35 +161,35 @@ class ClientMainActivity : BaseActivity(), View.OnClickListener, AnkoLogger, Nav
     }
 
     private fun setNavigationViewWithoutLogin() {
-        userModel = null
-        navigationView.run{
-            getHeaderView(0).idOrShopTextView.text = getString(R.string.need_login)
-            menu.run {
-                getItem(0).run {
-                    title = "회원가입"
-                    icon = getDrawable(R.drawable.ic_enroll)
-                }
-                getItem(1).run{
-                    title = "로그인"
-                    icon = getDrawable(R.drawable.ic_person_outline_black_24dp)
-                }
-                getItem(2).isVisible = false
-            }
-            setNavigationItemSelectedListener{item ->
-                when(item.itemId){
-                    R.id.nav_edit_info -> startActivity(Intent(this@ClientMainActivity, TermsActivity::class.java).apply{
-                        flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
-                    })
-                    R.id.nav_review -> startActivity(Intent(this@ClientMainActivity, LoginActivity::class.java).apply{
-                        flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
-                        putExtra(TYPE_KEY, CLIENT_TYPE)
-                    }).also{
-//                        finish()
-                    }
-                }
-                true
-            }
-        }
+//        userModel = null
+//        navigationView.run{
+//            getHeaderView(0).idOrShopTextView.text = getString(R.string.need_login)
+//            menu.run {
+//                getItem(0).run {
+//                    title = "회원가입"
+//                    icon = getDrawable(R.drawable.ic_enroll)
+//                }
+//                getItem(1).run{
+//                    title = "로그인"
+//                    icon = getDrawable(R.drawable.ic_person_outline_black_24dp)
+//                }
+//                getItem(2).isVisible = false
+//            }
+//            setNavigationItemSelectedListener{item ->
+//                when(item.itemId){
+//                    R.id.nav_edit_info -> startActivity(Intent(this@ClientMainActivity, TermsActivity::class.java).apply{
+//                        flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
+//                    })
+//                    R.id.nav_review -> startActivity(Intent(this@ClientMainActivity, LoginActivity::class.java).apply{
+//                        flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
+//                        putExtra(TYPE_KEY, CLIENT_TYPE)
+//                    }).also{
+////                        finish()
+//                    }
+//                }
+//                true
+//            }
+//        }
     }
 
     /**
@@ -220,27 +228,27 @@ class ClientMainActivity : BaseActivity(), View.OnClickListener, AnkoLogger, Nav
      *  내비게이션 뷰 아이템 이벤트
      */
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        when(item.itemId){
-            R.id.nav_edit_info -> {
-                editUser(userModel!!, CLIENT_TYPE)
-            }
-            R.id.nav_review -> {
-                showAllReview()
-            }
-            R.id.nav_log_out -> {
-                GlobalScope.launch{
-                    withContext(Dispatchers.Default){
-                        drawer.closeDrawer(GravityCompat.END)
-                    }
-                    logOut()
-                    runOnUiThread {
-                        showMain()
-                        toast("로그아웃됨")
-                        setNavigationViewWithoutLogin()
-                    }
-                }
-            }
-        }
+//        when(item.itemId){
+//            R.id.nav_edit_info -> {
+//                editUser(userModel!!, CLIENT_TYPE)
+//            }
+//            R.id.nav_review -> {
+//                showAllReview()
+//            }
+//            R.id.nav_log_out -> {
+//                GlobalScope.launch{
+//                    withContext(Dispatchers.Default){
+//                        drawer.closeDrawer(GravityCompat.END)
+//                    }
+//                    logOut()
+//                    runOnUiThread {
+//                        showMain()
+//                        toast("로그아웃됨")
+//                        setNavigationViewWithoutLogin()
+//                    }
+//                }
+//            }
+//        }
         return true
     }
 
@@ -278,7 +286,6 @@ class ClientMainActivity : BaseActivity(), View.OnClickListener, AnkoLogger, Nav
     }
 
     override fun onBackPressed() {
-        val toast = Toast.makeText(this, getString(R.string.toast_finish_on_twice_pressed), Toast.LENGTH_SHORT)
         when{
             drawer.isDrawerOpen(GravityCompat.END) -> drawer.closeDrawer(GravityCompat.END)
             shopTextView.text != getString(R.string.search_location) && container3.visibility == View.VISIBLE -> showSearchFragment()
